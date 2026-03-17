@@ -15,6 +15,11 @@ public:
         pos = m_position;
         return pos;
     }
+    int GetHP(int hp) override
+    {
+		hp = m_playerHp;
+		return hp;
+    }
     void Render(RenderContext& rc)override;
 
 
@@ -27,5 +32,6 @@ private:
     Quaternion m_rotation;
     Vector3 m_position;
     bool m_doubleJump = false;		//!<二段ジャンプしたか？
+	int m_playerHp = 100;				//!<プレイヤーのHP。
 };
 
