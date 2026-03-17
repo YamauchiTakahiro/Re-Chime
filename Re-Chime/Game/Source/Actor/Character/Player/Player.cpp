@@ -23,6 +23,8 @@ void Player::Update()
 	Move();
 
 	Rotation();
+
+	m_modelRender.Update();
 }
 
 void Player::Move()
@@ -74,7 +76,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		m_moveSpeed.y -= 8.0f;
+		//m_moveSpeed.y -= 8.0f;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
@@ -88,5 +90,5 @@ void Player::Rotation()
 
 void Player::Render(RenderContext& rc)
 {
-
+	m_modelRender.Draw(rc);
 }

@@ -17,6 +17,7 @@ public:
 	/////////////////////////////////////
 	//メンバ変数
 	/////////////////////////////////////
+private:
 	Player* m_player = nullptr;		//プレイヤー。
 	Vector3 m_toCameraPos = Vector3::One;
 	SpringCamera m_springCamera;	//ばねカメラ。
