@@ -3,9 +3,6 @@
 
 Player::Player()
 {
-	//モデルを初期化する。
-	m_modelRender.Init("Assets/modelData/unityChan.tkm");
-	m_characterController.Init(25.0f, 75.0f, m_position);
 }
 
 Player::~Player()
@@ -15,6 +12,9 @@ Player::~Player()
 
 bool Player::Start()
 {
+	//モデルを初期化する。
+	m_modelRender.Init("Assets/modelData/Player/Player.tkm");
+	m_characterController.Init(25.0f, 75.0f, m_position);
 	return true;
 }
 
