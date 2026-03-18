@@ -8,9 +8,10 @@ bool Actor::Start()
 
 void Actor::Update()
 {
+
 }
 
 void Actor::Render(RenderContext& rc)
 {
-	(void)rc;
+
 }

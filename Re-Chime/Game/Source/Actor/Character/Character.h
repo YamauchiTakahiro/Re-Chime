@@ -10,7 +10,7 @@ public:
 	virtual void Move();
 	virtual void Rotation();
 	virtual Vector3 GetPosition(Vector3);
-	virtual int GetHP(int)
+	virtual int GetHP(int);
 	virtual void Render(RenderContext& rc)override;
 };
 

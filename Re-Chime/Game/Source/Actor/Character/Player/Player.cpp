@@ -50,8 +50,8 @@ void Player::Move()
 
 	if (g_pad[0]->IsPress(enButtonY))
 	{
-		right *= stickL.x * 1000.0f;
-		forward *= stickL.y * 1000.0f;
+		right *= stickL.x * 240.0f;
+		forward *= stickL.y * 240.0f;
 	}
 
 	m_moveSpeed += right + forward;
@@ -76,7 +76,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		//m_moveSpeed.y -= 8.0f;
+		m_moveSpeed.y -= 8.0f;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
