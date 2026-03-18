@@ -5,6 +5,7 @@
 
 class Player;
 class GameCamera;
+class Stage;
 
 class Game : public IGameObject
 {
@@ -18,5 +19,6 @@ public:
 private:
 	Player* m_player = nullptr;
 	GameCamera* m_gameCamera = nullptr;
+	Stage* m_stage = nullptr;
 };
 

@@ -31,7 +31,7 @@ private:
     Vector3 m_moveSpeed;
     Quaternion m_rotation;
     Vector3 m_position;
-    bool m_doubleJump = false;		//!<二段ジャンプしたか？
+    bool m_doubleJump = true;		//!<二段ジャンプしたか？
 	int m_playerHp = 100;				//!<プレイヤーのHP。
 };
 
