@@ -3,6 +3,8 @@
 #include "Source/Actor/Character/Player/Player.h"
 #include "source/Camera/GameCamera.h"
 #include "Source/Actor/Stage/Stage.h"
+#include "Source/UIBase/Title/Title.h"
+#include "Source/UIBase/UI/UI.h"
 
 
 Game::Game()
@@ -15,6 +17,7 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 	m_stage = NewGO<Stage>(0, "stage");
+	m_ui = NewGO<UI>(0, "ui");
 	return true;
 }
 
@@ -25,7 +28,13 @@ Game::~Game()
 
 void Game::Update()
 {
-	g_renderingEngine->DisableRaytracing();
+	//g_renderingEngine->DisableRaytracing();
+	//wchar_t healthText[256];
+	//swprintf(healthText, 256, L"health:%d", m_player->GetHP();
+	//m_health.SetText(healthText);
+	//m_health.SetPosition(-950.0f, -475.0f, 0.0f);
+	//m_health.SetScale(1.0f);
+	//m_health.SetColor(g_vec4Black);
 }
 
 void Game::Render(RenderContext& rc)

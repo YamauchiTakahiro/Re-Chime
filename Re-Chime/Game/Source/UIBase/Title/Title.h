@@ -3,5 +3,11 @@
 class Title :
     public UIBase
 {
+public:
+    Title();
+    ~Title();
+    virtual bool Start() override;
+    virtual void Update() override;
+    virtual void Render(RenderContext& rc)override;
 };
 
