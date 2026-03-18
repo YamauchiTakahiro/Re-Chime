@@ -7,6 +7,8 @@ public:
 	virtual void Render(RenderContext& rc)override;
 
 protected:
-	SpriteRender m_spriteRender;
+	SpriteRender m_HPBar;
+	SpriteRender m_HP;
+	SpriteRender m_Title;
 };
 

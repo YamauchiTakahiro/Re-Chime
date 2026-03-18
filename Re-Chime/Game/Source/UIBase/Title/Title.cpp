@@ -4,7 +4,7 @@
 
 Title::Title()
 {
-	m_spriteRender.Init("Assets/Sprite/title.DDs", 1920.0f, 1080.0f);
+	m_Title.Init("Assets/Sprite/title.DDs", 1920.0f, 1080.0f);
 }
 
 Title::~Title()
@@ -28,5 +28,5 @@ void Title::Update()
 
 void Title::Render(RenderContext& rc)
 {
-	m_spriteRender.Draw(rc);
+	m_Title.Draw(rc);
 }
