@@ -12,6 +12,9 @@ public:
 	virtual void Attack();
 	virtual void OnCollision();
 	virtual void Time();
+	virtual void Hit();
+	virtual void DamageIntarval();
+	virtual void Dide();
 	virtual Vector3 GetPosition(Vector3);
 	virtual int GetHP(int);
 	virtual void Render(RenderContext& rc)override;

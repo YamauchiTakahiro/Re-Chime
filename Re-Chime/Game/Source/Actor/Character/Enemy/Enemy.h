@@ -10,6 +10,12 @@ class Enemy :
     virtual void Update() override;
     virtual void Move() override;
 	virtual void Rotation() override;
+	virtual void Attack() override;
+	virtual void OnCollision() override;
+	virtual void Time() override;
+	virtual void Hit() override;
+	virtual void DamageIntarval() override;
+	virtual void Dide() override;
     virtual Vector3 GetPosition(Vector3) override;
 	virtual int GetHP(int) override;
 	virtual void Render(RenderContext& rc)override;

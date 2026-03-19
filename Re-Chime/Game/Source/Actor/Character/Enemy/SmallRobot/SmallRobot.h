@@ -15,6 +15,9 @@ public:
 	void Attack() override;
 	void OnCollision() override;
 	void Time() override;
+	void Hit() override;
+	void DamageIntarval() override;
+	void Dide() override;
 	Vector3 GetPosition(Vector3) override;
 	int GetHP(int hp) override
 	{
@@ -34,5 +37,6 @@ private:
 	Vector3 m_forward;
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
+	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
 };
 
