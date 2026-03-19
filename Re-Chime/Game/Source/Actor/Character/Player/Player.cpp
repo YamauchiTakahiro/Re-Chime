@@ -27,6 +27,10 @@ void Player::Update()
 	Attack();
 
 	Time();
+
+	Hit();
+
+	DamageIntarval();
 	m_modelRender.Update();
 }
 
@@ -118,6 +122,28 @@ void Player::Time()
 		m_timeCount = 0.0f;
 	}
 
+}
+
+void Player::Hit()
+{
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("smallRobotAttack");
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
+		{
+			m_playerHp -= 10;
+			m_damageIntarvalTime = 1.0f;
+		}
+	}
+}
+
+void Player::DamageIntarval()
+{
+	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_damageIntarvalTime < 0.0f)
+	{
+		m_damageIntarvalTime = 0.0f;
+	}
 }
 
 void Player::Render(RenderContext& rc)

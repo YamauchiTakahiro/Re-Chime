@@ -28,6 +28,12 @@ void SmallRobot::Update()
 	Rotation();
 
 	Time();
+
+	Hit();
+
+	DamageIntarval();
+
+	Dide();
 	m_modelRender.Update();
 }
 
@@ -101,6 +107,36 @@ void SmallRobot::Time()
 	if (m_timeCount < 0.0f)
 	{
 		m_timeCount = 0.0f;
+	}
+}
+
+void SmallRobot::Hit()
+{
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("playerAttack");
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
+		{
+			m_smallRobotHp -= 10;
+			m_damageIntarvalTime = 1.0f;
+		}
+	}
+}
+
+void SmallRobot::DamageIntarval()
+{
+	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_damageIntarvalTime < 0.0f)
+	{
+		m_damageIntarvalTime = 0.0f;
+	}
+}
+
+void SmallRobot::Dide()
+{
+	if (m_smallRobotHp <= 0)
+	{
+		DeleteGO(this);
 	}
 }
 

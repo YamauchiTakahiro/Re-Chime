@@ -16,8 +16,6 @@ bool Enemy::Start()
 
 void Enemy::Update()
 {
-	Move();
-	Rotation();
 }
 
 void Enemy::Move()
@@ -25,6 +23,30 @@ void Enemy::Move()
 }
 
 void Enemy::Rotation()
+{
+}
+
+void Enemy::Attack()
+{
+}
+
+void Enemy::OnCollision()
+{
+}
+
+void Enemy::Time()
+{
+}
+
+void Enemy::Hit()
+{
+}
+
+void Enemy::DamageIntarval()
+{
+}
+
+void Enemy::Dide()
 {
 }
 

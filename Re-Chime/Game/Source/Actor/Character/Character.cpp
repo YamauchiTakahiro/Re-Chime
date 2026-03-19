@@ -38,6 +38,18 @@ void Character::Time()
 {
 }
 
+void Character::Hit()
+{
+}
+
+void Character::DamageIntarval()
+{
+}
+
+void Character::Dide()
+{
+}
+
 Vector3 Character::GetPosition(Vector3 pos)
 {
 	return pos;

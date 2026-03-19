@@ -13,6 +13,8 @@ public:
 	void Attack() override;
 	void OnCollision() override;
 	void Time() override;
+	void Hit() override;
+	void DamageIntarval() override;
     Vector3 GetPosition(Vector3 pos) override
     {
         pos = m_position;
@@ -37,6 +39,7 @@ private:
     CollisionObject* m_collisionObject;
     Vector3 m_forward;
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。
+	float m_damageIntarvalTime = 0.0f;		//!<ダメージを受けてからの無敵時間。
 	int m_playerHp = 100;				//!<プレイヤーのHP。
 };
 
