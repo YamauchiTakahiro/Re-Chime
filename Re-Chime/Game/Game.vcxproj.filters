@@ -126,6 +126,12 @@
     <ClCompile Include="Source\UIBase\UI\UI.cpp">
       <Filter>Source\UIBase\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Sound\BGM\BGMManager.cpp">
+      <Filter>Source\Sound\BGM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sound\SE\SEManager.cpp">
+      <Filter>Source\Sound\SE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -183,6 +189,12 @@
     </ClInclude>
     <ClInclude Include="Source\UIBase\UI\UI.h">
       <Filter>Source\UIBase\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sound\BGM\BGMManager.h">
+      <Filter>Source\Sound\BGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sound\SE\SEManager.h">
+      <Filter>Source\Sound\SE</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -26,6 +26,14 @@ void Character::Rotation()
 {
 }
 
+void Character::Attack()
+{
+}
+
+void Character::OnCollision()
+{
+}
+
 Vector3 Character::GetPosition(Vector3 pos)
 {
 	return pos;

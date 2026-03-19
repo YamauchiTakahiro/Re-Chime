@@ -7,6 +7,8 @@ class Player;
 class GameCamera;
 class Stage;
 class UI;
+class SmallRobot;
+
 class Game : public IGameObject
 {
 public:
@@ -22,5 +24,6 @@ private:
 	Stage* m_stage = nullptr;
 	UI* m_ui = nullptr;
 	FontRender m_health;
+	SmallRobot* m_smallRobot = nullptr;
 };
 
