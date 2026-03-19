@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Title.h"
 #include "Source/Sound/BGM/BGMManager.h"
+#include "Game.h"
 
 
 Title::Title()

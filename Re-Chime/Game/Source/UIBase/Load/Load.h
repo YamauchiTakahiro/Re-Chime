@@ -14,5 +14,6 @@ private:
 	Quaternion m_GearRotation;
 	float m_GearRotSpeed;
 	float m_time;
+	FontRender m_LoadFont;
 };
 
