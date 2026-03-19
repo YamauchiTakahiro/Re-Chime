@@ -4,6 +4,7 @@
 #include<InitGUID.h>
 #include<dxgidebug.h>
 #include "Source/UIBase/Title/Title.h"
+#include "Source/Sound/BGM/BGMManager.h"
 
 
 
@@ -33,6 +34,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//////////////////////////////////////
 
 	//Gameクラスのオブジェクトを作成。
+	NewGO<BGMManager>(0, "bgmManager");
 	NewGO<Title>(0, "title");
 
 	//////////////////////////////////////

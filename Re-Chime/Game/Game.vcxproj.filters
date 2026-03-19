@@ -196,5 +196,11 @@
     <ClInclude Include="Source\Sound\SE\SEManager.h">
       <Filter>Source\Sound\SE</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Sound\SE\SEManager.h">
+      <Filter>Source\Sound\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sound\BGM\BGMManager.h">
+      <Filter>Source\Sound\BGM</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
