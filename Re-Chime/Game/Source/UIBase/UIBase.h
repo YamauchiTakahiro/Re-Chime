@@ -15,6 +15,8 @@ protected:
 	SpriteRender m_GameClear;
 	SpriteRender m_DifficultyLevel;
 	SpriteRender m_gear;
+	SpriteRender m_gear2;
+	SpriteRender m_gear3;
 	SpriteRender m_Bar;
 	SpriteRender m_BarFrame;
 };
