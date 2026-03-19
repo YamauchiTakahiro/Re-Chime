@@ -11,5 +11,8 @@ public:
 
 private:
 	int LoadTime;
+	Quaternion m_GearRotation;
+	float m_GearRotSpeed;
+	float m_time;
 };
 
