@@ -10,5 +10,9 @@ protected:
 	SpriteRender m_HPBar;
 	SpriteRender m_HP;
 	SpriteRender m_Title;
+	SpriteRender m_Load;
+	SpriteRender m_GameOver;
+	SpriteRender m_GameClear;
+	SpriteRender m_DifficultyLevel;
 };
 

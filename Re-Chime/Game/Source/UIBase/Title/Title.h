@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
+#include "Source/UIBase/Load/Load.h"
 class Title :
     public UIBase
 {
