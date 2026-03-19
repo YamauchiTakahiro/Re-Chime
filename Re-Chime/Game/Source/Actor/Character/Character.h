@@ -9,6 +9,8 @@ public:
 	virtual void Update() override;
 	virtual void Move();
 	virtual void Rotation();
+	virtual void Attack();
+	virtual void OnCollision();
 	virtual Vector3 GetPosition(Vector3);
 	virtual int GetHP(int);
 	virtual void Render(RenderContext& rc)override;
