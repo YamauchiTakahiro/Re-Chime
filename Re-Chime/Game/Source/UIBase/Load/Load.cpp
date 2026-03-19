@@ -25,15 +25,15 @@ bool Load::Start()
 
 void Load::Update()
 {
-	//if (LoadTime > 0)
-	//{
-	//	LoadTime--;
-	//}
-	//else
-	//{
-	//	NewGO<Game>(0, "Game");
-	//	DeleteGO(FindGO<Load>("Load"));
-	//}
+	if (LoadTime > 0)
+	{
+		LoadTime--;
+	}
+	else
+	{
+		NewGO<Game>(0, "game");
+		DeleteGO(this);
+	}
 	m_time += g_gameTime->GetFrameDeltaTime();
 	//ギアの回転
 	m_GearRotation.SetRotationZ(m_time * m_GearRotSpeed);

@@ -13,7 +13,7 @@ bool Stage::Start()
 {
 	m_modelRender.Init("Assets/modelData/mainStage/Stage.tkm");
 	m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	m_modelRender.Update();
 	return true;
 }
