@@ -63,23 +63,14 @@ void Player::Move()
 	if (m_characterController.IsOnGround())
 	{
 		m_moveSpeed.y = 0.0f;
-		m_doubleJump = false;
 		if (g_pad[0]->IsTrigger(enButtonB))
 		{
-			m_moveSpeed.y = 240.0f;
-		}
-		if (m_characterController.IsOnGround() == false && m_doubleJump == false)
-		{
-			if (g_pad[0]->IsTrigger(enButtonB))
-			{
-				m_moveSpeed.y = 240.0f;
-				m_doubleJump = true;
-			}
+			m_moveSpeed.y = 500.0f;
 		}
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		//m_moveSpeed.y -= 8.0f;
+		//m_moveSpeed.y -= 20.0f;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
@@ -114,7 +105,7 @@ void Player::OnCollision()
 	Vector3 collisionPos = m_position;
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 150.0f;
+	collisionPos += m_forward * 250.0f;
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("playerAttack");
 }

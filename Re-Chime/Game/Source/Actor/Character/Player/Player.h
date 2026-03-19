@@ -37,7 +37,6 @@ private:
     CollisionObject* m_collisionObject;
     Vector3 m_forward;
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。
-    bool m_doubleJump = true;		//!<二段ジャンプしたか？
 	int m_playerHp = 100;				//!<プレイヤーのHP。
 };
 
