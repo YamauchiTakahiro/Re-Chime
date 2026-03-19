@@ -12,8 +12,10 @@ public:
 private:
 	int LoadTime;
 	Quaternion m_GearRotation;
+	Quaternion m_GearRotation2;
+	Quaternion m_GearRotation3;
 	float m_GearRotSpeed;
 	float m_time;
-	FontRender m_LoadFont;
+	FontRender m_Font;
 };
 

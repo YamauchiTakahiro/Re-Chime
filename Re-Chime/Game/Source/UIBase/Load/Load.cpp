@@ -10,8 +10,18 @@ Load::Load()
 	m_gear.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 	m_gear.Update();
 
+	m_gear2.Init("Assets/UIData/gear.DDs", 128.0f, 128.0f);
+	m_gear2.SetPosition(Vector3(725.0f, -375.0f, 0.0f));
+	m_gear2.SetScale(Vector3(0.8f, 0.8f, 0.8f));
+	m_gear2.Update();
+
+	m_gear3.Init("Assets/UIData/gear.DDs", 128.0f, 128.0f);
+	m_gear3.SetPosition(Vector3(775.0f, -330.0f, 0.0f));
+	m_gear3.SetScale(Vector3(0.5f, 0.5f, 0.5f));
+	m_gear3.Update();
+
 	m_BarFrame.Init("Assets/UIData/HP.DDs", 400.0f, 40.0f);
-	m_BarFrame.SetPosition(Vector3(-955.0f, -525.0f, 0.0f));
+	m_BarFrame.SetPosition(Vector3(-955.0f, -522.5f, 0.0f));
 	m_BarFrame.SetPivot(Vector2(0.0f, 0.5f));
 	m_BarFrame.Update();
 	
@@ -46,12 +56,26 @@ void Load::Update()
 	m_gear.SetRotation(m_GearRotation);
 	m_gear.Update();
 
+	m_GearRotation2.SetRotationZ(m_time * -m_GearRotSpeed);
+	m_gear2.SetRotation(m_GearRotation2);
+	m_gear2.Update();
+
+	m_GearRotation3.SetRotationZ(m_time * m_GearRotSpeed);
+	m_gear3.SetRotation(m_GearRotation3);
+	m_gear3.Update();
 
 	//ローディングバーの拡大
 	Vector3 scale = m_BarFrame.GetScale();
 	scale.x = m_BarFrame.GetScale().x + 0.7f * g_gameTime->GetFrameDeltaTime();
 	m_BarFrame.SetScale(scale);
 	m_BarFrame.Update();
+
+	wchar_t text[256];
+	swprintf_s(text, 256, L"読み込み中・・・");
+	m_Font.SetText(text);
+	m_Font.SetPosition(-955.0f, -450.0f, 0.0f);
+	m_Font.SetScale(1.0f);
+	m_Font.SetColor(g_vec4White);
 }
 
 void Load::Render(RenderContext& rc)
@@ -59,4 +83,7 @@ void Load::Render(RenderContext& rc)
 	m_Load.Draw(rc);
 	m_gear.Draw(rc);
 	m_BarFrame.Draw(rc);
+	m_gear2.Draw(rc);
+	m_gear3.Draw(rc);
+	m_Font.Draw(rc);
 }
