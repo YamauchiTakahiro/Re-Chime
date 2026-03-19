@@ -34,6 +34,10 @@ void Character::OnCollision()
 {
 }
 
+void Character::Time()
+{
+}
+
 Vector3 Character::GetPosition(Vector3 pos)
 {
 	return pos;

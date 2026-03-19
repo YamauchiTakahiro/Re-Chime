@@ -10,6 +10,9 @@ public:
     void Update() override;
     void Move() override;
     void Rotation() override;
+	void Attack() override;
+	void OnCollision() override;
+	void Time() override;
     Vector3 GetPosition(Vector3 pos) override
     {
         pos = m_position;
@@ -31,6 +34,9 @@ private:
     Vector3 m_moveSpeed;
     Quaternion m_rotation;
     Vector3 m_position;
+    CollisionObject* m_collisionObject;
+    Vector3 m_forward;
+	float m_timeCount = 0.0f;				//!<タイマー用の変数。
     bool m_doubleJump = true;		//!<二段ジャンプしたか？
 	int m_playerHp = 100;				//!<プレイヤーのHP。
 };
