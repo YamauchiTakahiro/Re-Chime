@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "SmallRobot.h"
 #include "Source/Actor/Character/Player/Player.h"
+#include "Source/Actor/Item/Gire/Gire.h"
 #include "collision/CollisionObject.h"
 
 SmallRobot::SmallRobot()
@@ -136,6 +137,7 @@ void SmallRobot::Dide()
 {
 	if (m_smallRobotHp <= 0)
 	{
+		m_gire = NewGO<Gire>(0, "gire");
 		DeleteGO(this);
 	}
 }

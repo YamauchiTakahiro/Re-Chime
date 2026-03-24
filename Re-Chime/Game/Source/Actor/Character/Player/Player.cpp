@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Player.h"
 #include "collision/CollisionObject.h"
+#include "Source/Actor/Item/Gire/Gire.h"
 
 Player::Player()
 {
@@ -15,6 +16,7 @@ bool Player::Start()
 	//モデルを初期化する。
 	m_modelRender.Init("Assets/modelData/Player/Player.tkm");
 	m_characterController.Init(100.0f, 300.0f, m_position);
+	m_gire = FindGO<Gire>("gire");
 	return true;
 }
 
@@ -144,6 +146,11 @@ void Player::DamageIntarval()
 	{
 		m_damageIntarvalTime = 0.0f;
 	}
+}
+
+void Player::GetGier()
+{
+	
 }
 
 void Player::Render(RenderContext& rc)
