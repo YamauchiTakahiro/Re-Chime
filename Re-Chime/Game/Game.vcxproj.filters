@@ -67,6 +67,12 @@
     <Filter Include="Source\UIBase\UI">
       <UniqueIdentifier>{df8ef588-80d4-4be8-8599-43f3f8942883}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Actor\Item">
+      <UniqueIdentifier>{706dd892-20e7-432a-bef1-4e9670cc44e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Gire">
+      <UniqueIdentifier>{fd09a47c-7a35-4363-bdda-2ed94b2129f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -131,6 +137,12 @@
     </ClCompile>
     <ClCompile Include="Source\Sound\SE\SEManager.cpp">
       <Filter>Source\Sound\SE</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Item.cpp">
+      <Filter>Source\Actor\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Gire\Gire.cpp">
+      <Filter>Source\Actor\Item\Gire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +213,12 @@
     </ClInclude>
     <ClInclude Include="Source\Sound\BGM\BGMManager.h">
       <Filter>Source\Sound\BGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Item.h">
+      <Filter>Source\Actor\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Gire\Gire.h">
+      <Filter>Source\Actor\Item\Gire</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

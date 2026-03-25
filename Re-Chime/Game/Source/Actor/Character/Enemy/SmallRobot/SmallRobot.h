@@ -2,6 +2,7 @@
 #include "Source/Actor/Character/Enemy/Enemy.h"
 
 class Player;
+class Gire;
 
 class SmallRobot : public Enemy
 {
@@ -33,6 +34,7 @@ private:
 	Vector3 m_moveSpeed;
 	Quaternion m_rotation;
 	Player* m_player = nullptr;
+	Gire* m_gire = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
