@@ -14,10 +14,15 @@ protected:
 	SpriteRender m_GameOver;
 	SpriteRender m_GameClear;
 	SpriteRender m_DifficultyLevel;
+	SpriteRender m_Gear;
 	SpriteRender m_gear;
 	SpriteRender m_gear2;
 	SpriteRender m_gear3;
 	SpriteRender m_Bar;
 	SpriteRender m_BarFrame;
+	SpriteRender m_Abutton;
+	SpriteRender m_Bbutton;
+	SpriteRender m_Xbutton;
+	SpriteRender m_Ybutton;
 };
 

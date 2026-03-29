@@ -150,7 +150,6 @@ void Player::DamageIntarval()
 
 void Player::GetGier()
 {
-	
 }
 
 void Player::Render(RenderContext& rc)

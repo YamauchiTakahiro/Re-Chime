@@ -8,7 +8,9 @@ class GameCamera;
 class Stage;
 class UI;
 class SmallRobot;
-
+class GameOver;
+class Gire;
+class DifficultyLevel;
 class Game : public IGameObject
 {
 public:
@@ -23,7 +25,10 @@ private:
 	GameCamera* m_gameCamera = nullptr;
 	Stage* m_stage = nullptr;
 	UI* m_ui = nullptr;
-	FontRender m_health;
+	FontRender m_gear;
 	SmallRobot* m_smallRobot = nullptr;
+	GameOver* m_gameOver = nullptr;
+	Gire* m_gire = nullptr;
+	DifficultyLevel* m_difficul = nullptr;
 };
 
