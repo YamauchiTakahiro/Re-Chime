@@ -6,6 +6,9 @@
 #include "Source/UIBase/Title/Title.h"
 #include "Source/UIBase/UI/UI.h"
 #include "Source/Actor/Character/Enemy/SmallRobot/SmallRobot.h"
+#include "Source/UIBase/GameOver/GameOver.h"
+#include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
+#include "Source/Actor/Item/Gire/Gire.h"
 
 
 Game::Game()
@@ -26,19 +29,25 @@ bool Game::Start()
 Game::~Game()
 {
 	DeleteGO(m_player);
+	DeleteGO(m_gameCamera);
+	DeleteGO(m_stage);
+	DeleteGO(m_ui);
+	DeleteGO(m_smallRobot);
 }
 
 void Game::Update()
-{
-	//g_renderingEngine->DisableRaytracing();
-	//wchar_t healthText[256];
-	//swprintf(healthText, 256, L"health:%d", m_player->GetHP();
-	//m_health.SetText(healthText);
-	//m_health.SetPosition(-950.0f, -475.0f, 0.0f);
-	//m_health.SetScale(1.0f);
-	//m_health.SetColor(g_vec4Black);
+{	
+	//プレイヤーのHPが0以下になったらゲームオーバー。
+	int playerHP = m_player->m_playerHp;
+	if (playerHP <= 0)
+	{
+		NewGO<GameOver>(0, "GameOver");
+		DeleteGO(this);
+		return;
+	}
 }
 
 void Game::Render(RenderContext& rc)
 {
+	m_gear.Draw(rc);
 }
