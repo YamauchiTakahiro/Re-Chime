@@ -1,2 +1,161 @@
 ﻿#include "stdafx.h"
 #include "FloorBoss.h"
+#include "Source/Actor/Character/Player/Player.h"
+
+FloorBoss::FloorBoss()
+{
+	
+}
+
+FloorBoss::~FloorBoss()
+{
+}
+
+bool FloorBoss::Start()
+{
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Enemy/floorBoss/floorBoss_idle.tka");
+	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/floorBoss/floorBoss_walk.tka");
+	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/floorBoss/floorBoss_death.tka");
+	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/floerBoss.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
+	m_characterController.Init(200.0f, 100.0f, m_position);
+	m_position = Vector3(0.0f, 200.0f, 0.0f);
+	m_player = FindGO<Player>("player");
+	return true;
+}
+
+void FloorBoss::Update()
+{
+	Move();
+
+	Rotation();
+
+	Time();
+
+	Hit();
+
+	DamageIntarval();
+
+	Dide();
+	m_modelRender.Update();
+}
+
+void FloorBoss::Move()
+{
+	Vector3 playerPos;
+	playerPos = m_player->GetPosition(playerPos);
+	Vector3 toPlayer = playerPos - m_position;
+	float distToPlayer = toPlayer.Length();
+	if (distToPlayer <= 500 && m_timeCount == 0.0f)
+	{
+		Attack();
+		m_timeCount = 1.0f;
+		Time();
+	}
+	if (distToPlayer <= 1000)
+	{
+		toPlayer.Normalize();
+		m_moveSpeed = toPlayer * 100.0f;
+		m_moveSpeed.y = 0.0f;
+	}
+	else if (distToPlayer > 1000)
+	{
+		m_moveSpeed = toPlayer * 0.0f;
+	}
+
+	if (m_characterController.IsOnGround() == false)
+	{
+		//m_moveSpeed.y -= 40.0f;
+	}
+
+	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
+
+	m_modelRender.SetPosition(m_position);
+}
+
+void FloorBoss::Rotation()
+{
+	Vector3 playerPos;
+	playerPos = m_player->GetPosition(playerPos);
+	Vector3 toPlayer = playerPos - m_position;
+	float distToPlayer = toPlayer.Length();
+	if (distToPlayer <= 1000)
+	{
+		toPlayer.Normalize();
+		m_rotation.SetRotationYFromDirectionXZ(toPlayer);
+	}
+	m_modelRender.SetRotation(m_rotation);
+}
+
+void FloorBoss::Attack()
+{
+	OnCollision();
+}
+
+void FloorBoss::OnCollision()
+{
+	m_collisionObject = NewGO<CollisionObject>(0);
+
+	Vector3 collisionPos = m_position;
+	m_forward = Vector3::Front;
+	m_rotation.Apply(m_forward);
+	collisionPos += m_forward * 250.0f;
+	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
+	m_collisionObject->SetName("smallRobotAttack");
+}
+
+void FloorBoss::Time()
+{
+	m_timeCount -= g_gameTime->GetFrameDeltaTime();
+	if (m_timeCount < 0.0f)
+	{
+		m_timeCount = 0.0f;
+	}
+}
+
+void FloorBoss::Hit()
+{
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("playerAttack");
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
+		{
+			m_floorBossHP -= 10;
+			m_damageIntarvalTime = 1.0f;
+		}
+	}
+}
+
+void FloorBoss::DamageIntarval()
+{
+	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_damageIntarvalTime < 0.0f)
+	{
+		m_damageIntarvalTime = 0.0f;
+	}
+}
+
+void FloorBoss::Dide()
+{
+	if (m_floorBossHP <= 0)
+	{
+		DeleteGO(this);
+	}
+}
+
+Vector3 FloorBoss::GetPosition(Vector3)
+{
+	return Vector3();
+}
+
+int FloorBoss::GetHP(int)
+{
+	return 0;
+}
+
+void FloorBoss::Render(RenderContext& rc)
+{
+	m_modelRender.Draw(rc);
+}

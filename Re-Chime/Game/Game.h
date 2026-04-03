@@ -10,7 +10,9 @@ class UI;
 class SmallRobot;
 class GameOver;
 class Gire;
+class FloorBoss;
 class DifficultyLevel;
+
 class Game : public IGameObject
 {
 public:
@@ -27,6 +29,7 @@ private:
 	UI* m_ui = nullptr;
 	FontRender m_gear;
 	SmallRobot* m_smallRobot = nullptr;
+	FloorBoss* m_floorBoss = nullptr;
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
 	DifficultyLevel* m_difficul = nullptr;

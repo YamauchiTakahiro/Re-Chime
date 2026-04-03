@@ -76,7 +76,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		//m_moveSpeed.y -= 20.0f;
+		m_moveSpeed.y -= 20.0f;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
@@ -134,6 +134,16 @@ void Player::Hit()
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
 		{
 			m_playerHp -= 10;
+			m_damageIntarvalTime = 1.0f;
+		}
+	}
+
+	const auto& collisions2 = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
+	for (auto collision : collisions2)
+	{
+		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
+		{
+			m_playerHp -= 20;
 			m_damageIntarvalTime = 1.0f;
 		}
 	}
