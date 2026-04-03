@@ -14,7 +14,7 @@ Gire::~Gire()
 
 bool Gire::Start()
 {
-	m_modelRender.Init("Assets/modelData/Item/Gire/Gire.tkm");
+	m_modelRender.Init("Assets/modelData/Item/Gear/Gear.tkm");
 	m_player = FindGO<Player>("player");
 	return true;
 }

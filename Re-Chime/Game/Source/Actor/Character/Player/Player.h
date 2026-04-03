@@ -35,7 +35,6 @@ public:
     }
     void Render(RenderContext& rc)override;
 
-    int m_playerHp = 100;				//!<プレイヤーのHP。
 
 private:
     //メンバ変数
@@ -47,6 +46,8 @@ private:
     CollisionObject* m_collisionObject;
     Vector3 m_forward;
 	Gire* m_gire = nullptr;
+    int m_playerHp = 100;				//!<プレイヤーのHP。
+	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;		//!<ダメージを受けてからの無敵時間。
     int m_gireCount;

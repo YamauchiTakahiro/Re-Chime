@@ -6,6 +6,7 @@
 #include "Source/UIBase/Title/Title.h"
 #include "Source/UIBase/UI/UI.h"
 #include "Source/Actor/Character/Enemy/SmallRobot/SmallRobot.h"
+#include "Source/Actor/Character/Enemy/FloorBoss/FloorBoss.h"
 #include "Source/UIBase/GameOver/GameOver.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Actor/Item/Gire/Gire.h"
@@ -23,6 +24,7 @@ bool Game::Start()
 	m_stage = NewGO<Stage>(0, "stage");
 	m_ui = NewGO<UI>(0, "ui");
 	m_smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+	//m_floorBoss = NewGO<FloorBoss>(0, "floorBoss");
 	return true;
 }
 
@@ -33,12 +35,14 @@ Game::~Game()
 	DeleteGO(m_stage);
 	DeleteGO(m_ui);
 	DeleteGO(m_smallRobot);
+	DeleteGO(m_floorBoss);
 }
 
 void Game::Update()
 {	
 	//プレイヤーのHPが0以下になったらゲームオーバー。
-	int playerHP = m_player->m_playerHp;
+	int hp;
+	int playerHP = m_player->GetHP(hp);
 	if (playerHP <= 0)
 	{
 		NewGO<GameOver>(0, "GameOver");
