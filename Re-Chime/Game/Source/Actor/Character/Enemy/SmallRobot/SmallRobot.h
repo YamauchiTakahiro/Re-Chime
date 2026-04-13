@@ -25,6 +25,17 @@ public:
 		hp = m_smallRobotHp;
 		return hp;
 	}
+
+	void SetPosition(Vector3 position) override
+	{
+		m_position = position;
+		m_modelRender.SetPosition(position);
+	}
+	void SetScale(Vector3 scale) override
+	{
+		m_scale = scale;
+		m_modelRender.SetScale(scale);
+	}
 	virtual void Render(RenderContext& rc)override;
 
 private:
@@ -37,6 +48,7 @@ private:
 	Gire* m_gire = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
+	Vector3 m_scale;
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
