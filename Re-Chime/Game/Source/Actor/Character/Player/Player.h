@@ -28,6 +28,11 @@ public:
 		hp = m_playerHp;
 		return hp;
     }
+    int GetMaxHP(int maxhp)
+    {
+        maxhp = m_playerMaxHp;
+        return maxhp;
+    }
     bool GetGier(bool getGier)
     {
         getGier = m_isGetGire;

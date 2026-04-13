@@ -48,12 +48,15 @@ bool UI::Start()
 void UI::Update()
 {
 	int nowHP = 0;
+	int MaxHP = 0;
+
 	nowHP = m_player->GetHP(nowHP);
-	float Wari = (float)nowHP / (float)nowHP;
+	MaxHP = m_player->GetMaxHP(MaxHP);
+	float Wari = (float)nowHP / (float)MaxHP;
 	Vector3 scale = { 0.28f, 0.28f, 0.5f };
 	scale.x *= Wari;
 	m_HP.SetScale(scale);
-	if (nowHP <= nowHP / 4)
+	if (nowHP <= MaxHP / 4)
 	{
 		m_HP.SetMulColor(g_vec4Red);
 	}
