@@ -16,6 +16,13 @@ public:
 	virtual void DamageIntarval();
 	virtual void Dide();
 	virtual Vector3 GetPosition(Vector3);
+	virtual void SetPosition(Vector3)
+	{
+
+	}
+	virtual void SetScale(Vector3 scale)
+	{
+	}
 	virtual int GetHP(int);
 	virtual void Render(RenderContext& rc)override;
 };

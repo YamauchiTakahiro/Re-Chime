@@ -17,6 +17,13 @@ class Enemy :
 	virtual void DamageIntarval() override;
 	virtual void Dide() override;
     virtual Vector3 GetPosition(Vector3) override;
+	virtual void SetPosition(Vector3) override
+	{
+
+	}
+	virtual void SetScale(Vector3 scale)
+	{
+	}	
 	virtual int GetHP(int) override;
 	virtual void Render(RenderContext& rc)override;
 };
