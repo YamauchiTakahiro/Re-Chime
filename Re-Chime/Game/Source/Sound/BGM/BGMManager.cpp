@@ -16,7 +16,7 @@ namespace {
 		//追加する際は、ヘッダのenum Soundにも追加してください。
 		"BGM/TitleBGM",
 		"BGM/GameOverBGM",
-		"BGM/GameClearBGM"
+		"BGM/GameClearBGM",
 	};
 }
 
