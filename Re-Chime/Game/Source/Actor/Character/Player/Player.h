@@ -17,7 +17,6 @@ public:
 	void Time() override;
 	void Hit() override;
 	void DamageIntarval() override;
-    void GetGier();
     void GuardCollision();
     void Gurad();
     /*void PlayerState();
@@ -50,6 +49,10 @@ public:
     {
         getGier = m_isGetGire;
 		return getGier;
+    }
+    void GetGireCount()
+    {
+        m_gireCount++;
     }
     bool GetPowerBuffFlag(bool powerBuffFlag)
     {

@@ -24,6 +24,14 @@ public:
 	bool Start();
 	void Update();
 	void Pause();
+	void FirstFloor();
+	void SecondFloor();
+	void ThirdFloor();
+	void FourthFloor();
+	void EnemyCount()
+	{
+		m_enemyCount--;
+	}
 	bool GetIsPause(bool isPause)
 	{
 		isPause = m_isPause;

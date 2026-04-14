@@ -17,7 +17,7 @@
 
 Game::Game()
 {
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
 
 bool Game::Start()
@@ -135,8 +135,7 @@ void Game::Update()
 	}
 	if (m_enemyCount <= 0)
 	{
-		m_gire = NewGO<Gire>(0, "gire");
-		DeleteGO(m_barrier);
+		FirstFloor();
 	}
 }
 
@@ -152,6 +151,12 @@ void Game::Pause()
 		m_isPause = true;
 	}
 	m_Pause.Update();
+}
+
+void Game::FirstFloor()
+{
+	m_gire = NewGO<Gire>(0, "gire");
+	DeleteGO(m_barrier);
 }
 
 void Game::Render(RenderContext& rc)

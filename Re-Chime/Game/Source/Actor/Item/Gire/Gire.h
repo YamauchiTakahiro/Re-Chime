@@ -11,6 +11,7 @@ public:
 	bool Start();
 	void Update()override;
 	void Move()override;
+	void OnCollision();
 	void GetGier();
 	Vector3 GetPosition(Vector3 pos)
 	{
@@ -25,6 +26,7 @@ public:
 	void Render(RenderContext& rc)override;
 private:
 	ModelRender m_modelRender;
+	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_position;
 	Player* m_player = nullptr;
 };
