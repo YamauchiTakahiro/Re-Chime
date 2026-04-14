@@ -15,16 +15,16 @@ Player::~Player()
 
 bool Player::Start()
 {
-	/*m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Player/PlayerIdle.tka");
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData//idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Player/PlayerWalk.tka");
+	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/run.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/Player/PlayerJump.tka");
+	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/jump.tka");
 	m_animationClips[enAnimationClip_Jump].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Player/PlayerRun.tka");
-	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);*/
+	m_animationClips[enAnimationClip_Run].Load("Assets/animData/run.tka");
+	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	//モデルを初期化する。
-	m_modelRender.Init("Assets/modelData/Player/Player.tkm"/*, m_animationClips, enAnimationClip_Num, enModelUpAxisY*/);
+	m_modelRender.Init("Assets/modelData/unityChan.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_gire = FindGO<Gire>("gire");
 	m_game = FindGO<Game>("game");	
@@ -42,6 +42,8 @@ void Player::Update()
 	Move();
 
 	Rotation();
+
+	SetScale();
 
 	Attack();
 
@@ -78,14 +80,14 @@ void Player::Move()
 
 	if (g_pad[0]->IsPress(enButtonY) == false)
 	{
-		right *= stickL.x * 120.0f;
-		forward *= stickL.y * 120.0f;
+		right *= stickL.x * 240.0f;
+		forward *= stickL.y * 240.0f;
 	}
 
 	if (g_pad[0]->IsPress(enButtonY))
 	{
-		right *= stickL.x * 240.0f;
-		forward *= stickL.y * 240.0f;
+		right *= stickL.x * 480.0f;
+		forward *= stickL.y * 480.0f;
 	}
 
 	m_moveSpeed += right + forward;
@@ -114,9 +116,14 @@ void Player::Rotation()
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
-
 		m_modelRender.SetRotation(m_rotation);
 	}
+}
+
+void Player::SetScale()
+{
+	m_scale.Set(3.0f, 3.0f, 3.0f);
+	m_modelRender.SetScale(m_scale);
 }
 
 void Player::Attack()
@@ -159,7 +166,7 @@ void Player::Time()
 
 void Player::Hit()
 {
-	/*const auto& collisions = g_collisionObjectManager->FindCollisionObjects("smallRobotAttack");
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("smallRobotAttack");
 	for (auto collision : collisions)
 	{
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
@@ -176,7 +183,7 @@ void Player::Hit()
 			}
 			m_damageIntarvalTime = 1.0f;
 		}
-	}*/
+	}
 
 	const auto& collisions2 = g_collisionObjectManager->FindCollisionObjects("mediumRobotAttack");
 	for (auto collision : collisions2)
@@ -195,7 +202,7 @@ void Player::Hit()
 		}
 	}
 
-	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
+	/*const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
 	for (auto collision : collisions3)
 	{
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
@@ -227,7 +234,7 @@ void Player::Hit()
 			}
 			m_damageIntarvalTime = 1.0f;
 		}
-	}
+	}*/
 
 	const auto& collisions5 = g_collisionObjectManager->FindCollisionObjects("powerBuffPotion");
 	for (auto collision : collisions5)
@@ -300,51 +307,51 @@ void Player::Gurad()
 	}
 }
 
-//void Player::PlayerState()
-//{
-//	if(m_characterController.IsOnGround() == false)
-//	{
-//		m_playerState = 1;
-//
-//
-//		return;
-//	}
-//
-//	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-//	{
-//		m_playerState = 2;
-//		if (g_pad[0]->IsPress(enButtonY))
-//		{
-//			m_playerState = 3;
-//		}
-//	}
-//
-//	else
-//	{
-//		m_playerState = 0;
-//	}
-//}
-//
-//void Player::PlayAnimation()
-//{
-//	switch(m_playerState)
-//	{
-//	case 0:
-//		m_modelRender.PlayAnimation(enAnimationClip_Idle);
-//		break;
-//	case 1:
-//		m_modelRender.PlayAnimation(enAnimationClip_Walk);
-//		break;
-//	case 2:
-//		m_modelRender.PlayAnimation(enAnimationClip_Jump);
-//		break;
-//	case 3:
-//		m_modelRender.PlayAnimation(enAnimationClip_Run);
-//		break;
-//	default:
-//		break;
-//	}
-//}
+void Player::PlayerState()
+{
+	if(m_characterController.IsOnGround() == false)
+	{
+		m_playerState = 1;
+
+
+		return;
+	}
+
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		m_playerState = 2;
+		if (g_pad[0]->IsPress(enButtonY))
+		{
+			m_playerState = 3;
+		}
+	}
+
+	else
+	{
+		m_playerState = 0;
+	}
+}
+
+void Player::PlayAnimation()
+{
+	switch(m_playerState)
+	{
+	case 0:
+		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		break;
+	case 1:
+		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+		break;
+	case 2:
+		m_modelRender.PlayAnimation(enAnimationClip_Jump);
+		break;
+	case 3:
+		m_modelRender.PlayAnimation(enAnimationClip_Run);
+		break;
+	default:
+		break;
+	}
+}
 
 void Player::PowerBuff()
 {
@@ -358,7 +365,7 @@ void Player::PowerBuff()
 	}
 	else
 	{
-		m_attackPower = 10;
+		m_attackPower = 100;
 	}
 }
 

@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "FinalBoss.h"
 #include "Source/Actor/Character/Player/Player.h"
+#include "collision/CollisionObject.h"
+#include "Game.h"
 
 FinalBoss::FinalBoss()
 {
@@ -16,11 +18,18 @@ bool FinalBoss::Start()
 	m_modelRender.Init("Assets/modelData/Enemy/finalBoss/finalBoss.tkm");
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
+	m_game = FindGO<Game>("game");
 	return true;
 }
 
 void FinalBoss::Update()
 {
+	bool isPause = false;
+	isPause = m_game->GetIsPause(isPause);
+	if (isPause)
+	{
+		return;
+	}
 	Move();
 	Rotation();
 	Time();
@@ -101,11 +110,8 @@ void FinalBoss::Hit()
 
 void FinalBoss::Time()
 {
-	if (m_timeCount > 0.0f)
-	{
-		m_timeCount += 1.0f / 60.0f;
-	}
-	if (m_timeCount >= 2.0f)
+	m_timeCount -= g_gameTime->GetFrameDeltaTime();
+	if (m_timeCount < 0.0f)
 	{
 		m_timeCount = 0.0f;
 	}
@@ -113,11 +119,8 @@ void FinalBoss::Time()
 
 void FinalBoss::DamageIntarval()
 {
-	if (m_damageIntarvalTime > 0.0f)
-	{
-		m_damageIntarvalTime += 1.0f / 60.0f;
-	}
-	if (m_damageIntarvalTime >= 1.0f)
+	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_damageIntarvalTime < 0.0f)
 	{
 		m_damageIntarvalTime = 0.0f;
 	}
@@ -127,7 +130,8 @@ void FinalBoss::Dide()
 {
 	if (m_finalBossHp <= 0)
 	{
-		Dead();
+		m_game->EnemyCount();
+		DeleteGO(this);
 	}
 }
 

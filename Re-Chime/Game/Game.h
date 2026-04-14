@@ -31,7 +31,7 @@ public:
 	void FourthFloor();
 	void EnemyCount()
 	{
-		m_enemyCount--;
+		m_numDefeatedEnemy++;
 	}
 	bool GetIsPause(bool isPause)
 	{
@@ -44,7 +44,12 @@ private:
 	Player* m_player = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	Stage* m_stage = nullptr;
-	Barrier* m_barrier = nullptr;
+	Barrier* m_barrier1 = nullptr;
+	Barrier* m_barrier2 = nullptr;
+	Barrier* m_barrier3 = nullptr;
+	Barrier* m_barrier4 = nullptr;
+	Barrier* m_barrier5 = nullptr;
+	Barrier* m_barrier6 = nullptr;
 	UI* m_ui = nullptr;
 	FontRender m_gear;
 	std::vector<SmallRobot*> m_smallRobot;
@@ -64,5 +69,6 @@ private:
 	bool m_isPlayerReturn = false;
 	bool m_isPause = false;
 	int m_enemyCount = 0;		//!<敵の数。
+	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 };
 
