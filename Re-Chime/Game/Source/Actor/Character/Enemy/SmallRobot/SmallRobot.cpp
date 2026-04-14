@@ -2,6 +2,8 @@
 #include "SmallRobot.h"
 #include "Source/Actor/Character/Player/Player.h"
 #include "Source/Actor/Item/Gire/Gire.h"
+#include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"
+#include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
 
@@ -26,7 +28,9 @@ bool SmallRobot::Start()
 
 void SmallRobot::Update()
 {
-	if (m_game->m_isPause)
+	bool isPause = false;
+	isPause = m_game->GetIsPause(isPause);
+	if (isPause)
 	{
 		return;
 	}
@@ -53,7 +57,7 @@ void SmallRobot::Move()
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
 	{
 		Attack();
-		m_timeCount = 1.0f;
+		m_timeCount = 2.0f;
 		Time();
 	}
 	if (distToPlayer <= 1000)
@@ -124,7 +128,9 @@ void SmallRobot::Hit()
 	{
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
 		{
-			m_smallRobotHp -= 10;
+			int damage = 0;
+			damage = m_player->GetAttackPower(damage);
+			m_smallRobotHp -= damage;
 			m_damageIntarvalTime = 1.0f;
 		}
 	}
@@ -143,7 +149,18 @@ void SmallRobot::Dide()
 {
 	if (m_smallRobotHp <= 0)
 	{
-		m_gire = NewGO<Gire>(0, "gire");
+		int randomNum = 0;
+		randomNum = rand() % 100 + 1;
+		if (randomNum <= 20)
+		{
+			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
+			m_attackSpeedBuff->SetPosition(m_position);
+		}
+		else if (randomNum > 20 && randomNum <= 40)
+		{
+			m_powerBuff = NewGO<PowerBuff>(0);
+			m_powerBuff->SetPosition(m_position);
+		}
 		DeleteGO(this);
 	}
 }

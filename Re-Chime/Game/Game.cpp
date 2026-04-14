@@ -3,6 +3,7 @@
 #include "Source/Actor/Character/Player/Player.h"
 #include "source/Camera/GameCamera.h"
 #include "Source/Actor/Stage/Stage.h"
+#include "Source/Actor/Barrier/Barrier.h"
 #include "Source/UIBase/Title/Title.h"
 #include "Source/UIBase/UI/UI.h"
 #include "Source/Actor/Character/Enemy/SmallRobot/SmallRobot.h"
@@ -16,7 +17,7 @@
 
 Game::Game()
 {
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
 
 bool Game::Start()
@@ -25,6 +26,8 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 	m_ui = NewGO<UI>(0, "ui");
+	m_barrier = NewGO<Barrier>(0, "barrier");
+	m_barrier->SetPosition(Vector3(3000.0f, 0.0f, 3700.0f));
 	m_levelRender.Init("Assets/modelData/Level/ReChaim.tkl", [&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"Stage") == true)
@@ -35,35 +38,51 @@ bool Game::Start()
 			}
 			else if (objData.EqualObjectName(L"smallRobot") == true)
 			{
-				m_smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
-				m_smallRobot->SetPosition(objData.position);
+				smallRobot->SetPosition(objData.position);
 
-				m_smallRobot->SetScale(objData.scale);
+				smallRobot->SetScale(objData.scale);
+
+				m_smallRobot.push_back(smallRobot);
+
+				m_enemyCount++;
 			}
 			/*else if (objData.EqualObjectName(L"floorBoss") == true)
 			{
-				m_floorBoss = NewGO<FloorBoss>(0, "floorBoss");
+				auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
 
-				m_floorBoss->SetPosition(objData.position);
-				
-				m_floorBoss->SetScale(objData.scale);
+				floorBoss->SetPosition(objData.position);
+
+				floorBoss->SetScale(objData.scale);
+
+				m_floorBoss.push_back(floorBoss);
+
+				m_enemyCount++;
 			}
 			else if (objData.EqualObjectName(L"mediumRobot") == true)
 			{
-				m_mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
-				
-				m_mediumRobot->SetPosition(objData.position);
-				
-				m_mediumRobot->SetScale(objData.scale);
+				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
+
+				mediumRobot->SetPosition(objData.position);
+
+				mediumRobot->SetScale(objData.scale);
+
+				m_mediumRobot.push_back(mediumRobot);
+
+				m_enemyCount++;
 			}
 			else if (objData.EqualObjectName(L"finalBoss") == true)
 			{
-				m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
 				
-				m_finalBoss->SetPosition(objData.position);
+				finalBoss->SetPosition(objData.position);
 				
-				m_finalBoss->SetScale(objData.scale);
+				finalBoss->SetScale(objData.scale);
+
+				m_finalBoss.push_back(finalBoss);
+
+				m_enemyCount++;
 			}*/
 			return true;
 		});
@@ -72,12 +91,30 @@ bool Game::Start()
 
 Game::~Game()
 {
+	const auto& smallRobots = FindGOs<SmallRobot>("smallRobot");
+	for (auto smallRobot : smallRobots)
+	{
+		DeleteGO(smallRobot);
+	}
+	const auto& floorBosses = FindGOs<FloorBoss>("floorBoss");
+	for (auto floorBoss : floorBosses)
+	{
+		DeleteGO(floorBoss);
+	}
+	const auto& mediumRobots = FindGOs<MediumRobot>("mediumRobot");
+	for (auto mediumRobot : mediumRobots)
+	{
+		DeleteGO(mediumRobot);
+	}
+	const auto& finalBosses = FindGOs<FinalBoss>("finalBoss");
+	for (auto finalBoss : finalBosses)
+	{
+		DeleteGO(finalBoss);
+	}
 	DeleteGO(m_player);
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_stage);
 	DeleteGO(m_ui);
-	DeleteGO(m_smallRobot);
-	DeleteGO(m_floorBoss);
 }
 
 void Game::Update()
@@ -95,6 +132,11 @@ void Game::Update()
 		NewGO<GameOver>(0, "GameOver");
 		DeleteGO(this);
 		return;
+	}
+	if (m_enemyCount <= 0)
+	{
+		m_gire = NewGO<Gire>(0, "gire");
+		DeleteGO(m_barrier);
 	}
 }
 

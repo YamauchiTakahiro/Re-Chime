@@ -17,6 +17,11 @@ public:
 		pos = m_position;
 		return pos;
 	}
+	Vector3 SetPosition(Vector3 position)
+	{
+		m_position = position;
+		return m_position;
+	}
 	void Render(RenderContext& rc)override;
 private:
 	ModelRender m_modelRender;

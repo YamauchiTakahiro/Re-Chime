@@ -6,6 +6,7 @@
 class Player;
 class GameCamera;
 class Stage;
+class Barrier;
 class UI;
 class SmallRobot;
 class GameOver;
@@ -23,23 +24,30 @@ public:
 	bool Start();
 	void Update();
 	void Pause();
+	bool GetIsPause(bool isPause)
+	{
+		isPause = m_isPause;
+		return m_isPause;
+	}
 	void Render(RenderContext& rc);
-	bool m_isPause = false;
 private:
 	LevelRender m_levelRender;
 	Player* m_player = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	Stage* m_stage = nullptr;
+	Barrier* m_barrier = nullptr;
 	UI* m_ui = nullptr;
 	FontRender m_gear;
-	SmallRobot* m_smallRobot = nullptr;
-	FloorBoss* m_floorBoss = nullptr;
-	MediumRobot* m_mediumRobot = nullptr;
-	FinalBoss* m_finalBoss = nullptr;
+	std::vector<SmallRobot*> m_smallRobot;
+	std::vector<FloorBoss*> m_floorBoss;
+	std::vector<MediumRobot*> m_mediumRobot;
+	std::vector<FinalBoss*> m_finalBoss;
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
 	DifficultyLevel* m_difficul = nullptr;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
+	bool m_isPause = false;
+	int m_enemyCount = 0;		//!<敵の数。
 };
 
