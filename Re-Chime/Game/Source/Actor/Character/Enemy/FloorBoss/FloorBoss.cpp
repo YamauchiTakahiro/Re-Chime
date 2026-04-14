@@ -122,7 +122,9 @@ void FloorBoss::Hit()
 	{
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
 		{
-			m_floorBossHP -= 10;
+			int damage = 0;
+			damage = m_player->GetAttackPower(damage);
+			m_floorBossHP -= damage;
 			m_damageIntarvalTime = 1.0f;
 		}
 	}

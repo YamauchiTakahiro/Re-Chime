@@ -7,24 +7,25 @@ class FloorBoss : public Enemy
 {
 public:
 	FloorBoss();
-	virtual ~FloorBoss();
-	virtual bool Start() override;
-	virtual void Update() override;
-	virtual void Move() override;
-	virtual void Rotation() override;
-	virtual void Attack() override;
-	virtual void OnCollision() override;
-	virtual void Time() override;
-	virtual void Hit() override;
-	virtual void DamageIntarval() override;
-	virtual void Dide() override;
-	virtual Vector3 GetPosition(Vector3) override;
-	void SetPosition(const Vector3& pos)
+	~FloorBoss();
+	bool Start() override;
+	void Update() override;
+	void Move() override;
+	void Rotation() override;
+	void Attack() override;
+	void OnCollision() override;
+	void Time() override;
+	void Hit() override;
+	void DamageIntarval() override;
+	void Dide() override;
+	Vector3 GetPosition(Vector3) override;
+	void SetPosition(Vector3 position) override
 	{
-		m_position = pos;
+		m_position = position;
+		m_modelRender.SetPosition(position);
 	}
-	virtual int GetHP(int) override;
-	virtual void Render(RenderContext& rc)override;
+	int GetHP(int) override;
+	void Render(RenderContext& rc)override;
 
 
 

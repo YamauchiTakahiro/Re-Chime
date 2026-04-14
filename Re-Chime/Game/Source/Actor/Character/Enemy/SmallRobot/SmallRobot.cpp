@@ -149,18 +149,19 @@ void SmallRobot::Dide()
 {
 	if (m_smallRobotHp <= 0)
 	{
+		m_game->EnemyCount();
 		int randomNum = 0;
 		randomNum = rand() % 100 + 1;
-		if (randomNum <= 20)
+		if (randomNum <= 100)
 		{
 			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
 			m_attackSpeedBuff->SetPosition(m_position);
 		}
-		else if (randomNum > 20 && randomNum <= 40)
+		/*else if (randomNum > 20 && randomNum <= 40)
 		{
 			m_powerBuff = NewGO<PowerBuff>(0);
 			m_powerBuff->SetPosition(m_position);
-		}
+		}*/
 		DeleteGO(this);
 	}
 }

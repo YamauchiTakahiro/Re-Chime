@@ -257,6 +257,15 @@ void Player::Hit()
 			Heal();
 		}
 	}
+
+	const auto& collisions8 = g_collisionObjectManager->FindCollisionObjects("gireCollision");
+	for (auto collision : collisions8)
+	{
+		if (collision->IsHit(m_characterController) == true)
+		{
+			m_isGetGire = true;
+		}
+	}
 }
 
 void Player::DamageIntarval()
@@ -266,10 +275,6 @@ void Player::DamageIntarval()
 	{
 		m_damageIntarvalTime = 0.0f;
 	}
-}
-
-void Player::GetGier()
-{
 }
 
 void Player::GuardCollision()
