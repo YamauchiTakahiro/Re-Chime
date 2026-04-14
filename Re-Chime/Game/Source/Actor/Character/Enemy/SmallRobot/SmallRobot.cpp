@@ -3,6 +3,7 @@
 #include "Source/Actor/Character/Player/Player.h"
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "collision/CollisionObject.h"
+#include "Game.h"
 
 SmallRobot::SmallRobot()
 {
@@ -19,11 +20,16 @@ bool SmallRobot::Start()
 	m_modelRender.Init("Assets/modelData/Enemy/smallRobot/smallRobot.tkm");
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
+	m_game = FindGO<Game>("game");
 	return true;
 }
 
 void SmallRobot::Update()
 {
+	if (m_game->m_isPause)
+	{
+		return;
+	}
 	Move();
 
 	Rotation();

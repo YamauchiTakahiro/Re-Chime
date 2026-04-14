@@ -21,6 +21,7 @@ Game::Game()
 
 bool Game::Start()
 {
+	m_Pause.Init("Assets/Sprite/pause.DDs", 1920.0f, 1080.0f);
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 	m_ui = NewGO<UI>(0, "ui");
@@ -82,6 +83,10 @@ Game::~Game()
 void Game::Update()
 {	
 	Pause();
+	if (m_isPause)
+	{
+		return;
+	}
 	//プレイヤーのHPが0以下になったらゲームオーバー。
 	int hp = 0;
 	int playerHP = m_player->GetHP(hp);
@@ -104,9 +109,15 @@ void Game::Pause()
 	{
 		m_isPause = true;
 	}
+	m_Pause.Update();
 }
 
 void Game::Render(RenderContext& rc)
 {
 	m_gear.Draw(rc);
+	if (m_isPause)
+	{
+		m_Pause.SetMulColor({ 1.0f, 1.0f, 1.0f, 0.4f });
+		m_Pause.Draw(rc);
+	}
 }
