@@ -13,7 +13,7 @@
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
-
+#include "Source/UIBase/Title/Title.h"
 
 Game::Game()
 {
@@ -85,7 +85,15 @@ bool Game::Start()
 				m_enemyCount++;
 			}*/
 			return true;
-		});
+	});
+
+	m_TitleReturnText.SetText(L"タイトル戻る");
+	m_TitleReturnText.SetPosition(Vector3(-245.0f, 0.0f, 0.0f));
+	m_TitleReturnText.SetScale(1.5f);
+
+	m_PlayerReturnText.SetText(L"ゲームに戻る");
+	m_PlayerReturnText.SetPosition(Vector3(-245.0f, 80.0f, 0.0f));
+	m_PlayerReturnText.SetScale(1.5f);
 	return true;
 }
 
@@ -120,6 +128,7 @@ Game::~Game()
 void Game::Update()
 {	
 	Pause();
+	PauseRender();
 	if (m_isPause)
 	{
 		return;
@@ -153,6 +162,32 @@ void Game::Pause()
 	m_Pause.Update();
 }
 
+void Game::PauseRender()
+{
+	if (g_pad[0]->IsTrigger(enButtonDown))
+	{
+		m_isTitleReturn = true;
+		m_isPlayerReturn = false;
+	}
+
+	if (g_pad[0]->IsTrigger(enButtonUp))
+	{
+		m_isTitleReturn = false;
+		m_isPlayerReturn = true;
+	}
+
+	if (m_isPause && m_isTitleReturn && g_pad[0]->IsTrigger(enButtonA))
+	{
+		m_title = NewGO<Title>(0, "Title");
+		DeleteGO(this);
+	}
+
+	if (m_isPause && m_isPlayerReturn && g_pad[0]->IsTrigger(enButtonA))
+	{
+		m_isPause = false;
+	}
+}
+
 void Game::FirstFloor()
 {
 	m_gire = NewGO<Gire>(0, "gire");
@@ -166,5 +201,18 @@ void Game::Render(RenderContext& rc)
 	{
 		m_Pause.SetMulColor({ 1.0f, 1.0f, 1.0f, 0.4f });
 		m_Pause.Draw(rc);
+		m_TitleReturnText.SetColor(g_vec4White);
+		m_PlayerReturnText.SetColor(g_vec4White);
+		m_TitleReturnText.Draw(rc);
+		m_PlayerReturnText.Draw(rc);
+		if (m_isTitleReturn)
+		{
+			m_TitleReturnText.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+		}
+
+		if (m_isPlayerReturn)
+		{
+			m_PlayerReturnText.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+		}
 	}
 }

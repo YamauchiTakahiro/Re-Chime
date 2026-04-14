@@ -15,7 +15,7 @@ class FloorBoss;
 class DifficultyLevel;
 class MediumRobot;
 class FinalBoss;
-
+class Title;
 class Game : public IGameObject
 {
 public:
@@ -24,6 +24,7 @@ public:
 	bool Start();
 	void Update();
 	void Pause();
+	void PauseRender();
 	void FirstFloor();
 	void SecondFloor();
 	void ThirdFloor();
@@ -55,6 +56,12 @@ private:
 	DifficultyLevel* m_difficul = nullptr;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
+	FontRender m_TitleReturnText;
+	FontRender m_PlayerReturnText;
+	Title* m_title = nullptr;
+
+	bool m_isTitleReturn = false;
+	bool m_isPlayerReturn = false;
 	bool m_isPause = false;
 	int m_enemyCount = 0;		//!<敵の数。
 };

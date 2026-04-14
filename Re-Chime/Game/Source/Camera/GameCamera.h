@@ -5,7 +5,7 @@
 
 //クラス宣言。
 class Player;
-
+class Game;
 class GameCamera : public IGameObject
 {
 public:
@@ -21,5 +21,6 @@ private:
 	Player* m_player = nullptr;		//プレイヤー。
 	Vector3 m_toCameraPos = Vector3::One;
 	SpringCamera m_springCamera;	//ばねカメラ。
+	Game* m_game = nullptr;
 };
 

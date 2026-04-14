@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
 class Player;
+class Game;
 class UI :public UIBase
 {
     public:
@@ -12,5 +13,6 @@ class UI :public UIBase
 
 private:
     Player* m_player = nullptr;
+    Game* m_game = nullptr;
 };
 

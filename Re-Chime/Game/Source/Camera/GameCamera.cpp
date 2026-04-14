@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "GameCamera.h"
-
+#include "Game.h"
 #include "Source/Actor/Character/Player/Player.h"
 
 GameCamera::GameCamera()
@@ -32,11 +32,19 @@ bool GameCamera::Start()
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(50000.0f);
 
+	m_game = FindGO<Game>("game");
 	return true;
 }
 
 void GameCamera::Update()
 {
+	bool isPause = false;
+	m_game->GetIsPause(isPause);
+	if (isPause)
+	{
+		return;
+	}
+
 	if (m_player == nullptr) {
 		return;
 	}
