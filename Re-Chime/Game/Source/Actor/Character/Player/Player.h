@@ -2,7 +2,7 @@
 #include "Source/Actor/Character/Character.h"
 
 class Gire;
-
+class Game;
 class Player : public Character
 {
 public:
@@ -51,6 +51,7 @@ private:
     CollisionObject* m_collisionObject;
     Vector3 m_forward;
 	Gire* m_gire = nullptr;
+    Game* m_game = nullptr;
     int m_playerHp = 100;				//!<プレイヤーのHP。
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。

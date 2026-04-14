@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Item/Gire/Gire.h"
+#include "Game.h"
 
 Player::Player()
 {
@@ -17,11 +18,16 @@ bool Player::Start()
 	m_modelRender.Init("Assets/modelData/Player/Player.tkm");
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_gire = FindGO<Gire>("gire");
+	m_game = FindGO<Game>("game");	
 	return true;
 }
 
 void Player::Update()
 {
+	if (m_game->m_isPause)
+	{
+		return;
+	}
 	Move();
 
 	Rotation();

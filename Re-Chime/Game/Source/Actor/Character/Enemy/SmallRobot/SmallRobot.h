@@ -3,7 +3,7 @@
 
 class Player;
 class Gire;
-
+class Game;
 class SmallRobot : public Enemy
 {
 public:
@@ -47,6 +47,7 @@ private:
 	Player* m_player = nullptr;
 	Gire* m_gire = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
+	Game* m_game = nullptr;
 	Vector3 m_forward;
 	Vector3 m_scale;
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。

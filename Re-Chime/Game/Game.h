@@ -24,7 +24,7 @@ public:
 	void Update();
 	void Pause();
 	void Render(RenderContext& rc);
-
+	bool m_isPause = false;
 private:
 	LevelRender m_levelRender;
 	Player* m_player = nullptr;
@@ -39,6 +39,7 @@ private:
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
 	DifficultyLevel* m_difficul = nullptr;
-	bool m_isPause = false;
+	SpriteRender m_font;
+	SpriteRender m_Pause;
 };
 
