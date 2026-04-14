@@ -26,6 +26,10 @@ void Item::Move()
 
 }
 
+void Item::Rotation()
+{
+}
+
 void Item::Render(RenderContext& rc)
 {
 

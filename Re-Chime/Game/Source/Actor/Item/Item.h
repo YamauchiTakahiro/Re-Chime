@@ -8,6 +8,7 @@ public:
 	bool Start()override;
 	void Update()override;
 	virtual void Move();
+	virtual void Rotation();
 	virtual void Render(RenderContext& rc)override;
 private:
 	Vector3 m_position;

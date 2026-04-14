@@ -73,6 +73,24 @@
     <Filter Include="Source\Actor\Item\Gire">
       <UniqueIdentifier>{fd09a47c-7a35-4363-bdda-2ed94b2129f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Actor\Item\Potion">
+      <UniqueIdentifier>{114dda7c-60f1-45e5-9329-a5f2f4fefaf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Heel">
+      <UniqueIdentifier>{4e1640f3-fe38-4254-865a-61191a72f4b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Buff">
+      <UniqueIdentifier>{faec60f3-a1fc-43ab-a5b0-628b1d8cee6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Buff\PowerBuff">
+      <UniqueIdentifier>{1410bbca-e8ed-473d-b02d-2e46d09f9830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff">
+      <UniqueIdentifier>{82b5a034-e555-4876-ba7f-ce100c7335ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Barrier">
+      <UniqueIdentifier>{0bb09bf2-eeb6-4311-893b-475d0a6ef05b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -143,6 +161,24 @@
     </ClCompile>
     <ClCompile Include="Source\Actor\Item\Gire\Gire.cpp">
       <Filter>Source\Actor\Item\Gire</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Potion.cpp">
+      <Filter>Source\Actor\Item\Potion</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Heel\Heel.cpp">
+      <Filter>Source\Actor\Item\Potion\Heel</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Buff\Buff.cpp">
+      <Filter>Source\Actor\Item\Potion\Buff</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.cpp">
+      <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Barrier\Barrier.cpp">
+      <Filter>Source\Actor\Barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.cpp">
+      <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +255,24 @@
     </ClInclude>
     <ClInclude Include="Source\Actor\Item\Gire\Gire.h">
       <Filter>Source\Actor\Item\Gire</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Potion.h">
+      <Filter>Source\Actor\Item\Potion</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Heel\Heel.h">
+      <Filter>Source\Actor\Item\Potion\Heel</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Buff\Buff.h">
+      <Filter>Source\Actor\Item\Potion\Buff</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.h">
+      <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Barrier\Barrier.h">
+      <Filter>Source\Actor\Barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.h">
+      <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
