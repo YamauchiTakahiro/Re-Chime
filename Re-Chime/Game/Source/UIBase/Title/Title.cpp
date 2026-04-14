@@ -26,7 +26,7 @@ void Title::Update()
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		NewGO<Load>(0, "Load");
-		DeleteGO(FindGO<Title>("title"));
+		DeleteGO(this);
 	}
 }
 

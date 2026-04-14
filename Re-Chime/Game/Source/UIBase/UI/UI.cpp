@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "UI.h"
 #include "Source/Actor/Character/Player/Player.h"
+#include "Game.h"
+
 UI::UI()
 {
 	m_HPBar.Init("Assets/UIData/HPBar.DDs", 1024.0f, 128.0f);
@@ -34,6 +36,8 @@ UI::UI()
 	m_Ybutton.Init("Assets/UIData/Y.DDs", 75.0f, 75.0f);
 	m_Ybutton.SetPosition(Vector3(700.0f, -300.0f, 0.0f));
 	m_Ybutton.Update();
+
+	m_game = FindGO<Game>("game");
 }
 
 UI::~UI()
@@ -47,6 +51,13 @@ bool UI::Start()
 
 void UI::Update()
 {
+	bool isPause = false;
+	isPause = m_game->GetIsPause(isPause);
+	if (isPause)
+	{
+		return;
+	}
+
 	int nowHP = 0;
 	int MaxHP = 0;
 
