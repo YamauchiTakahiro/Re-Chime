@@ -2,9 +2,9 @@
 #include "Source/Actor/Character/Enemy/Enemy.h"
 
 class Player;
+class Game;
 
-class FinalBoss :
-    public Enemy
+class FinalBoss : public Enemy
 {
     public:
     FinalBoss();
@@ -44,6 +44,7 @@ private:
     Vector3 m_moveSpeed;
     Quaternion m_rotation;
     Player* m_player = nullptr;
+	Game* m_game = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward;
     Vector3 m_scale;

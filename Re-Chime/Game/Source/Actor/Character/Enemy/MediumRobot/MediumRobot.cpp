@@ -1,6 +1,10 @@
 ﻿#include "stdafx.h"
 #include "MediumRobot.h"
 #include "Source/Actor/Character/Player/Player.h"
+#include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"
+#include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
+#include "collision/CollisionObject.h"
+#include "Game.h"
 
 MediumRobot::MediumRobot()
 {
@@ -16,16 +20,28 @@ bool MediumRobot::Start()
 	m_modelRender.Init("Assets/modelData/Enemy/mediumRobot/mediumRobot.tkm");
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
+	m_game = FindGO<Game>("game");
 	return true;
 }
 
 void MediumRobot::Update()
 {
+	bool isPause = false;
+	isPause = m_game->GetIsPause(isPause);
+	if (isPause)
+	{
+		return;
+	}
 	Move();
+
 	Rotation();
+
 	Time();
+
 	Hit();
+
 	DamageIntarval();
+
 	Dide();
 	m_modelRender.Update();
 }
@@ -39,7 +55,7 @@ void MediumRobot::Move()
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
 	{
 		Attack();
-		m_timeCount = 1.0f;
+		m_timeCount = 2.0f;
 		Time();
 	}
 	if (distToPlayer <= 1000)
@@ -50,9 +66,16 @@ void MediumRobot::Move()
 	}
 	else if (distToPlayer > 1000)
 	{
-		m_moveSpeed.Set(0.0f, 0.0f, 0.0f);
+		m_moveSpeed = toPlayer * 0.0f;
 	}
+
+	if (m_characterController.IsOnGround() == false)
+	{
+		//m_moveSpeed.y -= 40.0f;
+	}
+
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
+
 	m_modelRender.SetPosition(m_position);
 }
 
@@ -61,11 +84,13 @@ void MediumRobot::Rotation()
 	Vector3 playerPos;
 	playerPos = m_player->GetPosition(playerPos);
 	Vector3 toPlayer = playerPos - m_position;
-	toPlayer.y = 0.0f;
-	toPlayer.Normalize();
-	Quaternion rot;
-	rot.SetRotationYFromDirectionXZ(toPlayer);
-	m_modelRender.SetRotation(rot);
+	float distToPlayer = toPlayer.Length();
+	if (distToPlayer <= 1000)
+	{
+		toPlayer.Normalize();
+		m_rotation.SetRotationYFromDirectionXZ(toPlayer);
+	}
+	m_modelRender.SetRotation(m_rotation);
 }
 
 void MediumRobot::Attack()
@@ -114,13 +139,10 @@ void MediumRobot::Hit()
 
 void MediumRobot::DamageIntarval()
 {
-	if (m_timeCount > 0.0f)
+	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_damageIntarvalTime < 0.0f)
 	{
-		m_timeCount += 2.0f / 60.0f;
-		if (m_timeCount >= 3.0f)
-		{
-			m_timeCount = 0.0f;
-		}
+		m_damageIntarvalTime = 0.0f;
 	}
 }
 
@@ -128,6 +150,19 @@ void MediumRobot::Dide()
 {
 	if (m_mediumRobotHp <= 0)
 	{
+		m_game->EnemyCount();
+		int randomNum = 0;
+		randomNum = rand() % 100 + 1;
+		if (randomNum <= 100)
+		{
+			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
+			m_attackSpeedBuff->SetPosition(m_position);
+		}
+		/*else if (randomNum > 20 && randomNum <= 40)
+		{
+			m_powerBuff = NewGO<PowerBuff>(0);
+			m_powerBuff->SetPosition(m_position);
+		}*/
 		DeleteGO(this);
 	}
 }

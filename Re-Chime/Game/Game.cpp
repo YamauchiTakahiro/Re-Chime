@@ -26,8 +26,6 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 	m_ui = NewGO<UI>(0, "ui");
-	m_barrier = NewGO<Barrier>(0, "barrier");
-	m_barrier->SetPosition(Vector3(3000.0f, 0.0f, 3700.0f));
 	m_levelRender.Init("Assets/modelData/Level/ReChaim.tkl", [&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"Stage") == true)
@@ -48,9 +46,9 @@ bool Game::Start()
 
 				m_enemyCount++;
 			}
-			/*else if (objData.EqualObjectName(L"floorBoss") == true)
+			else if (objData.EqualObjectName(L"floorBoss") == true)
 			{
-				auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
+				auto floorBoss = NewGO<FloorBoss>(0, "FloorBoss");
 
 				floorBoss->SetPosition(objData.position);
 
@@ -83,7 +81,51 @@ bool Game::Start()
 				m_finalBoss.push_back(finalBoss);
 
 				m_enemyCount++;
-			}*/
+			}
+			else if (objData.EqualObjectName(L"barrier1") == true)
+			{
+				m_barrier1 = NewGO<Barrier>(0, "barrier");
+				m_barrier1->SetPosition(objData.position);
+				m_barrier1->SetRotation(objData.rotation);
+				m_barrier1->SetScale(objData.scale);
+			}
+			else if (objData.EqualObjectName(L"barrier2") == true)
+			{
+				m_barrier2 = NewGO<Barrier>(0, "barrier");
+				m_barrier2->SetPosition(objData.position);
+				m_barrier2->SetRotation(objData.rotation);
+				m_barrier2->SetScale(objData.scale);
+			}
+			else if (objData.EqualObjectName(L"barrier3") == true)
+			{
+				m_barrier3 = NewGO<Barrier>(0, "barrier");
+				m_barrier3->SetPosition(objData.position);
+
+				m_barrier3->SetRotation(objData.rotation);
+
+				m_barrier3->SetScale(objData.scale);
+			}
+			else if (objData.EqualObjectName(L"barrier4") == true)
+			{
+				m_barrier4 = NewGO<Barrier>(0, "barrier");
+				m_barrier4->SetPosition(objData.position);
+				m_barrier4->SetRotation(objData.rotation);
+				m_barrier4->SetScale(objData.scale);
+			}
+			else if (objData.EqualObjectName(L"barrier5") == true)
+			{
+				m_barrier5 = NewGO<Barrier>(0, "barrier");
+				m_barrier5->SetPosition(objData.position);
+				m_barrier5->SetRotation(objData.rotation);
+				m_barrier5->SetScale(objData.scale);
+			}
+			else if (objData.EqualObjectName(L"barrier6") == true)
+			{
+				m_barrier6 = NewGO<Barrier>(0, "barrier");
+				m_barrier6->SetPosition(objData.position);
+				m_barrier6->SetRotation(objData.rotation);
+				m_barrier6->SetScale(objData.scale);
+			}
 			return true;
 	});
 
@@ -142,9 +184,17 @@ void Game::Update()
 		DeleteGO(this);
 		return;
 	}
-	if (m_enemyCount <= 0)
+	if (m_numDefeatedEnemy == 6)
 	{
 		FirstFloor();
+	}
+	if(m_numDefeatedEnemy == 10)
+	{
+		SecondFloor();
+	}
+	if (m_numDefeatedEnemy == 11)
+	{
+		ThirdFloor();
 	}
 }
 
@@ -191,7 +241,24 @@ void Game::PauseRender()
 void Game::FirstFloor()
 {
 	m_gire = NewGO<Gire>(0, "gire");
-	DeleteGO(m_barrier);
+	DeleteGO(m_barrier1);
+	DeleteGO(m_barrier2);
+}
+
+void Game::SecondFloor()
+{
+	m_gire = NewGO<Gire>(0, "gire");
+	m_gire->SetPosition(Vector3(0.0f, 1000.0f, 0.0f));
+	DeleteGO(m_barrier3);
+	DeleteGO(m_barrier4);
+}
+
+void Game::ThirdFloor()
+{
+	m_gire = NewGO<Gire>(0, "gire");
+	m_gire->SetPosition(Vector3(0.0f, 2000.0f, 0.0f));
+	DeleteGO(m_barrier5);
+	DeleteGO(m_barrier6);
 }
 
 void Game::Render(RenderContext& rc)

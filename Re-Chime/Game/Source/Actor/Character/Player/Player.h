@@ -19,8 +19,8 @@ public:
 	void DamageIntarval() override;
     void GuardCollision();
     void Gurad();
-    /*void PlayerState();
-	void PlayAnimation();*/
+    void PlayerState();
+	void PlayAnimation();
 	void PowerBuff();
 	void PowerBuffTime();
 	void AttackSpeedBuffTime();
@@ -64,24 +64,26 @@ public:
         attackSpeedBuffFlag = m_attackSpeedBuffFlag;
 		return attackSpeedBuffFlag;
 	}
+    void SetScale();
     void Render(RenderContext& rc)override;
 
 
 private:
     //メンバ変数
- //   enum EnAnimationClip {		//アニメーション。
- //       enAnimationClip_Idle,
- //       enAnimationClip_Walk,
- //       enAnimationClip_Jump,
- //       enAnimationClip_Run,
- //       enAnimationClip_Num,
- //   };
-	//AnimationClip m_animationClips[enAnimationClip_Num];
+    enum EnAnimationClip {		//アニメーション。
+        enAnimationClip_Idle,
+        enAnimationClip_Walk,
+        enAnimationClip_Jump,
+        enAnimationClip_Run,
+        enAnimationClip_Num,
+    };
+	AnimationClip m_animationClips[enAnimationClip_Num];
     ModelRender m_modelRender;
     CharacterController m_characterController;
     Vector3 m_moveSpeed;
     Quaternion m_rotation;
     Vector3 m_position;
+	Vector3 m_scale;
     CollisionObject* m_collisionObject;
     Vector3 m_forward;
     Vector3 m_knockBack;
