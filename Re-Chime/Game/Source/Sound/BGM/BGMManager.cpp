@@ -17,6 +17,14 @@ namespace {
 		"BGM/TitleBGM",
 		"BGM/GameOverBGM",
 		"BGM/GameClearBGM",
+		"BGM/WalkSE",
+		"BGM/EnemyWalkSE",
+		"BGM/BossWalkSE",
+		"BGM/FloorBossWalkSE",
+		"BGM/HealSE",
+		"BGM/PowerUpSE",
+		"BGM/SpeedUpSE",
+		"BGM/BellSE",
 	};
 }
 

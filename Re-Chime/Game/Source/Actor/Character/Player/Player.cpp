@@ -3,7 +3,6 @@
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
-#include "Source/Sound/SE/SEManager.h"
 
 Player::Player()
 {
