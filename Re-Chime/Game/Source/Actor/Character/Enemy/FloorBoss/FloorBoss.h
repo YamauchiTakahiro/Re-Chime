@@ -2,6 +2,7 @@
 #include "Source/Actor/Character/Enemy/Enemy.h"
 
 class Player;
+class Game;
 
 class FloorBoss : public Enemy
 {
@@ -24,6 +25,11 @@ public:
 		m_position = position;
 		m_modelRender.SetPosition(position);
 	}
+	void SetScale(Vector3 scale) override
+	{
+		m_scale = scale;
+		m_modelRender.SetScale(scale);
+	}
 	int GetHP(int) override;
 	void Render(RenderContext& rc)override;
 
@@ -31,18 +37,20 @@ public:
 
 private:
 	ModelRender m_modelRender;
-	enum EnAnimationClip {		//アニメーション。
-		enAnimationClip_Idle,
-		enAnimationClip_Walk,
-		enAnimationClip_Death,
-		enAnimationClip_Num,
-	};
-	AnimationClip m_animationClips[enAnimationClip_Num];
+	//enum EnAnimationClip {		//アニメーション。
+	//	enAnimationClip_Idle,
+	//	enAnimationClip_Walk,
+	//	enAnimationClip_Death,
+	//	enAnimationClip_Num,
+	//};
+	//AnimationClip m_animationClips[enAnimationClip_Num];
 	CharacterController m_characterController;
 	Vector3 m_position;
 	Vector3 m_moveSpeed;
 	Quaternion m_rotation;
+	Vector3 m_scale;
 	Player* m_player = nullptr;
+	Game* m_game = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
 	int m_floorBossHP = 100;

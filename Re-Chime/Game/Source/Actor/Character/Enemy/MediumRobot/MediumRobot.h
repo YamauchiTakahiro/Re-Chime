@@ -2,6 +2,9 @@
 #include "Source/Actor/Character/Enemy/Enemy.h"
 
 class Player;
+class AttackSpeedBuff;
+class PowerBuff;
+class Game;
 
 class MediumRobot :
     public Enemy
@@ -38,17 +41,20 @@ class MediumRobot :
 	virtual void Render(RenderContext& rc)override;
 
 private:
-	ModelRender m_modelRender;
-	CharacterController m_characterController;
-	Vector3 m_position;
-	Vector3 m_moveSpeed;
-	Quaternion m_rotation;
-	Player* m_player = nullptr;
-	int m_mediumRobotHp = 100;
-	CollisionObject* m_collisionObject = nullptr;
-	Vector3 m_scale;
-	Vector3 m_forward;
-	float m_timeCount = 0.0f;
+    ModelRender m_modelRender;
+    CharacterController m_characterController;
+    Vector3 m_position;
+    Vector3 m_moveSpeed;
+    Quaternion m_rotation;
+    Player* m_player = nullptr;
+    AttackSpeedBuff* m_attackSpeedBuff = nullptr;
+    PowerBuff* m_powerBuff = nullptr;
+    CollisionObject* m_collisionObject = nullptr;
+    Game* m_game = nullptr;
+    Vector3 m_forward;
+    Vector3 m_scale;
+    int m_mediumRobotHp = 50;		//!<中型ロボットのHP。
+    float m_timeCount = 0.0f;		//!<タイマー用の変数。
     float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
 };
 

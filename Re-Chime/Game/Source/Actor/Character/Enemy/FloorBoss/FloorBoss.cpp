@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "FloorBoss.h"
 #include "Source/Actor/Character/Player/Player.h"
+#include "collision/CollisionObject.h"
+#include "Game.h"
 
 FloorBoss::FloorBoss()
 {
@@ -13,21 +15,27 @@ FloorBoss::~FloorBoss()
 
 bool FloorBoss::Start()
 {
-	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Enemy/floorBoss/floorBoss_idle.tka");
+	/*m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Enemy/floorBoss/floorBoss_idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/floorBoss/floorBoss_walk.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/floorBoss/floorBoss_death.tka");
-	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
-	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/floerBoss.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
+	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);*/
+	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/FloorBoss.tkm"/*, m_animationClips, enAnimationClip_Num, enModelUpAxisY*/);
 	m_characterController.Init(200.0f, 100.0f, m_position);
-	m_position = Vector3(0.0f, 200.0f, 0.0f);
 	m_player = FindGO<Player>("player");
+	m_game = FindGO<Game>("game");
 	return true;
 }
 
 void FloorBoss::Update()
 {
+	bool isPause = false;
+	isPause = m_game->GetIsPause(isPause);
+	if (isPause)
+	{
+		return;
+	}
 	Move();
 
 	Rotation();
@@ -143,6 +151,7 @@ void FloorBoss::Dide()
 {
 	if (m_floorBossHP <= 0)
 	{
+		m_game->EnemyCount();
 		DeleteGO(this);
 	}
 }
