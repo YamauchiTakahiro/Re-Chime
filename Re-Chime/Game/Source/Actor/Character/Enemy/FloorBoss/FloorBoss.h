@@ -20,6 +20,11 @@ public:
 	void DamageIntarval() override;
 	void Dide() override;
 	Vector3 GetPosition(Vector3) override;
+	int GetAttackPower(int attackPower)
+	{
+		attackPower = m_attackPower;
+		return m_attackPower;
+	}
 	void SetPosition(Vector3 position) override
 	{
 		m_position = position;
@@ -30,7 +35,11 @@ public:
 		m_scale = scale;
 		m_modelRender.SetScale(scale);
 	}
-	int GetHP(int) override;
+	int GetHP(int hp) override
+	{
+		hp = m_floorBossHP;
+		return m_floorBossHP;
+	}
 	void Render(RenderContext& rc)override;
 
 
@@ -54,6 +63,7 @@ private:
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
 	int m_floorBossHP = 100;
+	int m_attackPower = 20;
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
 };

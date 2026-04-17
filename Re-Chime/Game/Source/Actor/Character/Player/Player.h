@@ -3,6 +3,11 @@
 
 class Gire;
 class Game;
+class SmallRobot;
+class MediumRobot;
+class FloorBoss;
+class FinalBoss;
+
 class Player : public Character
 {
 public:
@@ -89,6 +94,10 @@ private:
     Vector3 m_knockBack;
 	Gire* m_gire = nullptr;
     Game* m_game = nullptr;
+	SmallRobot* m_smallRobot = nullptr;
+	MediumRobot* m_mediumRobot = nullptr;
+	FloorBoss* m_floorBoss = nullptr;
+	FinalBoss* m_finalBoss = nullptr;
 	SoundSource* m_se;
     int m_playerHp = 100;				//!<プレイヤーのHP。
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
@@ -101,7 +110,7 @@ private:
 	float m_guardIntervalTime = 0.0f;			//!<ガード後のクールタイム。
 	float m_powerBuffTime = 0.0f;				//!<攻撃力バフの時間。
 	float m_attackSpeedBuffTime = 0.0f;		//!<攻撃速度バフの時間。
-    int m_gireCount;
+    int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;
     bool m_powerBuffFlag = false;

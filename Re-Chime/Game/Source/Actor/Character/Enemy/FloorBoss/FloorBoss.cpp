@@ -161,11 +161,6 @@ Vector3 FloorBoss::GetPosition(Vector3)
 	return Vector3();
 }
 
-int FloorBoss::GetHP(int)
-{
-	return 0;
-}
-
 void FloorBoss::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
