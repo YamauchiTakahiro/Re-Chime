@@ -15,10 +15,9 @@ UI::UI()
 	m_HP.SetScale(Vector3(0.41f, 3.0f, 0.5f));
 	m_HP.SetPivot(Vector2(0.0f, 0.5f));
 	m_HP.Update();
-	m_player = FindGO<Player>("player");
 
 	m_Gear.Init("Assets/UIData/gear.DDs", 128.0f, 128.0f);
-	m_Gear.SetPosition(Vector3(750.0f, 450.0f, 0.0f));
+	m_Gear.SetPosition(Vector3(-875.0f, 450.0f, 0.0f));
 	m_Gear.Update();
 
 	m_Abutton.Init("Assets/UIData/A.DDs", 75.0f, 75.0f);
@@ -38,6 +37,17 @@ UI::UI()
 	m_Ybutton.Update();
 
 	m_game = FindGO<Game>("game");
+
+	m_UP.Init("Assets/UIData/ATKUP.DDs", 50.0f, 50.0f);
+	m_UP.SetPosition(Vector3(675.0f, 450.0f, 0.0f));
+	m_UP.SetScale(Vector3(3.0f, 3.0f, 0.0f));
+	//m_UP.SetPivot(Vector2(0.0f, 0.5f));
+	m_UP.Update();
+
+	m_AttackSpeed.Init("Assets/UIData/ATKSPDUP.DDs", 50.0f, 50.0f);
+	m_AttackSpeed.SetPosition(Vector3(825.0f, 450.0f, 0.0f));
+	m_AttackSpeed.SetScale(Vector3(3.0f, 3.0f, 0.0f));
+	m_AttackSpeed.Update();
 }
 
 UI::~UI()
@@ -46,6 +56,7 @@ UI::~UI()
 
 bool UI::Start()
 {
+	m_player = FindGO<Player>("player");
 	return true;
 }
 
@@ -112,6 +123,13 @@ void UI::Update()
 	{
 		m_Ybutton.SetMulColor(g_vec4Gray);
 	}
+	// 点滅制御
+	m_blinkTimer += g_gameTime->GetFrameDeltaTime();
+	if (m_blinkTimer > 0.2f)
+	{
+		m_blinkTimer = 0.0f;
+		m_isBlinkOn = !m_isBlinkOn;
+	}
 }
 
 void UI::Render(RenderContext& rc)
@@ -123,4 +141,40 @@ void UI::Render(RenderContext& rc)
 	m_Bbutton.Draw(rc);
 	m_Xbutton.Draw(rc);
 	m_Ybutton.Draw(rc);
+	m_Gire.Draw(rc);
+	// 攻撃力バフ
+	if (m_player->GetPowerBuffFlag(false))
+	{
+		float time = m_player->GetPowerBuffTime();
+
+		if (time < 5.0f)
+		{
+			if (m_isBlinkOn)
+			{
+				m_UP.Draw(rc);
+			}
+		}
+		else
+		{
+			m_UP.Draw(rc);
+		}
+	}
+
+	// 攻撃速度バフ
+	if (m_player->GetAttackSpeedBuffFlag(false))
+	{
+		float time = m_player->GetAttackSpeedBuffTime();
+
+		if (time < 5.0f)
+		{
+			if (m_isBlinkOn)
+			{
+				m_AttackSpeed.Draw(rc);
+			}
+		}
+		else
+		{
+			m_AttackSpeed.Draw(rc);
+		}
+	}
 }
