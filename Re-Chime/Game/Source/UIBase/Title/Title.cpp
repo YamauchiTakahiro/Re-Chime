@@ -6,7 +6,7 @@
 
 Title::Title()
 {
-	m_Title.Init("Assets/Sprite/title.DDs", 1920.0f, 1080.0f);
+	m_Title.Init("Assets/Sprite/Title.DDs", 1920.0f, 1080.0f);
 	BGMManager* bgm = FindGO<BGMManager>("bgmManager");
 	m_gameBGM = bgm->PlayingSound(Sound::enSound_TitleBGM);
 }

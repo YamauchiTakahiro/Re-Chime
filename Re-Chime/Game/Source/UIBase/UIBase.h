@@ -24,5 +24,8 @@ protected:
 	SpriteRender m_Bbutton;
 	SpriteRender m_Xbutton;
 	SpriteRender m_Ybutton;
+	SpriteRender m_UP;
+	SpriteRender m_AttackSpeed;
+	FontRender m_Gire;
 };
 
