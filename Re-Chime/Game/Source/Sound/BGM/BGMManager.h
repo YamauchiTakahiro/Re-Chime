@@ -7,6 +7,14 @@ enum Sound {
 	enSound_TitleBGM,
 	enSound_GameOverBGM,
 	enSound_GameClearBGM,
+	enSound_WalkSE,
+	enSound_EnemyWalkSE,
+	enSound_BossWalkSE,
+	enSound_FloorBossWalkSE,
+	enSound_HealSE,
+	enSound_PowerUpSE,
+	enSound_SpeedUpSE,
+	enSound_BellSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください。
 };
 

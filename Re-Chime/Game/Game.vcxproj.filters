@@ -46,9 +46,6 @@
     <Filter Include="Source\Sound\BGM">
       <UniqueIdentifier>{416ae54c-11a9-41a5-8c83-abe3d2a520c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Sound\SE">
-      <UniqueIdentifier>{a0ee9290-5d66-4f1b-9448-78e6cd22be8e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\UIBase\DifficultyLevel">
       <UniqueIdentifier>{e2d6fe5b-3999-4215-8253-1c4c0050f270}</UniqueIdentifier>
     </Filter>
@@ -153,9 +150,6 @@
     <ClCompile Include="Source\Sound\BGM\BGMManager.cpp">
       <Filter>Source\Sound\BGM</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Sound\SE\SEManager.cpp">
-      <Filter>Source\Sound\SE</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Actor\Item\Item.cpp">
       <Filter>Source\Actor\Item</Filter>
     </ClCompile>
@@ -240,9 +234,6 @@
     </ClInclude>
     <ClInclude Include="Source\Sound\BGM\BGMManager.h">
       <Filter>Source\Sound\BGM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sound\SE\SEManager.h">
-      <Filter>Source\Sound\SE</Filter>
     </ClInclude>
     <ClInclude Include="Source\Sound\SE\SEManager.h">
       <Filter>Source\Sound\SE</Filter>
