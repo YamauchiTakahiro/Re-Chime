@@ -3,6 +3,10 @@
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
+#include "Source/Actor/Character/Enemy/SmallRobot/SmallRobot.h"
+#include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
+#include "Source/Actor/Character/Enemy/FloorBoss/FloorBoss.h"
+#include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 
 Player::Player()
 {
@@ -14,19 +18,23 @@ Player::~Player()
 
 bool Player::Start()
 {
-	m_animationClips[enAnimationClip_Idle].Load("Assets/animData//idle.tka");
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Player/playerIdle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/run.tka");
+	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Player/playerWalk.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/jump.tka");
+	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/Player/playerJump.tka");
 	m_animationClips[enAnimationClip_Jump].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Run].Load("Assets/animData/run.tka");
+	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Player/playerRun.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	//モデルを初期化する。
-	m_modelRender.Init("Assets/modelData/unityChan.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
+	m_modelRender.Init("Assets/modelData/Player/player.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_gire = FindGO<Gire>("gire");
 	m_game = FindGO<Game>("game");	
+	m_smallRobot = FindGO<SmallRobot>("smallRobot");
+	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
+	m_floorBoss = FindGO<FloorBoss>("FloorBoss");
+	m_finalBoss = FindGO<FinalBoss>("finalBoss");
 	return true;
 }
 
@@ -59,6 +67,10 @@ void Player::Update()
 	PowerBuffTime();
 
 	AttackSpeedBuffTime();
+
+	PlayerState();
+
+	PlayAnimation();
 	m_modelRender.Update();
 }
 
@@ -121,7 +133,7 @@ void Player::Rotation()
 
 void Player::SetScale()
 {
-	m_scale.Set(3.0f, 3.0f, 3.0f);
+	m_scale.Set(7.0f, 7.0f, 7.0f);
 	m_modelRender.SetScale(m_scale);
 }
 
@@ -172,13 +184,15 @@ void Player::Hit()
 		{
 			if (m_guardFlag == false)
 			{
-				m_playerHp -= 10;
-				m_knockBack = Vector3::Front;
-				m_rotation.Apply(m_knockBack);
+				int smallRobotAttackPower = 0;
+				smallRobotAttackPower = m_smallRobot->GetAttackPower(smallRobotAttackPower);
+				m_playerHp -= smallRobotAttackPower;
 			}
 			else if (m_guardFlag == true)
 			{
-				m_playerHp -= 5;
+				int smallRobotAttackPower = 0;
+				smallRobotAttackPower = m_smallRobot->GetAttackPower(smallRobotAttackPower);
+				m_playerHp -= smallRobotAttackPower / 2;
 			}
 			m_damageIntarvalTime = 1.0f;
 		}
@@ -191,28 +205,36 @@ void Player::Hit()
 		{
 			if (m_guardFlag == false)
 			{
-				m_playerHp -= 10;
+				int mediumRobotAttackPower = 0;
+				mediumRobotAttackPower = m_mediumRobot->GetAttackPower(mediumRobotAttackPower);
+				m_playerHp -= mediumRobotAttackPower;
 			}
 			else if (m_guardFlag == true)
 			{
-				m_playerHp -= 5;
+				int mediumRobotAttackPower = 0;
+				mediumRobotAttackPower = m_mediumRobot->GetAttackPower(mediumRobotAttackPower);
+				m_playerHp -= mediumRobotAttackPower / 2;
 			}
 			m_damageIntarvalTime = 1.0f;
 		}
 	}
 
-	/*const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
+	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
 	for (auto collision : collisions3)
 	{
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
 		{
 			if (m_guardFlag == false)
 			{
-				m_playerHp -= 20;
+				int floorBossAttackPower = 0;
+				floorBossAttackPower = m_floorBoss->GetAttackPower(floorBossAttackPower);
+				m_playerHp -= floorBossAttackPower;
 			}
 			else if (m_guardFlag == true)
 			{
-				m_playerHp -= 10;
+				int floorBossAttackPower = 0;
+				floorBossAttackPower = m_floorBoss->GetAttackPower(floorBossAttackPower);
+				m_playerHp -= floorBossAttackPower / 2;
 			}
 			m_damageIntarvalTime = 1.0f;
 		}
@@ -225,15 +247,19 @@ void Player::Hit()
 		{
 			if (m_guardFlag == false)
 			{
-				m_playerHp -= 30;
+				int finalBossAttackPower = 0;
+				finalBossAttackPower = m_finalBoss->GetAttackPower(finalBossAttackPower);
+				m_playerHp -= finalBossAttackPower;
 			}
 			else if (m_guardFlag == true)
 			{
-				m_playerHp -= 15;
+				int finalBossAttackPower = 0;
+				finalBossAttackPower = m_finalBoss->GetAttackPower(finalBossAttackPower);
+				m_playerHp -= finalBossAttackPower / 2;
 			}
 			m_damageIntarvalTime = 1.0f;
 		}
-	}*/
+	}
 
 	const auto& collisions5 = g_collisionObjectManager->FindCollisionObjects("powerBuffPotion");
 	for (auto collision : collisions5)
@@ -339,10 +365,10 @@ void Player::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Idle);
 		break;
 	case 1:
-		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+		m_modelRender.PlayAnimation(enAnimationClip_Jump);
 		break;
 	case 2:
-		m_modelRender.PlayAnimation(enAnimationClip_Jump);
+		m_modelRender.PlayAnimation(enAnimationClip_Walk);
 		break;
 	case 3:
 		m_modelRender.PlayAnimation(enAnimationClip_Run);
@@ -364,7 +390,7 @@ void Player::PowerBuff()
 	}
 	else
 	{
-		m_attackPower = 100;
+		m_attackPower = 10;
 	}
 }
 
