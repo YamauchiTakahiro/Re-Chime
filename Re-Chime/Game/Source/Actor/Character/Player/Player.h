@@ -55,9 +55,10 @@ public:
         getGier = m_isGetGire;
 		return getGier;
     }
-    void GetGireCount()
+    int GetGireCount()
     {
         m_gireCount++;
+        return m_gireCount;
     }
     bool GetPowerBuffFlag(bool powerBuffFlag)
     {
@@ -69,6 +70,15 @@ public:
         attackSpeedBuffFlag = m_attackSpeedBuffFlag;
 		return attackSpeedBuffFlag;
 	}
+    float GetPowerBuffTime()
+    {
+        return m_powerBuffTime;
+    }
+
+    float GetAttackSpeedBuffTime()
+    {
+        return m_attackSpeedBuffTime;
+    }
     void SetScale();
     void Render(RenderContext& rc)override;
 
