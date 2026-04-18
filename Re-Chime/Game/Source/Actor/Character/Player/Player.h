@@ -11,6 +11,13 @@ class FinalBoss;
 class Player : public Character
 {
 public:
+    enum EnPlayerState {
+		enPlayerState_Idle,         //待機状態。
+		enPlayerState_Walk,         //歩き。
+        enPlayerState_Jump,         //ジャンプ。
+		enPlayerState_Run,          //走り。
+        enPlayerState_Attack,       //攻撃。
+	};
     Player();
     ~Player();
     bool Start() override;
@@ -30,6 +37,12 @@ public:
 	void PowerBuffTime();
 	void AttackSpeedBuffTime();
 	void Heal();
+	void AttackState();
+	void IdleState();
+	void WalkState();
+	void RunState();
+	void JumpState();
+	void ManageState();
     Vector3 GetPosition(Vector3 pos) override
     {
         pos = m_position;
@@ -90,6 +103,7 @@ private:
         enAnimationClip_Walk,
         enAnimationClip_Jump,
         enAnimationClip_Run,
+		enAnimationClip_Attack,
         enAnimationClip_Num,
     };
 	AnimationClip m_animationClips[enAnimationClip_Num];
@@ -111,7 +125,7 @@ private:
 	SoundSource* m_se;
     int m_playerHp = 100;				//!<プレイヤーのHP。
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
-    int m_playerState = 0;
+    EnPlayerState m_playerState = enPlayerState_Idle;
 	int m_attackPower = 0;				//!<攻撃力。
     int m_heal = 20;
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。
@@ -125,5 +139,6 @@ private:
     bool m_guardFlag = false;
     bool m_powerBuffFlag = false;
     bool m_attackSpeedBuffFlag = false;
+	bool m_isAttack = false;
 };
 
