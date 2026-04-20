@@ -17,7 +17,7 @@ namespace {
 		"BGM/TitleBGM",
 		"BGM/GameOverBGM",
 		"BGM/GameClearBGM",
-		"BGM/WalkSE",
+		"BGM/PlayerWalkSE",
 		"BGM/EnemyWalkSE",
 		"BGM/BossWalkSE",
 		"BGM/FloorBossWalkSE",
@@ -25,6 +25,14 @@ namespace {
 		"BGM/PowerUpSE",
 		"BGM/SpeedUpSE",
 		"BGM/BellSE",
+		"BGM/PlayerDashSE",
+		"BGM/GearDropSE",
+        "BGM/EnemyDeathSE",
+		"BGM/StageBGM",
+		//ここから下は仮実装
+		//"BGM/BrokenBarricadeSE",
+		//"BGM/LoadBGM",
+		//"BGM/PlayerDamageSE",
 	};
 }
 
