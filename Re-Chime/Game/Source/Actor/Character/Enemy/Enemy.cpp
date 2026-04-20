@@ -42,17 +42,16 @@ void Enemy::Hit()
 {
 }
 
+void Enemy::AttackHit()
+{
+}
+
 void Enemy::DamageIntarval()
 {
 }
 
 void Enemy::Dide()
 {
-}
-
-Vector3 Enemy::GetPosition(Vector3 pos)
-{
-	return pos;
 }
 
 int Enemy::GetHP(int hp)

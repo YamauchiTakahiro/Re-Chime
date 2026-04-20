@@ -19,7 +19,8 @@ class FinalBoss : public Enemy
     void Hit() override;
     void DamageIntarval() override;
     void Dide() override;
-    Vector3 GetPosition(Vector3) override;
+    void AttackHit() override;
+    Vector3 GetPosition()const override;
     int GetHP(int hp) override
     {
         hp = m_finalBossHp;
