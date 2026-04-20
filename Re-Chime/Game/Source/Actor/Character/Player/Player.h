@@ -17,6 +17,8 @@ public:
         enPlayerState_Jump,         //ジャンプ。
 		enPlayerState_Run,          //走り。
         enPlayerState_Attack,       //攻撃。
+		enPlayerState_Guard,        //ガード。
+		enPlayerState_KnockBack,      //ノックバック。
 	};
     Player();
     ~Player();
@@ -29,8 +31,10 @@ public:
 	void Time() override;
 	void Hit() override;
 	void DamageIntarval() override;
+	void TakeDamage(int damage, const Vector3& enemyPos);
     void GuardCollision();
-    void Gurad();
+	void GuradInterval();
+	void GuradTimeLimit();
     void PlayerState();
 	void PlayAnimation();
 	void PowerBuff();
@@ -42,12 +46,15 @@ public:
 	void WalkState();
 	void RunState();
 	void JumpState();
+	void GuardState();
+	void KnockBackState();
 	void ManageState();
-    Vector3 GetPosition(Vector3 pos) override
+    Vector3 GetPosition()const override
     {
-        pos = m_position;
-        return pos;
+        return m_position;
     }
+    const CharacterController& GetCharacterController() const;
+    CharacterController& GetCharacterController();
     int GetHP(int hp) override
     {
 		hp = m_playerHp;
@@ -104,11 +111,14 @@ private:
         enAnimationClip_Jump,
         enAnimationClip_Run,
 		enAnimationClip_Attack,
+		enAnimationClip_Guard,
+		enAnimationClip_KnockBack,
         enAnimationClip_Num,
     };
 	AnimationClip m_animationClips[enAnimationClip_Num];
     ModelRender m_modelRender;
     CharacterController m_characterController;
+	float m_speed = 0.0f;					//!<移動速度。
     Vector3 m_moveSpeed;
     Quaternion m_rotation;
     Vector3 m_position;
@@ -129,16 +139,17 @@ private:
 	int m_attackPower = 0;				//!<攻撃力。
     int m_heal = 20;
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。
-	float m_damageIntarvalTime = 0.0f;		//!<ダメージを受けてからの無敵時間。
-	float m_guardTime = 0.0f;				//!<ガードしている時間。
+	float m_damageIntarvalTime = 3.0f;		//!<ダメージを受けてからのクールタイム。
 	float m_guardIntervalTime = 0.0f;			//!<ガード後のクールタイム。
 	float m_powerBuffTime = 0.0f;				//!<攻撃力バフの時間。
 	float m_attackSpeedBuffTime = 0.0f;		//!<攻撃速度バフの時間。
+	float m_guardTimeLimit = 3.0f;				//!<ガードできる時間の上限。
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;
     bool m_powerBuffFlag = false;
     bool m_attackSpeedBuffFlag = false;
 	bool m_isAttack = false;
+    bool m_isKnockBack = false;
 };
 

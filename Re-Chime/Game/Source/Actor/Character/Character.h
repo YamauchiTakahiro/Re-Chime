@@ -15,7 +15,10 @@ public:
 	virtual void Hit();
 	virtual void DamageIntarval();
 	virtual void Dide();
-	virtual Vector3 GetPosition(Vector3);
+	virtual Vector3 GetPosition()const
+		{
+		return m_position;
+	}
 	virtual void SetPosition(Vector3)
 	{
 
@@ -25,5 +28,8 @@ public:
 	}
 	virtual int GetHP(int);
 	virtual void Render(RenderContext& rc)override;
+
+private:
+	Vector3 m_position;
 };
 

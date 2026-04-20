@@ -21,6 +21,7 @@ Game::Game()
 
 bool Game::Start()
 {
+	srand((unsigned)time(nullptr));
 	m_Pause.Init("Assets/Sprite/pause.DDs", 1920.0f, 1080.0f);
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");

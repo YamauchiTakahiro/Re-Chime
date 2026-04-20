@@ -44,14 +44,15 @@ void SmallRobot::Update()
 
 	DamageIntarval();
 
+	AttackHit();
+
 	Dide();
 	m_modelRender.Update();
 }
 
 void SmallRobot::Move()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
@@ -83,8 +84,7 @@ void SmallRobot::Move()
 
 void SmallRobot::Rotation()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 1000)
@@ -136,6 +136,20 @@ void SmallRobot::Hit()
 	}
 }
 
+void SmallRobot::AttackHit()
+{
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("smallRobotAttack");
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_player->GetCharacterController()) == true)
+		{
+			int smallRobotAttackPower = 0;
+			smallRobotAttackPower = GetAttackPower(smallRobotAttackPower);
+			m_player->TakeDamage(smallRobotAttackPower, m_position);
+		}
+	}
+}
+
 void SmallRobot::DamageIntarval()
 {
 	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
@@ -150,25 +164,19 @@ void SmallRobot::Dide()
 	if (m_smallRobotHp <= 0)
 	{
 		m_game->EnemyCount();
-		/*int randomNum = 0;
-		randomNum = rand() % 100 + 1;*/
-		/*if (randomNum <= 100)
+		/*int randomNum = rand() % 100 + 1;
+		if (randomNum <= 20)
 		{
 			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
 			m_attackSpeedBuff->SetPosition(m_position);
-		}*/
-		/*else if (randomNum > 20 && randomNum <= 40)
+		}
+		else if (randomNum > 20 && randomNum <= 40)
 		{
 			m_powerBuff = NewGO<PowerBuff>(0);
 			m_powerBuff->SetPosition(m_position);
 		}*/
 		DeleteGO(this);
 	}
-}
-
-Vector3 SmallRobot::GetPosition(Vector3 pos)
-{
-	return pos;
 }
 
 void SmallRobot::Render(RenderContext& rc)
