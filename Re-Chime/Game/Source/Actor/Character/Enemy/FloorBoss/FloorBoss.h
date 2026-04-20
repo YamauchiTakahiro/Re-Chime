@@ -17,9 +17,10 @@ public:
 	void OnCollision() override;
 	void Time() override;
 	void Hit() override;
+	void AttackHit() override;
 	void DamageIntarval() override;
 	void Dide() override;
-	Vector3 GetPosition(Vector3) override;
+	Vector3 GetPosition()const override;
 	int GetAttackPower(int attackPower)
 	{
 		attackPower = m_attackPower;

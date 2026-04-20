@@ -42,14 +42,15 @@ void MediumRobot::Update()
 
 	DamageIntarval();
 
+	AttackHit();
+
 	Dide();
 	m_modelRender.Update();
 }
 
 void MediumRobot::Move()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
@@ -81,8 +82,7 @@ void MediumRobot::Move()
 
 void MediumRobot::Rotation()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 1000)
@@ -137,6 +137,20 @@ void MediumRobot::Hit()
 	}
 }
 
+void MediumRobot::AttackHit()
+{
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("mediumRobotAttack");
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_player->GetCharacterController()) == true)
+		{
+			int mediumRobotAttackPower = 0;
+			mediumRobotAttackPower = GetAttackPower(mediumRobotAttackPower);
+			m_player->TakeDamage(mediumRobotAttackPower, m_position);
+		}
+	}
+}
+
 void MediumRobot::DamageIntarval()
 {
 	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
@@ -167,7 +181,7 @@ void MediumRobot::Dide()
 	}
 }
 
-Vector3 MediumRobot::GetPosition(Vector3 position)
+Vector3 MediumRobot::GetPosition()const
 {
 	return m_position;
 }

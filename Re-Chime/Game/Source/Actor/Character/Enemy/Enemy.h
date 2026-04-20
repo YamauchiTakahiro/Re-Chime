@@ -14,9 +14,13 @@ class Enemy :
 	virtual void OnCollision() override;
 	virtual void Time() override;
 	virtual void Hit() override;
+	virtual void AttackHit();
 	virtual void DamageIntarval() override;
 	virtual void Dide() override;
-    virtual Vector3 GetPosition(Vector3) override;
+	virtual Vector3 GetPosition()const override
+	{
+		return m_position;
+	}
 	virtual void SetPosition(Vector3) override
 	{
 
@@ -26,5 +30,7 @@ class Enemy :
 	}	
 	virtual int GetHP(int) override;
 	virtual void Render(RenderContext& rc)override;
+private:
+	Vector3 m_position;
 };
 

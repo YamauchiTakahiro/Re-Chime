@@ -50,11 +50,6 @@ void Character::Dide()
 {
 }
 
-Vector3 Character::GetPosition(Vector3 pos)
-{
-	return pos;
-}
-
 int Character::GetHP(int hp)
 {
 	return hp;

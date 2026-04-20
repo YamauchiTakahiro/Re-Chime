@@ -28,12 +28,16 @@ bool Player::Start()
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Player/playerPunchRight.tka");
 	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Guard].Load("Assets/animData/Player/playerGuard.tka");
+	m_animationClips[enAnimationClip_Guard].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_KnockBack].Load("Assets/animData/Player/playerKnockBack.tka");
+	m_animationClips[enAnimationClip_KnockBack].SetLoopFlag(false);
 	//モデルを初期化する。
 	m_modelRender.Init("Assets/modelData/Player/player.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_gire = FindGO<Gire>("gire");
 	m_game = FindGO<Game>("game");	
-	m_smallRobot = FindGO<SmallRobot>("smallRobot");
+	const auto smallRobots = m_smallRobot = FindGO<SmallRobot>("smallRobot");
 	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
 	m_floorBoss = FindGO<FloorBoss>("FloorBoss");
 	m_finalBoss = FindGO<FinalBoss>("finalBoss");
@@ -60,7 +64,7 @@ void Player::Update()
 
 	DamageIntarval();
 
-	Gurad();
+	GuradInterval();
 
 	PowerBuff();
 
@@ -70,40 +74,66 @@ void Player::Update()
 
 	Attack();
 
-	PlayAnimation();
-
 	ManageState();
+
+	PlayAnimation();
 	m_modelRender.Update();
 }
 
 void Player::Move()
 {
-	m_moveSpeed.x = 0.0f;
-	m_moveSpeed.z = 0.0f;
-
-	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
-
-	Vector3 forward = g_camera3D->GetForward();
-	Vector3 right = g_camera3D->GetRight();
-
-	forward.y = 0.0f;
-	right.y = 0.0f;
-
-	if (g_pad[0]->IsPress(enButtonY) == false)
+	if (!m_isKnockBack)
 	{
-		right *= stickL.x * 240.0f;
-		forward *= stickL.y * 240.0f;
+		m_moveSpeed.x = 0.0f;
+		m_moveSpeed.z = 0.0f;
+
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+
+		Vector3 forward = g_camera3D->GetForward();
+		Vector3 right = g_camera3D->GetRight();
+
+		forward.y = 0.0f;
+		right.y = 0.0f;
+
+		Vector3 moveDir = forward * stickL.y + right * stickL.x;
+
+		if(moveDir.LengthSq() > 0.0f > 0.0001f)
+		{
+			moveDir.Normalize();
+		}
+
+		if (g_pad[0]->IsPress(enButtonY) == false)
+		{
+			m_speed = 240.0f;
+		}
+
+		if (g_pad[0]->IsPress(enButtonY))
+		{
+			m_speed = 480.0f;
+		}
+
+		m_moveSpeed += moveDir * m_speed;
 	}
 
-	if (g_pad[0]->IsPress(enButtonY))
-	{
-		right *= stickL.x * 480.0f;
-		forward *= stickL.y * 480.0f;
-	}
+	Vector3 finalMoveSpeed = m_moveSpeed;
 
-	m_moveSpeed += right + forward;
+	finalMoveSpeed.y = m_moveSpeed.y;
+
+	if(m_isKnockBack)
+	{
+		finalMoveSpeed.x += m_knockBack.x;
+		finalMoveSpeed.z += m_knockBack.z;
+
+		m_knockBack *= 0.9f;
+
+		if(m_knockBack.LengthSq() < 10.0f)
+		{
+			m_knockBack = Vector3::Zero;
+			m_isKnockBack = false;
+		}
+	}
 
 	//二段ジャンプ
 	if (m_characterController.IsOnGround())
@@ -119,7 +149,7 @@ void Player::Move()
 		m_moveSpeed.y -= 20.0f;
 	}
 
-	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
+	m_position = m_characterController.Execute(finalMoveSpeed, 2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
 }
@@ -182,29 +212,36 @@ void Player::Time()
 	}
 }
 
-void Player::Hit()
+void Player::TakeDamage(int damage, const Vector3& enemyPos)
 {
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("smallRobotAttack");
-	for (auto collision : collisions)
+	if (m_damageIntarvalTime > 0.0f)
 	{
-		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
-		{
-			if (m_guardFlag == false)
-			{
-				int smallRobotAttackPower = 0;
-				smallRobotAttackPower = m_smallRobot->GetAttackPower(smallRobotAttackPower);
-				m_playerHp -= smallRobotAttackPower;
-			}
-			else if (m_guardFlag == true)
-			{
-				int smallRobotAttackPower = 0;
-				smallRobotAttackPower = m_smallRobot->GetAttackPower(smallRobotAttackPower);
-				m_playerHp -= smallRobotAttackPower / 2;
-			}
-			m_damageIntarvalTime = 1.0f;
-		}
+		return;
+	}
+	if (!m_guardFlag)
+	{
+		m_playerHp -= damage;
+
+		// ノックバックの計算
+		Vector3 dir = m_position - enemyPos;
+		dir.y = 0.0f; // 水平方向のみにノックバックを適用
+		dir.Normalize();
+
+		m_knockBack = dir * 500.0f; // ノックバックの強さを調整
+		m_knockBack.y = 0.0f; // ノックバックの垂直成分をゼロにする
+
+		m_isKnockBack = true;
+	}
+	else
+	{
+		m_playerHp -= damage / 2; // ガードしている場合はダメージを半減
 	}
 
+	m_damageIntarvalTime = 1.0f; // ダメージのインターバルを設定
+}
+
+void Player::Hit()
+{
 	const auto& collisions2 = g_collisionObjectManager->FindCollisionObjects("mediumRobotAttack");
 	for (auto collision : collisions2)
 	{
@@ -326,29 +363,57 @@ void Player::GuardCollision()
 	m_collisionObject->SetName("playerGuard");
 }
 
-void Player::Gurad()
+void Player::GuradInterval()
 {
-	if (g_pad[0]->IsPress(enButtonX))
+	m_guardIntervalTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_guardIntervalTime < 0.0f)
 	{
-		m_guardFlag = true;
-		//GuardCollision();
+		m_guardIntervalTime = 0.0f;
 	}
-	else
+	if (m_guardIntervalTime == 0.0f)
 	{
-		m_guardFlag = false;
+		m_guardTimeLimit = 3.0f;
+	}
+}
+
+void Player::GuradTimeLimit()
+{
+	m_guardTimeLimit -= g_gameTime->GetFrameDeltaTime();
+	if (m_guardTimeLimit < 0.0f)
+	{
+		m_guardTimeLimit = 0.0f;
 	}
 }
 
 void Player::PlayerState()
 {
-	if (g_pad[0]->IsTrigger(enButtonA))
+	if (m_isKnockBack)
 	{
-		m_playerState = enPlayerState_Attack;
-		m_isActive = true;
+		m_playerState = enPlayerState_KnockBack;
 		return;
 	}
 
-	if(m_characterController.IsOnGround() == false)
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		m_playerState = enPlayerState_Attack;
+		m_isAttack = true;
+		return;
+	}
+
+	if(g_pad[0]->IsPress(enButtonX) && m_guardTimeLimit > 0)
+	{
+		m_playerState = enPlayerState_Guard;
+		m_guardFlag = true;
+		GuradTimeLimit();
+		m_guardIntervalTime = 3.0f;
+		return;
+	}
+	else
+	{
+		m_guardFlag = false;
+	}
+
+	if(m_isKnockBack == false && m_characterController.IsOnGround() == false)
 	{
 		m_playerState = enPlayerState_Jump;
 
@@ -357,7 +422,7 @@ void Player::PlayerState()
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (m_moveSpeed.LengthSq() >= 480.0f * 480.0f)
+		if (g_pad[0]->IsPress(enButtonY))
 		{
 			m_playerState = enPlayerState_Run;
 			return;
@@ -407,6 +472,19 @@ void Player::JumpState()
 	}
 }
 
+void Player::GuardState()
+{
+	PlayerState();
+}
+
+void Player::KnockBackState()
+{
+	if (!m_isKnockBack)
+	{
+		PlayerState();
+	}
+}
+
 void Player::ManageState()
 {
 	switch (m_playerState)
@@ -425,6 +503,12 @@ void Player::ManageState()
 		break;
 	case enPlayerState_Attack:
 		AttackState();
+		break;
+	case enPlayerState_Guard:
+		GuardState();
+		break;
+	case enPlayerState_KnockBack:
+		KnockBackState();
 		break;
 	default:
 		break;
@@ -450,6 +534,12 @@ void Player::PlayAnimation()
 	case enPlayerState_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_Attack);
 		break;
+	case enPlayerState_Guard:
+		m_modelRender.PlayAnimation(enAnimationClip_Guard);
+		break;
+	case enPlayerState_KnockBack:
+		m_modelRender.PlayAnimation(enAnimationClip_KnockBack);
+		break;
 	default:
 		break;
 	}
@@ -462,7 +552,7 @@ void Player::PowerBuff()
 		m_attackPower = 20;
 		if (m_powerBuffTime <= 0)
 		{
-			m_powerBuffFlag == false;
+			m_powerBuffFlag = false;
 		}
 	}
 	else
@@ -498,6 +588,16 @@ void Player::Heal()
 	{
 		m_playerHp = m_playerMaxHp;
 	}
+}
+
+const CharacterController& Player::GetCharacterController() const
+{
+	return m_characterController;
+}
+
+CharacterController& Player::GetCharacterController()
+{
+	return m_characterController;
 }
 
 void Player::Render(RenderContext& rc)

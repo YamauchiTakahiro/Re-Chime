@@ -41,8 +41,7 @@ void FinalBoss::Update()
 
 void FinalBoss::Move()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
@@ -67,8 +66,7 @@ void FinalBoss::Move()
 
 void FinalBoss::Rotation()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	toPlayer.Normalize();
 	Quaternion rot;
@@ -108,6 +106,20 @@ void FinalBoss::Hit()
 	}
 }
 
+void FinalBoss::AttackHit()
+{
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("finalBossAttack");
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_player->GetCharacterController()) == true)
+		{
+			int finalBossAttackPower = 0;
+			finalBossAttackPower = GetAttackPower(finalBossAttackPower);
+			m_player->TakeDamage(finalBossAttackPower, m_position);
+		}
+	}
+}
+
 void FinalBoss::Time()
 {
 	m_timeCount -= g_gameTime->GetFrameDeltaTime();
@@ -135,10 +147,9 @@ void FinalBoss::Dide()
 	}
 }
 
-Vector3 FinalBoss::GetPosition(Vector3 position)
+Vector3 FinalBoss::GetPosition()const
 {
-	position = m_position;
-	return position;
+	return m_position;
 }
 
 void FinalBoss::Render(RenderContext& rc)
