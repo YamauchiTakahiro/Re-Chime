@@ -23,9 +23,11 @@ bool Player::Start()
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Player/playerWalk.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/Player/playerJump.tka");
-	m_animationClips[enAnimationClip_Jump].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Player/playerRun.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Player/playerPunchRight.tka");
+	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
 	//モデルを初期化する。
 	m_modelRender.Init("Assets/modelData/Player/player.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(100.0f, 300.0f, m_position);
@@ -52,8 +54,6 @@ void Player::Update()
 
 	SetScale();
 
-	Attack();
-
 	Time();
 
 	Hit();
@@ -68,9 +68,11 @@ void Player::Update()
 
 	AttackSpeedBuffTime();
 
-	PlayerState();
+	Attack();
 
 	PlayAnimation();
+
+	ManageState();
 	m_modelRender.Update();
 }
 
@@ -139,15 +141,20 @@ void Player::SetScale()
 
 void Player::Attack()
 {
-	if (g_pad[0]->IsTrigger(enButtonA) && m_timeCount == 0.0f)
+	if (m_playerState != enPlayerState_Attack)
 	{
-		OnCollision();
+		return;
+	}
+	if (m_isAttack == true)
+	{
 		if(m_attackSpeedBuffFlag == true)
 		{
+			OnCollision();
 			m_timeCount = 1.0f; // 攻撃クールタイムを短縮する例
 		}
 		else if (m_attackSpeedBuffFlag == false)
 		{
+			OnCollision();
 			m_timeCount = 2.0f; // 通常の攻撃クールタイム
 		}
 		Time();
@@ -334,26 +341,93 @@ void Player::Gurad()
 
 void Player::PlayerState()
 {
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		m_playerState = enPlayerState_Attack;
+		m_isActive = true;
+		return;
+	}
+
 	if(m_characterController.IsOnGround() == false)
 	{
-		m_playerState = 1;
-
+		m_playerState = enPlayerState_Jump;
 
 		return;
 	}
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		m_playerState = 2;
-		if (g_pad[0]->IsPress(enButtonY))
+		if (m_moveSpeed.LengthSq() >= 480.0f * 480.0f)
 		{
-			m_playerState = 3;
+			m_playerState = enPlayerState_Run;
+			return;
+		}
+		else
+		{
+			m_playerState = enPlayerState_Walk;
+			return;
 		}
 	}
 
 	else
 	{
-		m_playerState = 0;
+		m_playerState = enPlayerState_Idle;
+		return;
+	}
+}
+
+void Player::AttackState()
+{
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		PlayerState();
+	}
+}
+
+void Player::IdleState()
+{
+	PlayerState();
+}
+
+void Player::WalkState()
+{
+	PlayerState();
+}
+
+void Player::RunState()
+{
+	PlayerState();
+}
+
+void Player::JumpState()
+{
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		PlayerState();
+	}
+}
+
+void Player::ManageState()
+{
+	switch (m_playerState)
+	{
+	case enPlayerState_Idle:
+		IdleState();
+		break;
+	case enPlayerState_Jump:
+		JumpState();
+		break;
+	case enPlayerState_Walk:
+		WalkState();
+		break;
+	case enPlayerState_Run:
+		RunState();
+		break;
+	case enPlayerState_Attack:
+		AttackState();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -361,17 +435,20 @@ void Player::PlayAnimation()
 {
 	switch(m_playerState)
 	{
-	case 0:
+	case enPlayerState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle);
 		break;
-	case 1:
+	case enPlayerState_Jump:
 		m_modelRender.PlayAnimation(enAnimationClip_Jump);
 		break;
-	case 2:
+	case enPlayerState_Walk:
 		m_modelRender.PlayAnimation(enAnimationClip_Walk);
 		break;
-	case 3:
+	case enPlayerState_Run:
 		m_modelRender.PlayAnimation(enAnimationClip_Run);
+		break;
+	case enPlayerState_Attack:
+		m_modelRender.PlayAnimation(enAnimationClip_Attack);
 		break;
 	default:
 		break;
