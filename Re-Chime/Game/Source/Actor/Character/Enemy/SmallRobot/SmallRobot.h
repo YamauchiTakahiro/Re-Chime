@@ -21,8 +21,12 @@ public:
 	void Time() override;
 	void Hit() override;
 	void DamageIntarval() override;
+	void AttackHit() override;
 	void Dide() override;
-	Vector3 GetPosition(Vector3) override;
+	Vector3 GetPosition()const override
+	{
+		return m_position;
+	}
 	int GetHP(int hp) override
 	{
 		hp = m_smallRobotHp;

@@ -52,8 +52,7 @@ void FloorBoss::Update()
 
 void FloorBoss::Move()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
@@ -85,8 +84,7 @@ void FloorBoss::Move()
 
 void FloorBoss::Rotation()
 {
-	Vector3 playerPos;
-	playerPos = m_player->GetPosition(playerPos);
+	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 1000)
@@ -138,6 +136,20 @@ void FloorBoss::Hit()
 	}
 }
 
+void FloorBoss::AttackHit()
+{
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_player->GetCharacterController()) == true)
+		{
+			int floorBossAttackPower = 0;
+			floorBossAttackPower = GetAttackPower(floorBossAttackPower);
+			m_player->TakeDamage(floorBossAttackPower, m_position);
+		}
+	}
+}
+
 void FloorBoss::DamageIntarval()
 {
 	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
@@ -156,9 +168,9 @@ void FloorBoss::Dide()
 	}
 }
 
-Vector3 FloorBoss::GetPosition(Vector3)
+Vector3 FloorBoss::GetPosition()const
 {
-	return Vector3();
+	return m_position;
 }
 
 void FloorBoss::Render(RenderContext& rc)
