@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
+
+class Title;
 class GameClear : public UIBase
 {
 public:

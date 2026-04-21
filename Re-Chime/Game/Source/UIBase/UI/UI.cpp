@@ -130,6 +130,15 @@ void UI::Update()
 		m_blinkTimer = 0.0f;
 		m_isBlinkOn = !m_isBlinkOn;
 	}
+
+	int gireCount = m_player->GetGireCount();
+
+	wchar_t text[256];
+	swprintf_s(text, L"%d", gireCount);
+	m_GireText.SetPosition(Vector3(-800.0f, 490.0f, 0.0f));
+	m_GireText.SetScale(2.0f);
+	m_GireText.SetText(text);
+	m_GireText.SetColor(g_vec4Black);
 }
 
 void UI::Render(RenderContext& rc)
@@ -141,7 +150,7 @@ void UI::Render(RenderContext& rc)
 	m_Bbutton.Draw(rc);
 	m_Xbutton.Draw(rc);
 	m_Ybutton.Draw(rc);
-	m_Gire.Draw(rc);
+	m_GireText.Draw(rc);
 	// 攻撃力バフ
 	if (m_player->GetPowerBuffFlag(false))
 	{

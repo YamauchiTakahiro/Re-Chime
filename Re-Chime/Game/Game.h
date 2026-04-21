@@ -16,6 +16,7 @@ class DifficultyLevel;
 class MediumRobot;
 class FinalBoss;
 class Title;
+class GameClear;
 class Game : public IGameObject
 {
 public:
@@ -64,6 +65,7 @@ private:
 	FontRender m_TitleReturnText;
 	FontRender m_PlayerReturnText;
 	Title* m_title = nullptr;
+	GameClear* m_gameClear = nullptr;
 
 	bool m_isTitleReturn = false;
 	bool m_isPlayerReturn = false;

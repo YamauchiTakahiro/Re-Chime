@@ -339,7 +339,8 @@ void Player::Hit()
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{
-			m_isGetGire = true;
+			m_gireCount++;
+			//m_isGetGire = true;
 		}
 	}
 }

@@ -26,6 +26,7 @@ protected:
 	SpriteRender m_Ybutton;
 	SpriteRender m_UP;
 	SpriteRender m_AttackSpeed;
-	FontRender m_Gire;
+	SpriteRender m_explanation;
+	FontRender m_GireText;
 };
 
