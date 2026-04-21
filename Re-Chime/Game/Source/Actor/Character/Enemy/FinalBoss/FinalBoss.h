@@ -55,6 +55,7 @@ private:
     Vector3 m_forward;
     Vector3 m_scale;
     int m_finalBossHp = 200;		//!<最終ボスのHP。
+	int m_finalBossMaxHp = 200;	//!<最終ボスの最大HP。
 	int m_attackPower = 20;		//!<攻撃力。
     float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。

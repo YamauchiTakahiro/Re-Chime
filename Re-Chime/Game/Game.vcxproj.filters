@@ -43,9 +43,6 @@
     <Filter Include="Source\Actor\Character\Player">
       <UniqueIdentifier>{32b06fd2-1eff-4733-9a89-9e580f081abc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Sound\BGM">
-      <UniqueIdentifier>{416ae54c-11a9-41a5-8c83-abe3d2a520c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\UIBase\DifficultyLevel">
       <UniqueIdentifier>{e2d6fe5b-3999-4215-8253-1c4c0050f270}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,9 @@
     </Filter>
     <Filter Include="Source\Actor\Barrier">
       <UniqueIdentifier>{0bb09bf2-eeb6-4311-893b-475d0a6ef05b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Sound\AudioManager">
+      <UniqueIdentifier>{28568097-ce25-4375-8809-bd1dae992a27}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -147,9 +147,6 @@
     <ClCompile Include="Source\UIBase\UI\UI.cpp">
       <Filter>Source\UIBase\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Sound\BGM\BGMManager.cpp">
-      <Filter>Source\Sound\BGM</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Actor\Item\Item.cpp">
       <Filter>Source\Actor\Item</Filter>
     </ClCompile>
@@ -173,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.cpp">
       <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sound\AudioManager\AudioManager.cpp">
+      <Filter>Source\Sound\AudioManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,15 +232,6 @@
     <ClInclude Include="Source\UIBase\UI\UI.h">
       <Filter>Source\UIBase\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Sound\BGM\BGMManager.h">
-      <Filter>Source\Sound\BGM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sound\SE\SEManager.h">
-      <Filter>Source\Sound\SE</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sound\BGM\BGMManager.h">
-      <Filter>Source\Sound\BGM</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Actor\Item\Item.h">
       <Filter>Source\Actor\Item</Filter>
     </ClInclude>
@@ -264,6 +255,9 @@
     </ClInclude>
     <ClInclude Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.h">
       <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sound\AudioManager\AudioManager.h">
+      <Filter>Source\Sound\AudioManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

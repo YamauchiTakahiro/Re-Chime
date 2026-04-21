@@ -7,6 +7,7 @@ class SmallRobot;
 class MediumRobot;
 class FloorBoss;
 class FinalBoss;    
+class AudioManager;
 
 class Player : public Character
 {
@@ -132,7 +133,7 @@ private:
 	MediumRobot* m_mediumRobot = nullptr;
 	FloorBoss* m_floorBoss = nullptr;
 	FinalBoss* m_finalBoss = nullptr;
-	SoundSource* m_se;
+	AudioManager* m_audioManager = nullptr;
     int m_playerHp = 100;				//!<プレイヤーのHP。
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
     EnPlayerState m_playerState = enPlayerState_Idle;
@@ -151,5 +152,7 @@ private:
     bool m_attackSpeedBuffFlag = false;
 	bool m_isAttack = false;
     bool m_isKnockBack = false;
+	bool m_isPlayingWalkSE = false;
+	bool m_isPlayingRunSE = false;
 };
 

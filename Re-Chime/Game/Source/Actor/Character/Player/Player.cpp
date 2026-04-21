@@ -7,6 +7,7 @@
 #include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
 #include "Source/Actor/Character/Enemy/FloorBoss/FloorBoss.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 
 Player::Player()
 {
@@ -37,10 +38,13 @@ bool Player::Start()
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_gire = FindGO<Gire>("gire");
 	m_game = FindGO<Game>("game");	
-	const auto smallRobots = m_smallRobot = FindGO<SmallRobot>("smallRobot");
+	m_smallRobot = FindGO<SmallRobot>("smallRobot");
 	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
 	m_floorBoss = FindGO<FloorBoss>("FloorBoss");
 	m_finalBoss = FindGO<FinalBoss>("finalBoss");
+
+	m_audioManager = FindGO<AudioManager>("audioManager");
+
 	return true;
 }
 
@@ -116,6 +120,19 @@ void Player::Move()
 
 		m_moveSpeed += moveDir * m_speed;
 	}
+	
+	if (m_characterController.IsOnGround())
+	{
+		m_moveSpeed.y = 0.0f;
+		if (g_pad[0]->IsTrigger(enButtonB))
+		{
+			m_moveSpeed.y = 500.0f;
+		}
+	}
+	if (m_characterController.IsOnGround() == false)
+	{
+		m_moveSpeed.y -= 20.0f;
+	}
 
 	Vector3 finalMoveSpeed = m_moveSpeed;
 
@@ -135,19 +152,7 @@ void Player::Move()
 		}
 	}
 
-	//二段ジャンプ
-	if (m_characterController.IsOnGround())
-	{
-		m_moveSpeed.y = 0.0f;
-		if (g_pad[0]->IsTrigger(enButtonB))
-		{
-			m_moveSpeed.y = 500.0f;
-		}
-	}
-	if (m_characterController.IsOnGround() == false)
-	{
-		m_moveSpeed.y -= 20.0f;
-	}
+	
 
 	m_position = m_characterController.Execute(finalMoveSpeed, 2.0f / 60.0f);
 
@@ -242,71 +247,8 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 
 void Player::Hit()
 {
-	const auto& collisions2 = g_collisionObjectManager->FindCollisionObjects("mediumRobotAttack");
-	for (auto collision : collisions2)
-	{
-		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
-		{
-			if (m_guardFlag == false)
-			{
-				int mediumRobotAttackPower = 0;
-				mediumRobotAttackPower = m_mediumRobot->GetAttackPower(mediumRobotAttackPower);
-				m_playerHp -= mediumRobotAttackPower;
-			}
-			else if (m_guardFlag == true)
-			{
-				int mediumRobotAttackPower = 0;
-				mediumRobotAttackPower = m_mediumRobot->GetAttackPower(mediumRobotAttackPower);
-				m_playerHp -= mediumRobotAttackPower / 2;
-			}
-			m_damageIntarvalTime = 1.0f;
-		}
-	}
-
-	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
-	for (auto collision : collisions3)
-	{
-		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
-		{
-			if (m_guardFlag == false)
-			{
-				int floorBossAttackPower = 0;
-				floorBossAttackPower = m_floorBoss->GetAttackPower(floorBossAttackPower);
-				m_playerHp -= floorBossAttackPower;
-			}
-			else if (m_guardFlag == true)
-			{
-				int floorBossAttackPower = 0;
-				floorBossAttackPower = m_floorBoss->GetAttackPower(floorBossAttackPower);
-				m_playerHp -= floorBossAttackPower / 2;
-			}
-			m_damageIntarvalTime = 1.0f;
-		}
-	}
-
-	const auto& collisions4 = g_collisionObjectManager->FindCollisionObjects("finalBossAttack");
-	for (auto collision : collisions4)
-	{
-		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
-		{
-			if (m_guardFlag == false)
-			{
-				int finalBossAttackPower = 0;
-				finalBossAttackPower = m_finalBoss->GetAttackPower(finalBossAttackPower);
-				m_playerHp -= finalBossAttackPower;
-			}
-			else if (m_guardFlag == true)
-			{
-				int finalBossAttackPower = 0;
-				finalBossAttackPower = m_finalBoss->GetAttackPower(finalBossAttackPower);
-				m_playerHp -= finalBossAttackPower / 2;
-			}
-			m_damageIntarvalTime = 1.0f;
-		}
-	}
-
-	const auto& collisions5 = g_collisionObjectManager->FindCollisionObjects("powerBuffPotion");
-	for (auto collision : collisions5)
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("powerBuffPotion");
+	for (auto collision : collisions)
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{
@@ -315,8 +257,8 @@ void Player::Hit()
 		}
 	}
 
-	const auto& collisions6 = g_collisionObjectManager->FindCollisionObjects("attackSpeedBuffPotion");
-	for (auto collision : collisions6)
+	const auto& collisions2 = g_collisionObjectManager->FindCollisionObjects("attackSpeedBuffPotion");
+	for (auto collision : collisions2)
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{
@@ -325,8 +267,8 @@ void Player::Hit()
 		}
 	}
 
-	const auto& collisions7 = g_collisionObjectManager->FindCollisionObjects("healPotion");
-	for (auto collision : collisions7)
+	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("healPotion");
+	for (auto collision : collisions3)
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{
@@ -334,8 +276,8 @@ void Player::Hit()
 		}
 	}
 
-	const auto& collisions8 = g_collisionObjectManager->FindCollisionObjects("gireCollision");
-	for (auto collision : collisions8)
+	const auto& collisions4 = g_collisionObjectManager->FindCollisionObjects("gireCollision");
+	for (auto collision : collisions4)
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{

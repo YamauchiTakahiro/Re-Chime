@@ -60,6 +60,7 @@ private:
     Vector3 m_forward;
     Vector3 m_scale;
     int m_mediumRobotHp = 50;		//!<中型ロボットのHP。
+	int m_mediumRobotMaxHp = 50;	//!<中型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
     float m_timeCount = 0.0f;		//!<タイマー用の変数。
     float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。

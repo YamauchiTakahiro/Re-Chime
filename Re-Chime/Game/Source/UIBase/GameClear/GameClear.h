@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
 
-class Title;
+class AudioManager;
+
 class GameClear : public UIBase
 {
 public:
@@ -12,5 +13,6 @@ public:
 	virtual void Render(RenderContext& rc) override;
 
 private:
+	AudioManager* m_audioManager;
 };
 

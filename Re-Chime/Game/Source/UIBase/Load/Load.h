@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
+
+class AudioManager;
+
 class Load :public UIBase
 {
 public:
@@ -17,5 +20,6 @@ private:
 	float m_GearRotSpeed;
 	float m_time;
 	FontRender m_Font;
+	AudioManager* m_audioManager;
 };
 
