@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Source/Actor/Actor.h"
+#include <graphics/RenderContext.h>
 class Character : public Actor
 {
 public:

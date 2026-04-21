@@ -6,7 +6,7 @@ class Game;
 class SmallRobot;
 class MediumRobot;
 class FloorBoss;
-class FinalBoss;
+class FinalBoss;    
 
 class Player : public Character
 {
@@ -77,7 +77,7 @@ public:
     }
     int GetGireCount()
     {
-        m_gireCount++;
+        //m_gireCount++;
         return m_gireCount;
     }
     bool GetPowerBuffFlag(bool powerBuffFlag)

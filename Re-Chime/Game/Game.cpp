@@ -13,6 +13,7 @@
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
+#include "Source/UIBase/GameClear/GameClear.h"
 
 Game::Game()
 {
@@ -181,6 +182,12 @@ void Game::Update()
 	if (playerHP <= 0)
 	{
 		NewGO<GameOver>(0, "GameOver");
+		DeleteGO(this);
+		return;
+	}
+	if (g_pad[0]->IsTrigger(enButtonSelect))
+	{
+		NewGO<GameClear>(0, "GameClear");
 		DeleteGO(this);
 		return;
 	}
