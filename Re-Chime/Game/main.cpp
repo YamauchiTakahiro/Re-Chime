@@ -5,9 +5,7 @@
 #include<dxgidebug.h>
 #include "Source/UIBase/Title/Title.h"
 #include "Source/UIBase/Load/Load.h"
-#include "Source/Sound/BGM/BGMManager.h"
-
-
+#include "Source/Sound/AudioManager/AudioManager.h"
 
 void ReportLiveObjects()
 {
@@ -35,7 +33,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//////////////////////////////////////
 
 	//Gameクラスのオブジェクトを作成。
-	NewGO<BGMManager>(0, "bgmManager");
+	g_soundEngine->Init();
+	NewGO<AudioManager>(0, "audioManager");
 	NewGO<Title>(0, "title");
 	
 	//////////////////////////////////////

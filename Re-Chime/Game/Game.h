@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Level3DRender/LevelRender.h"
+#include "sound/SoundSource.h"
 
 
 class Player;
@@ -17,6 +18,8 @@ class MediumRobot;
 class FinalBoss;
 class Title;
 class GameClear;
+class AudioManager;
+
 class Game : public IGameObject
 {
 public:
@@ -66,6 +69,7 @@ private:
 	FontRender m_PlayerReturnText;
 	Title* m_title = nullptr;
 	GameClear* m_gameClear = nullptr;
+	AudioManager* m_audioManager = nullptr;
 
 	bool m_isTitleReturn = false;
 	bool m_isPlayerReturn = false;

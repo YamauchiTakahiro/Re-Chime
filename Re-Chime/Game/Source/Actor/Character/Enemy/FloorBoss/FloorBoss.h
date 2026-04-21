@@ -3,6 +3,8 @@
 
 class Player;
 class Game;
+class AttackSpeedBuff;
+class PowerBuff;
 
 class FloorBoss : public Enemy
 {
@@ -61,9 +63,12 @@ private:
 	Vector3 m_scale;
 	Player* m_player = nullptr;
 	Game* m_game = nullptr;
+	AttackSpeedBuff* m_attackSpeedBuff = nullptr;
+	PowerBuff* m_powerBuff = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
 	int m_floorBossHP = 100;
+	int m_floorBossMaxHP = 100;
 	int m_attackPower = 20;
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。

@@ -1,8 +1,18 @@
 ﻿#include "stdafx.h"
 #include "Load.h"
 #include "Game.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 
 Load::Load()
+{
+}
+
+Load::~Load()
+{
+	//DeleteGO(m_LoadBGM);
+}
+
+bool Load::Start()
 {
 	m_Load.Init("Assets/Sprite/Load.DDs", 1920.0f, 1080.0f);
 	m_gear.Init("Assets/UIData/gear.DDs", 128.0f, 128.0f);
@@ -24,18 +34,13 @@ Load::Load()
 	m_BarFrame.SetPosition(Vector3(-955.0f, -522.5f, 0.0f));
 	m_BarFrame.SetPivot(Vector2(0.0f, 0.5f));
 	m_BarFrame.Update();
-	
+
 	LoadTime = 350;
 	m_GearRotSpeed = 5.0f;
-}
 
-Load::~Load()
-{
+	//AudioManager* sound = FindGO<AudioManager>("audioManager");
+	//m_LoadBGM = sound->PlayingSound(Sound::enSound_LoadBGM);
 
-}
-
-bool Load::Start()
-{
 	return true;
 }
 

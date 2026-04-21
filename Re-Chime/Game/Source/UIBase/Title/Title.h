@@ -3,6 +3,7 @@
 #include "Source/UIBase/Load/Load.h"
 #include "sound/SoundSource.h"
 
+class AudioManager;
 
 class Title :
     public UIBase
@@ -14,6 +15,6 @@ public:
     virtual void Update() override;
     virtual void Render(RenderContext& rc)override;
 private:
-    SoundSource* m_gameBGM;
+    AudioManager* m_audioManager;
 };
 

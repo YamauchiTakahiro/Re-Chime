@@ -14,6 +14,7 @@
 #include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 #include "Source/UIBase/GameClear/GameClear.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 
 Game::Game()
 {
@@ -130,6 +131,12 @@ bool Game::Start()
 			return true;
 	});
 
+	m_audioManager = FindGO<AudioManager>("audioManager");
+	if (m_audioManager)
+	{
+		m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
+	}
+
 	m_TitleReturnText.SetText(L"タイトル戻る");
 	m_TitleReturnText.SetPosition(Vector3(-245.0f, 0.0f, 0.0f));
 	m_TitleReturnText.SetScale(1.5f);
@@ -182,12 +189,20 @@ void Game::Update()
 	if (playerHP <= 0)
 	{
 		NewGO<GameOver>(0, "GameOver");
+		if (m_audioManager)
+		{
+			m_audioManager->StopBGM();
+		}
 		DeleteGO(this);
 		return;
 	}
 	if (g_pad[0]->IsTrigger(enButtonSelect))
 	{
 		NewGO<GameClear>(0, "GameClear");
+		if (m_audioManager)
+		 {
+			 m_audioManager->StopBGM();
+		}
 		DeleteGO(this);
 		return;
 	}
@@ -210,11 +225,20 @@ void Game::Pause()
 	if (g_pad[0]->IsTrigger(enButtonStart) && m_isPause)
 	{
 		m_isPause = false;
+		if (m_audioManager)
+		{
+			m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
+		}
 		return;
 	}
 	else if (g_pad[0]->IsTrigger(enButtonStart) && !m_isPause)
 	{
 		m_isPause = true;
+		if (m_audioManager)
+		{
+			m_audioManager->StopBGM();
+		}
+		return;
 	}
 	m_Pause.Update();
 }
@@ -241,6 +265,7 @@ void Game::PauseRender()
 
 	if (m_isPause && m_isPlayerReturn && g_pad[0]->IsTrigger(enButtonA))
 	{
+		m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
 		m_isPause = false;
 	}
 }

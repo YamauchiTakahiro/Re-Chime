@@ -68,6 +68,7 @@ private:
 	SpriteRender m_enemyHP;//敵のHPを表示する。
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
+	int m_smallRobotMaxHp = 50;	//!<小型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
