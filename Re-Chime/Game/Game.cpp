@@ -128,6 +128,7 @@ bool Game::Start()
 				m_barrier6->SetRotation(objData.rotation);
 				m_barrier6->SetScale(objData.scale);
 			}
+
 			return true;
 	});
 
@@ -136,14 +137,18 @@ bool Game::Start()
 	{
 		m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
 	}
+	m_PlayerReturnText.SetText(L"ゲームに戻る");
+	m_PlayerReturnText.SetPosition(Vector3(-245.0f, 160.0f, 0.0f));
+	m_PlayerReturnText.SetScale(1.5f);
+
+	m_SoundText.SetText(L"音量調節");
+	m_SoundText.SetPosition(Vector3(-245.0f, 80.0f, 0.0f));
+	m_SoundText.SetScale(1.5f);
 
 	m_TitleReturnText.SetText(L"タイトル戻る");
 	m_TitleReturnText.SetPosition(Vector3(-245.0f, 0.0f, 0.0f));
 	m_TitleReturnText.SetScale(1.5f);
 
-	m_PlayerReturnText.SetText(L"ゲームに戻る");
-	m_PlayerReturnText.SetPosition(Vector3(-245.0f, 80.0f, 0.0f));
-	m_PlayerReturnText.SetScale(1.5f);
 	return true;
 }
 
@@ -178,9 +183,10 @@ Game::~Game()
 void Game::Update()
 {	
 	Pause();
-	PauseRender();
+
 	if (m_isPause)
 	{
+		PauseRender();
 		return;
 	}
 	//プレイヤーのHPが0以下になったらゲームオーバー。
@@ -222,51 +228,54 @@ void Game::Update()
 
 void Game::Pause()
 {
-	if (g_pad[0]->IsTrigger(enButtonStart) && m_isPause)
+	if (g_pad[0]->IsTrigger(enButtonStart)) 
 	{
-		m_isPause = false;
-		if (m_audioManager)
-		{
-			m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
-		}
-		return;
-	}
-	else if (g_pad[0]->IsTrigger(enButtonStart) && !m_isPause)
-	{
-		m_isPause = true;
-		if (m_audioManager)
-		{
-			m_audioManager->StopBGM();
-		}
-		return;
+		m_isPause = !m_isPause; 
 	}
 	m_Pause.Update();
 }
 
 void Game::PauseRender()
 {
+	if (!m_isPause) return;
+
+	// ↓移動
 	if (g_pad[0]->IsTrigger(enButtonDown))
 	{
-		m_isTitleReturn = true;
-		m_isPlayerReturn = false;
+		m_pauseSelect++;
+		if (m_pauseSelect > 2) m_pauseSelect = 0;
 	}
 
+	// ↑移動
 	if (g_pad[0]->IsTrigger(enButtonUp))
 	{
-		m_isTitleReturn = false;
-		m_isPlayerReturn = true;
+		m_pauseSelect--;
+		if (m_pauseSelect < 0) m_pauseSelect = 2;
 	}
 
-	if (m_isPause && m_isTitleReturn && g_pad[0]->IsTrigger(enButtonA))
+	// 決定
+	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		m_title = NewGO<Title>(0, "Title");
-		DeleteGO(this);
-	}
+		switch (m_pauseSelect)
+		{
+		case 0: // ゲームに戻る
+			m_isPause = false;
+			m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
+			break;
+			m_isPause = false;
+		case 1: // 音量調節
+			if (m_difficul == nullptr)
+			{
+				m_difficul = NewGO<DifficultyLevel>(0, "DifficultyLevel");
+			}
+			break;
 
-	if (m_isPause && m_isPlayerReturn && g_pad[0]->IsTrigger(enButtonA))
-	{
-		m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
-		m_isPause = false;
+		case 2: // タイトルに戻る
+			m_title = NewGO<Title>(0, "Title");
+			DeleteGO(this);
+			break;
+
+		}
 	}
 }
 
@@ -302,16 +311,23 @@ void Game::Render(RenderContext& rc)
 		m_Pause.Draw(rc);
 		m_TitleReturnText.SetColor(g_vec4White);
 		m_PlayerReturnText.SetColor(g_vec4White);
-		m_TitleReturnText.Draw(rc);
-		m_PlayerReturnText.Draw(rc);
-		if (m_isTitleReturn)
+		m_SoundText.SetColor(g_vec4White);
+
+		if (m_pauseSelect == 0)
 		{
-			m_TitleReturnText.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+			m_PlayerReturnText.SetColor(1, 0, 0, 1);
+		}
+		if (m_pauseSelect == 1)
+		{
+			m_SoundText.SetColor(1, 0, 0, 1);
+		}
+		if (m_pauseSelect == 2)
+		{
+			m_TitleReturnText.SetColor(1, 0, 0, 1);
 		}
 
-		if (m_isPlayerReturn)
-		{
-			m_PlayerReturnText.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
-		}
+		m_TitleReturnText.Draw(rc);
+		m_PlayerReturnText.Draw(rc);
+		m_SoundText.Draw(rc);
 	}
 }
