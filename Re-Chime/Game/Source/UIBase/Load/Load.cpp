@@ -41,31 +41,33 @@ bool Load::Start()
 	//AudioManager* sound = FindGO<AudioManager>("audioManager");
 	//m_LoadBGM = sound->PlayingSound(Sound::enSound_LoadBGM);
 
+	m_Font.SetPosition(-955.0f, -450.0f, 0.0f);
+	m_Font.SetScale(1.0f);
+	m_Font.SetColor(g_vec4White);
+
 	return true;
 }
 
 void Load::Update()
 {
-	if (LoadTime > 0)
-	{
-		LoadTime--;
-	}
-	else
+	m_loadTimer += g_gameTime->GetFrameDeltaTime();
+
+	if (m_loadTimer >= m_loadMax)
 	{
 		NewGO<Game>(0, "game");
 		DeleteGO(this);
+		return;
 	}
-	m_time += g_gameTime->GetFrameDeltaTime();
 	//ギアの回転
-	m_GearRotation.SetRotationZ(m_time * m_GearRotSpeed);
+	m_GearRotation.SetRotationZ(m_loadTimer * m_GearRotSpeed);
 	m_gear.SetRotation(m_GearRotation);
 	m_gear.Update();
 
-	m_GearRotation2.SetRotationZ(m_time * -m_GearRotSpeed);
+	m_GearRotation2.SetRotationZ(m_loadTimer * -m_GearRotSpeed);
 	m_gear2.SetRotation(m_GearRotation2);
 	m_gear2.Update();
 
-	m_GearRotation3.SetRotationZ(m_time * m_GearRotSpeed);
+	m_GearRotation3.SetRotationZ(m_loadTimer * m_GearRotSpeed);
 	m_gear3.SetRotation(m_GearRotation3);
 	m_gear3.Update();
 
@@ -75,12 +77,30 @@ void Load::Update()
 	m_BarFrame.SetScale(scale);
 	m_BarFrame.Update();
 
-	wchar_t text[256];
-	swprintf_s(text, 256, L"読み込み中・・・");
-	m_Font.SetText(text);
-	m_Font.SetPosition(-955.0f, -450.0f, 0.0f);
-	m_Font.SetScale(1.0f);
-	m_Font.SetColor(g_vec4White);
+	//ドット更新
+	m_dotTimer += g_gameTime->GetFrameDeltaTime();
+
+	if (m_dotTimer >= 0.3f)
+	{
+		m_dotTimer = 0.0f;
+		m_dotCount++;
+
+		if (m_dotCount > 3)
+		{
+			m_dotCount = 0;
+		}
+	}
+
+	// 文字作成
+	std::wstring text = L"読み込み中";
+
+	// ドット追加
+	for (int i = 0; i < m_dotCount; i++)
+	{
+		text += L"・";
+	}
+
+	m_Font.SetText(text.c_str());
 }
 
 void Load::Render(RenderContext& rc)

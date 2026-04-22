@@ -39,7 +39,7 @@ bool GameCamera::Start()
 void GameCamera::Update()
 {
 	bool isPause = false;
-	m_game->GetIsPause(isPause);
+	isPause = m_game->GetIsPause(isPause);
 	if (isPause)
 	{
 		return;

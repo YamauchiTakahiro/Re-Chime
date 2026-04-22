@@ -67,13 +67,14 @@ private:
 	SpriteRender m_Pause;
 	FontRender m_TitleReturnText;
 	FontRender m_PlayerReturnText;
+	FontRender m_SoundText;
 	Title* m_title = nullptr;
 	GameClear* m_gameClear = nullptr;
 	AudioManager* m_audioManager = nullptr;
 
-	bool m_isTitleReturn = false;
-	bool m_isPlayerReturn = false;
+	int m_pauseSelect = 0; //ポーズメニュー、0:タイトルに戻る、1:ゲームに戻る、2:音量調整
 	bool m_isPause = false;
+	bool m_isPlayerReturn = false;
 	int m_enemyCount = 0;		//!<敵の数。
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 };
