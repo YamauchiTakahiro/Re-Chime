@@ -5,7 +5,6 @@
 #include "Source/UIBase/Load/Load.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 
-
 Title::Title()
 {
 }
@@ -61,7 +60,7 @@ void Title::Update()
 
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		DeleteGO(this);
+		//DeleteGO(this);
 		switch (m_SelectNum)
 		{
 		case 0:

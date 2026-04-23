@@ -14,7 +14,7 @@ GameOver::~GameOver()
 
 bool GameOver::Start()
 {
-	m_GameOver.Init("Assets/Sprite/gameover.DDs", 1920.0f, 1080.0f);
+	m_GameOver.Init("Assets/Sprite/GameOver.DDs", 1920.0f, 1080.0f);
 	m_audioManager = FindGO<AudioManager>("audioManager");
 	if (m_audioManager)
 	{
