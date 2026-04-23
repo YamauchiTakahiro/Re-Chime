@@ -202,16 +202,16 @@ void Game::Update()
 		DeleteGO(this);
 		return;
 	}
-	if (g_pad[0]->IsTrigger(enButtonSelect))
-	{
-		NewGO<GameClear>(0, "GameClear");
-		if (m_audioManager)
-		 {
-			 m_audioManager->StopBGM();
-		}
-		DeleteGO(this);
-		return;
-	}
+	//if (g_pad[0]->IsTrigger(enButtonSelect))
+	//{
+	//	NewGO<GameClear>(0, "GameClear");
+	//	if (m_audioManager)
+	//	 {
+	//		 m_audioManager->StopBGM();
+	//	}
+	//	DeleteGO(this);
+	//	return;
+	//}
 	if (m_numDefeatedEnemy == 6)
 	{
 		FirstFloor();

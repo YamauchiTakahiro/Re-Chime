@@ -13,7 +13,7 @@ GameClear::~GameClear()
 
 bool GameClear::Start()
 {
-	m_GameClear.Init("Assets/Sprite/clear.DDs", 1920.0f, 1080.0f);
+	m_GameClear.Init("Assets/Sprite/GameClear.DDs", 1920.0f, 1080.0f);
 	m_audioManager = FindGO<AudioManager>("audioManager");
 	if (m_audioManager)
 	{
