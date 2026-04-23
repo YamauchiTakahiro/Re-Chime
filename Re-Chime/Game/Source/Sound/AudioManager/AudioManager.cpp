@@ -2,6 +2,7 @@
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "Sound/SoundEngine.h"
 #include "sound/SoundSource.h"
+#include <algorithm>
 
 AudioManager::AudioManager()
 {
@@ -21,7 +22,7 @@ void AudioManager::Update()
 {
 	for (auto it = m_playingSE.begin(); it != m_playingSE.end();)
 	{
-		if (it->se || !it->se->IsPlaying())
+		if (!it->se || !it->se->IsPlaying())
 		{
 			it = m_playingSE.erase(it);
 		}
@@ -47,7 +48,7 @@ void AudioManager::Init()
 	for (int i = 0; i < SE_POOL_SIZE; ++i)
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Num); //仮のIDで初期化。再生する際にIDを変更する。
+		//se->Init(enSound_Num); //仮のIDで初期化。再生する際にIDを変更する。
 		m_sePool.push_back(se);
 	}
 }
@@ -66,7 +67,7 @@ void AudioManager::PlayBGM(AudioID id, float volume)
 
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(id);
-	m_bgm->SetVolume(volume);
+	m_bgm->SetVolume(volume * m_bgmVolume);
 	m_bgm->Play(true);
 }
 
@@ -88,7 +89,7 @@ SoundSource* AudioManager::GetFreeSE()
 			return se;
 		}
 	}
-	return nullptr;
+	return m_sePool[0];
 }
 
 void AudioManager::PlaySE(AudioID id, float volume)
@@ -105,10 +106,35 @@ void AudioManager::PlaySE(AudioID id, float volume)
 	}
 
 	se->Init(id);
-	se->SetVolume(volume);
+	se->SetVolume(volume * m_seVolume);
 	se->Play(false);
 
 	m_playingSE.push_back({ id, se });
+}
+
+void AudioManager::SetBGMVolume(float volume)
+{
+	m_bgmVolume = (volume < 0.0f) ? 0.0f : (volume > 1.0f ? 1.0f : volume);
+
+	if (m_bgm)
+	{
+		m_bgm->SetVolume(m_bgmVolume);
+	}
+}
+
+void AudioManager::SetSEVolume(float volume)
+{
+	m_seVolume = (volume < 0.0f) ? 0.0f : (volume > 1.0f ? 1.0f : volume);
+}
+
+float AudioManager::GetBGMVolume() const
+{
+	return m_bgmVolume;
+}
+
+float AudioManager::GetSEVolume() const
+{
+	return m_seVolume;
 }
 
 void AudioManager::StopSE(AudioID id)
@@ -134,7 +160,7 @@ void AudioManager::LoadAll()
 {
 	//BGMの読み込み
 	Load(enSound_TitleBGM, "Assets/Sound/BGM/TitleBGM.wav");
-	//Load(enSound_LoadBGM, "Assets/Sound/BGM/LoadBGM.wav");
+	Load(enSound_LoadBGM, "Assets/Sound/BGM/LoadBGM.wav");
 	Load(enSound_StageBGM, "Assets/Sound/BGM/StageBGM.wav");
 	Load(enSound_GameOverBGM, "Assets/Sound/BGM/GameOverBGM.wav");
 	Load(enSound_GameClearBGM, "Assets/Sound/BGM/GameClearBGM.wav");
@@ -151,6 +177,10 @@ void AudioManager::LoadAll()
 	Load(enSound_BellSE, "Assets/Sound/SE/BellSE.wav");
 	Load(enSound_GearDropSE, "Assets/Sound/SE/GearDropSE.wav");
 	Load(enSound_EnemyDeathSE, "Assets/Sound/SE/EnemyDeathSE.wav");
+	Load(enSound_BrokenBarricadeSE, "Assets/Sound/SE/BrokenBarricadeSE.wav");
+	Load(enSound_PlayerDamageSE, "Assets/Sound/SE/PlayerDamageSE.wav");
+	Load(enSound_PlayerAttackSE, "Assets/Sound/SE/PlayerAttackSE.wav");
+	Load(enSound_PlayerGuardSE, "Assets/Sound/SE/PlayerGuardSE.wav");
 }
 
 void AudioManager::Load(AudioID id, const std::string& path)
