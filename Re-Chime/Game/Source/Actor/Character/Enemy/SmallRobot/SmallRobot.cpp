@@ -200,7 +200,7 @@ void SmallRobot::EnemyHP()
 	int MaxHP = 0;
 
 	nowHP = GetHP(nowHP);
-	MaxHP = m_smallRobotHp;
+	MaxHP = m_smallRobotMaxHp;
 	float Wari = (float)nowHP / (float)MaxHP;
 	Vector3 scale = { 0.28f, 0.28f, 0.5f };
 	scale.x *= Wari;
