@@ -3,7 +3,7 @@
 enum AudioID
 {
 	enSound_TitleBGM,
-	//enSound_LoadBGM,
+	enSound_LoadBGM,
 	enSound_StageBGM,
 	enSound_GameOverBGM,
 	enSound_GameClearBGM,
@@ -18,9 +18,10 @@ enum AudioID
 	enSound_BellSE,
 	enSound_GearDropSE,
 	enSound_EnemyDeathSE,
-	//ここから下は仮実装
-	//enSound_BrokenBarricadeSE,
-	//enSound_PlayerDamageSE,
+	enSound_BrokenBarricadeSE,
+	enSound_PlayerDamageSE,
+	enSound_PlayerAttackSE,
+	enSound_PlayerGuardSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
 };
 
@@ -47,9 +48,18 @@ public:
 	void PlaySE(AudioID id, float volume = 1.0f);
 	void StopSE(AudioID id);
 
+	void SetBGMVolume(float volume);
+	void SetSEVolume(float volume);
+
+	float GetBGMVolume() const;
+	float GetSEVolume() const;
+
 private:
 	void LoadAll();
 	void Load(AudioID id, const std::string& path);
+
+	float m_bgmVolume = 1.0f;
+	float m_seVolume = 1.0f;
 
 	SoundSource* GetFreeSE();
 
