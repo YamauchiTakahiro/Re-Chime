@@ -32,6 +32,7 @@ private:
 	FontRender m_MasterValueText;
 	FontRender m_BGMValueText;
 	FontRender m_SEValueText;
+	FontRender m_BackText;
 
 	float rightX = 700.0f;
 	int m_select = 0; //マスター 0 ,BGM 1 , SE 2

@@ -61,6 +61,11 @@ bool DifficultyLevel::Start()
     m_MasterValueText.SetPosition(Vector3(650.0f, 250.0f, 0.0f));
     m_MasterValueText.SetScale(1.2f);
 
+    m_BackText.SetText(L"Bボタンで戻る");
+    m_BackText.SetPosition(Vector3(500.0f, -400.0f, 0.0f)); // 右下あたり
+    m_BackText.SetScale(1.0f);
+    m_BackText.SetColor(g_vec4White);
+
 	m_audioManager = FindGO<AudioManager>("audioManager");
 	return true;
 }
@@ -153,6 +158,15 @@ void DifficultyLevel::Update()
         {
             m_title->SetSetting(false);
         }
+
+        Game* game = FindGO<Game>("game");
+        if (game)
+        {
+            game->SetSetting(false);
+            game->SetDifficulty(nullptr);
+        }
+
+
         DeleteGO(this);
     }
 }
@@ -192,4 +206,6 @@ void DifficultyLevel::Render(RenderContext& rc)
     m_MasterValueText.Draw(rc);
     m_BGMValueText.Draw(rc);
     m_SEValueText.Draw(rc);
+
+    m_BackText.Draw(rc);
 }

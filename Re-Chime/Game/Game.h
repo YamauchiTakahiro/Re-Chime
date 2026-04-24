@@ -42,6 +42,14 @@ public:
 		isPause = m_isPause;
 		return m_isPause;
 	}
+	void SetSetting(bool flag)
+	{
+		m_isSetting = flag;
+	}
+	void SetDifficulty(DifficultyLevel* dl)
+	{
+		m_difficul = dl;
+	}
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;
@@ -77,5 +85,6 @@ private:
 	bool m_isPlayerReturn = false;
 	int m_enemyCount = 0;		//!<敵の数。
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
+	bool m_isSetting = false;
 };
 

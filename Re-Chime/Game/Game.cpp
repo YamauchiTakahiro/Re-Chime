@@ -228,6 +228,11 @@ void Game::Update()
 
 void Game::Pause()
 {
+	if (m_isSetting)
+	{
+		return;
+	}
+
 	if (g_pad[0]->IsTrigger(enButtonStart)) 
 	{
 		m_isPause = !m_isPause; 
@@ -238,6 +243,11 @@ void Game::Pause()
 void Game::PauseRender()
 {
 	if (!m_isPause) return;
+
+	if (m_isSetting)
+	{
+		return;
+	}
 
 	// ↓移動
 	if (g_pad[0]->IsTrigger(enButtonDown))
@@ -267,6 +277,7 @@ void Game::PauseRender()
 			if (m_difficul == nullptr)
 			{
 				m_difficul = NewGO<DifficultyLevel>(0, "DifficultyLevel");
+				m_isSetting = true;
 			}
 			break;
 
