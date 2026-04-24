@@ -59,6 +59,7 @@ void AudioManager::PlayBGM(AudioID id, float volume)
 	{
 		return;
 	}
+
 	if (m_bgm)
 	{
 		DeleteGO(m_bgm);
@@ -67,7 +68,7 @@ void AudioManager::PlayBGM(AudioID id, float volume)
 
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(id);
-	m_bgm->SetVolume(volume * m_bgmVolume);
+	m_bgm->SetVolume(volume * m_bgmVolume * m_masterVolume);
 	m_bgm->Play(true);
 }
 
@@ -77,6 +78,17 @@ void AudioManager::StopBGM()
 	{
 		DeleteGO(m_bgm);
 		m_bgm = nullptr;
+	}
+}
+
+
+void AudioManager::SetBGMVolume(float volume)
+{
+	m_bgmVolume = (volume < 0.0f) ? 0.0f : (volume > 1.0f ? 1.0f : volume);
+
+	if (m_bgm)
+	{
+		m_bgm->SetVolume(m_bgmVolume * m_masterVolume);
 	}
 }
 
@@ -106,35 +118,23 @@ void AudioManager::PlaySE(AudioID id, float volume)
 	}
 
 	se->Init(id);
-	se->SetVolume(volume * m_seVolume);
+	se->SetVolume(volume * m_seVolume * m_masterVolume);
 	se->Play(false);
 
 	m_playingSE.push_back({ id, se });
 }
 
-void AudioManager::SetBGMVolume(float volume)
-{
-	m_bgmVolume = (volume < 0.0f) ? 0.0f : (volume > 1.0f ? 1.0f : volume);
-
-	if (m_bgm)
-	{
-		m_bgm->SetVolume(m_bgmVolume);
-	}
-}
-
 void AudioManager::SetSEVolume(float volume)
 {
-	m_seVolume = (volume < 0.0f) ? 0.0f : (volume > 1.0f ? 1.0f : volume);
-}
+	m_seVolume = Clamp(volume, 0.0f, 1.0f);
 
-float AudioManager::GetBGMVolume() const
-{
-	return m_bgmVolume;
-}
-
-float AudioManager::GetSEVolume() const
-{
-	return m_seVolume;
+	for (auto& se : m_playingSE)
+	{
+		if (se.se)
+		{
+			se.se->SetVolume(m_seVolume * m_masterVolume);
+		}
+	}
 }
 
 void AudioManager::StopSE(AudioID id)
