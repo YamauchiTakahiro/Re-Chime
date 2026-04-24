@@ -51,17 +51,43 @@ public:
 	void SetBGMVolume(float volume);
 	void SetSEVolume(float volume);
 
-	float GetBGMVolume() const;
-	float GetSEVolume() const;
+	float GetBGMVolume() const { return m_bgmVolume; }
+	float GetSEVolume() const { return m_seVolume; }
+	void SetMasterVolume(float volume)
+	{
+		m_masterVolume = Clamp(volume, 0.0f, 1.0f);
 
+		// BGM更新
+		if (m_bgm)
+		{
+			m_bgm->SetVolume(m_bgmVolume * m_masterVolume);
+		}
+
+		// SE更新
+		for (auto& se : m_playingSE)
+		{
+			if (se.se)
+			{
+				se.se->SetVolume(m_seVolume * m_masterVolume);
+			}
+		}
+	}
+	float GetMasterVolume() const
+	{
+		return m_masterVolume;
+	}
 private:
 	void LoadAll();
 	void Load(AudioID id, const std::string& path);
 
-	float m_bgmVolume = 1.0f;
-	float m_seVolume = 1.0f;
-
 	SoundSource* GetFreeSE();
+
+	float Clamp(float value, float min, float max)
+	{
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
 
 private:
 	bool m_isReady = false;
@@ -71,6 +97,11 @@ private:
 	static const int SE_POOL_SIZE = 16;
 	std::vector<SoundSource*> m_sePool;
 	std::vector<SEHandle> m_playingSE;
+
+
+	float m_bgmVolume = 1.0f;
+	float m_seVolume = 1.0f;
+	float m_masterVolume = 1.0f;
 
 	// コピー禁止
 	AudioManager(const AudioManager&) = delete;
