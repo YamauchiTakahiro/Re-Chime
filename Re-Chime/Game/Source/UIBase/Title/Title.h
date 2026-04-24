@@ -15,6 +15,10 @@ public:
     virtual bool Start() override;
     virtual void Update() override;
     virtual void Render(RenderContext& rc)override;
+    void SetSetting(bool flag)
+    {
+        m_isSetting = flag;
+    }
 private:
     SoundSource* m_gameBGM;
     AudioManager* m_audioManager;
@@ -26,5 +30,6 @@ private:
     DifficultyLevel* m_difficultyLevel = nullptr;
     int m_SelectNum = 0;
     bool m_isExplanation = false;
+    bool m_isSetting = false;
 };
 

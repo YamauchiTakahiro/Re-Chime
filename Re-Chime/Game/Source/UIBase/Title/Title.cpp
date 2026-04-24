@@ -38,6 +38,10 @@ bool Title::Start()
 
 void Title::Update()
 {
+	if (m_isSetting)
+	{
+		return;
+	}
 	if (m_isExplanation)
 	{
 		if (g_pad[0]->IsTrigger(enButtonB))
@@ -77,12 +81,10 @@ void Title::Update()
 			break;
 
 		case 2:
-			if (m_difficultyLevel == nullptr)
-			{
 				m_difficultyLevel = NewGO<DifficultyLevel>(0, "DifficultyLevel");
-			}
-			break;
-
+				m_difficultyLevel->SetTitle(this);
+				m_isSetting = true;
+				break;
 		case 3:
 			PostQuitMessage(0);
 			break;
