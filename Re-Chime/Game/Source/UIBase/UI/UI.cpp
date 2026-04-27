@@ -152,7 +152,7 @@ void UI::Render(RenderContext& rc)
 	m_Ybutton.Draw(rc);
 	m_GireText.Draw(rc);
 	// 攻撃力バフ
-	if (m_player->GetPowerBuffFlag(false))
+	if (m_player->GetPowerBuffFlag())
 	{
 		float time = m_player->GetPowerBuffTime();
 
@@ -170,7 +170,7 @@ void UI::Render(RenderContext& rc)
 	}
 
 	// 攻撃速度バフ
-	if (m_player->GetAttackSpeedBuffFlag(false))
+	if (m_player->GetAttackSpeedBuffFlag())
 	{
 		float time = m_player->GetAttackSpeedBuffTime();
 

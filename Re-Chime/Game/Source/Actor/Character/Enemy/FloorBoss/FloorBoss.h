@@ -22,7 +22,10 @@ public:
 	void AttackHit() override;
 	void DamageIntarval() override;
 	void Dide() override;
-	Vector3 GetPosition()const override;
+	Vector3 GetPosition()const override
+	{
+		return m_position;
+	}
 	int GetAttackPower(int attackPower)
 	{
 		attackPower = m_attackPower;

@@ -48,7 +48,7 @@ void AudioManager::Init()
 	for (int i = 0; i < SE_POOL_SIZE; ++i)
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		//se->Init(enSound_Num); //仮のIDで初期化。再生する際にIDを変更する。
+		se->Init(enSound_Num); //仮のIDで初期化。再生する際にIDを変更する。
 		m_sePool.push_back(se);
 	}
 }
@@ -101,15 +101,11 @@ SoundSource* AudioManager::GetFreeSE()
 			return se;
 		}
 	}
-	return m_sePool[0];
+	return nullptr;
 }
 
 void AudioManager::PlaySE(AudioID id, float volume)
 {
-	if (!m_isReady)
-	{
-		return;
-	}
 	SoundSource* se = GetFreeSE();
 
 	if (!se)

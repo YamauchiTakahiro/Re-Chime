@@ -40,8 +40,10 @@ public:
 	void PlayAnimation();
 	void PowerBuff();
 	void PowerBuffTime();
+    void JumpTime();
 	void AttackSpeedBuffTime();
 	void Heal();
+	void MakeHealEffect();
 	void AttackState();
 	void IdleState();
 	void WalkState();
@@ -81,16 +83,19 @@ public:
         //m_gireCount++;
         return m_gireCount;
     }
-    bool GetPowerBuffFlag(bool powerBuffFlag)
+    bool GetPowerBuffFlag()const
     {
-        powerBuffFlag = m_powerBuffFlag;
-		return powerBuffFlag;
+        return m_powerBuffFlag;
     }
-    bool GetAttackSpeedBuffFlag(bool attackSpeedBuffFlag)
+    bool GetAttackSpeedBuffFlag()const
     {
-        attackSpeedBuffFlag = m_attackSpeedBuffFlag;
-		return attackSpeedBuffFlag;
+        return m_attackSpeedBuffFlag;
 	}
+    bool GetHealFlag(bool isHeal)
+    {
+        isHeal = m_isHealFlag;
+		return isHeal;
+    }
     float GetPowerBuffTime()
     {
         return m_powerBuffTime;
@@ -145,6 +150,10 @@ private:
 	float m_powerBuffTime = 0.0f;				//!<攻撃力バフの時間。
 	float m_attackSpeedBuffTime = 0.0f;		//!<攻撃速度バフの時間。
 	float m_guardTimeLimit = 3.0f;				//!<ガードできる時間の上限。
+	float m_footStepDistance = 0.0f;			//!<歩行時の足音の距離
+	float m_footStepInterval = 1.2f;				//!<歩行時の足音の間隔。
+	float m_footStepCooldown = 0.0f;				//!<走行時の足音の間隔。
+	float m_jumpTime = 0.0f;					//!<ジャンプの時間。
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;
@@ -154,5 +163,6 @@ private:
     bool m_isKnockBack = false;
 	bool m_isPlayingWalkSE = false;
 	bool m_isPlayingRunSE = false;
+    bool m_isHealFlag = false;
 };
 
