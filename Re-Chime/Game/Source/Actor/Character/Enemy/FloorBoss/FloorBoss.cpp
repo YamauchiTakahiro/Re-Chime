@@ -48,6 +48,8 @@ void FloorBoss::Update()
 
 	DamageIntarval();
 
+	AttackHit();
+
 	Dide();
 	m_modelRender.Update();
 }
@@ -179,11 +181,6 @@ void FloorBoss::Dide()
 		}
 		DeleteGO(this);
 	}
-}
-
-Vector3 FloorBoss::GetPosition()const
-{
-	return m_position;
 }
 
 void FloorBoss::Render(RenderContext& rc)

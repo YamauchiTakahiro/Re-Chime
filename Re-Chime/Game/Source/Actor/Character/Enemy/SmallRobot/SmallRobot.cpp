@@ -4,6 +4,7 @@
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
+#include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
 
@@ -137,7 +138,7 @@ void SmallRobot::Hit()
 			int damage = 0;
 			damage = m_player->GetAttackPower(damage);
 			m_smallRobotHp -= damage;
-			m_damageIntarvalTime = 1.0f;
+			m_damageIntarvalTime = 1.5f;
 		}
 	}
 }
@@ -180,6 +181,11 @@ void SmallRobot::Dide()
 		{
 			m_powerBuff = NewGO<PowerBuff>(0);
 			m_powerBuff->SetPosition(m_position);
+		}
+		else if (randomNum >/* 0*/40 && randomNum <= 60)
+		{
+			m_heal = NewGO<Heal>(0);
+			m_heal->SetPosition(m_position);
 		}
 		DeleteGO(this);
 	}

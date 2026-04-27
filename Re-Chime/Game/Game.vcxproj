@@ -239,7 +239,7 @@
     <ClCompile Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.cpp" />
     <ClCompile Include="Source\Actor\Item\Potion\Buff\Buff.cpp" />
     <ClCompile Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.cpp" />
-    <ClCompile Include="Source\Actor\Item\Potion\Heel\Heel.cpp" />
+    <ClCompile Include="Source\Actor\Item\Potion\Heal\Heal.cpp" />
     <ClCompile Include="Source\Actor\Item\Potion\Potion.cpp" />
     <ClCompile Include="Source\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Source\Camera\GameCamera.cpp" />
@@ -274,7 +274,7 @@
     <ClInclude Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.h" />
     <ClInclude Include="Source\Actor\Item\Potion\Buff\Buff.h" />
     <ClInclude Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.h" />
-    <ClInclude Include="Source\Actor\Item\Potion\Heel\Heel.h" />
+    <ClInclude Include="Source\Actor\Item\Potion\Heal\Heal.h" />
     <ClInclude Include="Source\Actor\Item\Potion\Potion.h" />
     <ClInclude Include="Source\Actor\Stage\Stage.h" />
     <ClInclude Include="Source\Camera\GameCamera.h" />

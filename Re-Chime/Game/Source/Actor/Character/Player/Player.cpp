@@ -8,6 +8,7 @@
 #include "Source/Actor/Character/Enemy/FloorBoss/FloorBoss.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
+#include "graphics/effect/EffectEmitter.h"
 
 Player::Player()
 {
@@ -45,6 +46,8 @@ bool Player::Start()
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
+	//EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
+
 	return true;
 }
 
@@ -56,9 +59,13 @@ void Player::Update()
 	{
 		return;
 	}
-	Move();
 
-	Rotation();
+	if (!m_guardFlag)
+	{
+		Move();
+
+		Rotation();
+	}
 
 	SetScale();
 
@@ -152,7 +159,34 @@ void Player::Move()
 		}
 	}
 
-	
+	/*Vector3 vel = m_moveSpeed;
+	vel.y = 0.0f;
+
+	float moveSpeed = vel.Length();
+	float speedRate = moveSpeed / 480.0f;
+
+	if (speedRate < 0.0f) speedRate = 0.0f;
+	if (speedRate > 1.0f) speedRate = 1.0f;
+
+	if (m_characterController.IsOnGround() == false || speedRate < 0.05f)
+	{
+		m_footStepDistance = 0.0f;
+		m_footStepCooldown = 0.0f;
+		return;
+	}
+
+	float footInterval = 1.2f + (0.4f - 1.2f) * speedRate;
+
+	m_footStepDistance += moveSpeed * g_gameTime->GetFrameDeltaTime();
+	m_footStepCooldown -= g_gameTime->GetFrameDeltaTime();
+
+	if (m_footStepCooldown <= 0.0f && m_footStepDistance >= footInterval)
+	{
+		m_audioManager->PlaySE(enSound_PlayerWalkSE);
+
+		m_footStepDistance -= footInterval;
+		m_footStepCooldown = footInterval;
+	}*/
 
 	m_position = m_characterController.Execute(finalMoveSpeed, 2.0f / 60.0f);
 
@@ -185,11 +219,13 @@ void Player::Attack()
 		if(m_attackSpeedBuffFlag == true)
 		{
 			OnCollision();
+			m_isAttack = false;
 			m_timeCount = 1.0f; // 攻撃クールタイムを短縮する例
 		}
 		else if (m_attackSpeedBuffFlag == false)
 		{
 			OnCollision();
+			m_isAttack = false;
 			m_timeCount = 2.0f; // 通常の攻撃クールタイム
 		}
 		Time();
@@ -273,6 +309,7 @@ void Player::Hit()
 		if (collision->IsHit(m_characterController) == true)
 		{
 			Heal();
+			m_isHealFlag = true;
 		}
 	}
 
@@ -328,6 +365,15 @@ void Player::GuradTimeLimit()
 	}
 }
 
+void Player::JumpTime()
+{
+	m_jumpTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_jumpTime < 0.0f)
+	{
+		m_jumpTime = 0.0f;
+	}
+}
+
 void Player::PlayerState()
 {
 	if (m_isKnockBack)
@@ -336,7 +382,7 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonA))
+	if (g_pad[0]->IsTrigger(enButtonA) && m_timeCount == 0.0f && !m_guardFlag)
 	{
 		m_playerState = enPlayerState_Attack;
 		m_isAttack = true;
@@ -433,6 +479,11 @@ void Player::ManageState()
 	switch (m_playerState)
 	{
 	case enPlayerState_Idle:
+		m_audioManager->StopSE(enSound_PlayerWalkSE);
+		m_audioManager->StopSE(enSound_PlayerDashSE);
+		m_audioManager->StopSE(enSound_PlayerAttackSE);
+		m_audioManager->StopSE(enSound_PlayerGuardSE);
+		m_audioManager->StopSE(enSound_PlayerDamageSE);
 		IdleState();
 		break;
 	case enPlayerState_Jump:
@@ -527,10 +578,21 @@ void Player::AttackSpeedBuffTime()
 void Player::Heal()
 {
 	m_playerHp += m_heal;
+	//MakeHealEffect();
 	if (m_playerHp > m_playerMaxHp)
 	{
 		m_playerHp = m_playerMaxHp;
 	}
+}
+
+void Player::MakeHealEffect()
+{
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(1);
+	effectEmitter->SetScale(Vector3::One * 11.0f);
+	Vector3 effectPos = m_position;
+	effectEmitter->SetPosition(effectPos);
+	effectEmitter->Play();
 }
 
 const CharacterController& Player::GetCharacterController() const

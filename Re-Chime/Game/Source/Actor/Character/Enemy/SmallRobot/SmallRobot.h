@@ -6,6 +6,14 @@ class Gire;
 class Game;
 class AttackSpeedBuff;
 class PowerBuff;
+class Heal;
+
+enum enSmallRobotState
+{
+	enSmallRobotState_Idle,		//待機状態。
+	enSmallRobotState_Walk,		//移動状態。
+	enSmallRobotState_Num,
+};
 
 class SmallRobot : public Enemy
 {
@@ -53,6 +61,12 @@ public:
 	virtual void Render(RenderContext& rc)override;
 
 private:
+	enum EnAnimationClip {		//アニメーション。
+		enAnimationClip_Idle,
+		enAnimationClip_Walk,
+		enAnimationClip_Num,
+	};
+	AnimationClip m_animationClips[enAnimationClip_Num];
 	ModelRender m_modelRender;
 	CharacterController m_characterController;
 	Vector3 m_position;
@@ -61,6 +75,7 @@ private:
 	Player* m_player = nullptr;
 	AttackSpeedBuff* m_attackSpeedBuff = nullptr;
 	PowerBuff* m_powerBuff = nullptr;
+	Heal* m_heal = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Game* m_game = nullptr;
 	Vector3 m_forward;

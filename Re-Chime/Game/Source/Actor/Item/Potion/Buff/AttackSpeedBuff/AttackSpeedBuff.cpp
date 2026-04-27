@@ -49,8 +49,7 @@ void AttackSpeedBuff::Collision()
 
 void AttackSpeedBuff::Delete()
 {
-	bool isHit = false;
-	isHit = m_player->GetAttackSpeedBuffFlag(isHit);
+	bool isHit = m_player->GetAttackSpeedBuffFlag();
 	if (isHit == true)
 	{
 		DeleteGO(this);
