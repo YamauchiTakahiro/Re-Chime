@@ -48,8 +48,7 @@ void PowerBuff::Collision()
 
 void PowerBuff::Delete()
 {
-	bool isHit = false;
-	isHit = m_player->GetPowerBuffFlag(isHit);
+	bool isHit = m_player->GetPowerBuffFlag();
 	if (isHit == true)
 	{
 		DeleteGO(this);

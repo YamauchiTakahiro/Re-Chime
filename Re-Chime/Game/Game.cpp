@@ -48,7 +48,7 @@ bool Game::Start()
 
 				m_enemyCount++;
 			}
-			else if (objData.EqualObjectName(L"floorBoss") == true)
+			else if (objData.EqualObjectName(L"FloorBoss") == true)
 			{
 				auto floorBoss = NewGO<FloorBoss>(0, "FloorBoss");
 

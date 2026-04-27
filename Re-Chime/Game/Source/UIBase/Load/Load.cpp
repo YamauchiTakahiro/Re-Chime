@@ -38,8 +38,11 @@ bool Load::Start()
 	LoadTime = 350;
 	m_GearRotSpeed = 5.0f;
 
-	//AudioManager* sound = FindGO<AudioManager>("audioManager");
-	//m_LoadBGM = sound->PlayingSound(Sound::enSound_LoadBGM);
+	m_audioManager = FindGO<AudioManager>("audioManager");
+	if (m_audioManager)
+	{
+		m_audioManager->PlayBGM(enSound_LoadBGM, 0.5f);
+	}
 
 	m_Font.SetPosition(-955.0f, -450.0f, 0.0f);
 	m_Font.SetScale(1.0f);
@@ -55,6 +58,10 @@ void Load::Update()
 	if (m_loadTimer >= m_loadMax)
 	{
 		NewGO<Game>(0, "game");
+		if (m_audioManager)
+		{
+			m_audioManager->StopBGM();
+		}
 		DeleteGO(this);
 		return;
 	}
