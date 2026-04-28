@@ -23,6 +23,7 @@ class MediumRobot :
     void DamageIntarval() override;
     void AttackHit() override;
     void Dide() override;
+	void MakeExplosionEffect();
     Vector3 GetPosition()const override;
     int GetHP(int hp) override
     {

@@ -183,6 +183,17 @@ void FloorBoss::Dide()
 	}
 }
 
+void FloorBoss::MakeExplosionEffect()
+{
+	// 爆発エフェクトの生成処理をここに実装
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(5);
+	effectEmitter->SetScale(Vector3::One * 10.0f);
+	Vector3 effectPos = m_position;
+	effectEmitter->SetPosition(effectPos);
+	effectEmitter->Play();
+}
+
 void FloorBoss::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);

@@ -19,6 +19,7 @@ class FinalBoss : public Enemy
     void Hit() override;
     void DamageIntarval() override;
     void Dide() override;
+    void MakeExplosionEffect();
     void AttackHit() override;
     Vector3 GetPosition()const override;
     int GetHP(int hp) override

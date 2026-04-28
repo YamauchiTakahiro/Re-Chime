@@ -22,6 +22,7 @@ public:
 	void AttackHit() override;
 	void DamageIntarval() override;
 	void Dide() override;
+	void MakeExplosionEffect();
 	Vector3 GetPosition()const override
 	{
 		return m_position;
