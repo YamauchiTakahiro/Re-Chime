@@ -135,7 +135,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		//m_moveSpeed.y -= 20.0f;
+		m_moveSpeed.y -= 20.0f;
 	}
 
 	Vector3 finalMoveSpeed = m_moveSpeed;
@@ -236,7 +236,7 @@ void Player::OnCollision()
 	Vector3 collisionPos = m_position;
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 250.0f;
+	collisionPos += m_forward * 300.0f;
 	collisionPos.y += 50.0f; // 攻撃の当たり判定を少し上にずらす
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("playerAttack");
@@ -599,7 +599,7 @@ void Player::MakePowerBuffEffect()
 {
 	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(2);
-	effectEmitter->SetScale(Vector3::One * 50.0f);
+	effectEmitter->SetScale(Vector3::One * 1.0f);
 	Vector3 effectPos = m_position;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
@@ -609,7 +609,7 @@ void Player::MakeAttackSpeedBuffEffect()
 {
 	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(3);
-	effectEmitter->SetScale(Vector3::One * 50.0f);
+	effectEmitter->SetScale(Vector3::One * 25.0f);
 	Vector3 effectPos = m_position;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();

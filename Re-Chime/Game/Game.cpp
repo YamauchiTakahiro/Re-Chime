@@ -137,6 +137,7 @@ bool Game::Start()
 			EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
 			EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
 			EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/efk/Explosion.efk");
+			EffectEngine::GetInstance()->ResistEffect(5, u"Assets/effect/efk/BossExplosion.efk");
 
 			return true;
 	});

@@ -236,7 +236,7 @@ void SmallRobot::MakeExplosionEffect()
 	//爆発エフェクトの生成
 	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(4);
-	effectEmitter->SetScale(Vector3::One * 50.0f);
+	effectEmitter->SetScale(Vector3::One * 10.0f);
 	Vector3 effectPos = m_position;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
