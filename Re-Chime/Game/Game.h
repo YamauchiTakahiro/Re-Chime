@@ -19,6 +19,7 @@ class FinalBoss;
 class Title;
 class GameClear;
 class AudioManager;
+class Heal;
 
 class Game : public IGameObject
 {
@@ -79,6 +80,7 @@ private:
 	Title* m_title = nullptr;
 	GameClear* m_gameClear = nullptr;
 	AudioManager* m_audioManager = nullptr;
+	Heal* m_heal = nullptr;
 
 	int m_pauseSelect = 0; //ポーズメニュー、0:タイトルに戻る、1:ゲームに戻る、2:音量調整
 	bool m_isPause = false;

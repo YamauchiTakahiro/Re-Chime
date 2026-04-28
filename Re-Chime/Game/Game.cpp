@@ -15,6 +15,7 @@
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 #include "Source/UIBase/GameClear/GameClear.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Actor/Item/Potion/Heal/Heal.h"
 
 Game::Game()
 {
@@ -28,6 +29,8 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 	m_ui = NewGO<UI>(0, "ui");
+	/*m_heal = NewGO<Heal>(0, "heal");
+	m_heal->SetPosition(Vector3(1000.0f, 0.0f, 0.0f));*/
 	m_levelRender.Init("Assets/modelData/Level/ReChaim.tkl", [&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"Stage") == true)
@@ -48,7 +51,7 @@ bool Game::Start()
 
 				m_enemyCount++;
 			}
-			else if (objData.EqualObjectName(L"FloorBoss") == true)
+			/*else if (objData.EqualObjectName(L"FloorBoss") == true)
 			{
 				auto floorBoss = NewGO<FloorBoss>(0, "FloorBoss");
 
@@ -127,7 +130,7 @@ bool Game::Start()
 				m_barrier6->SetPosition(objData.position);
 				m_barrier6->SetRotation(objData.rotation);
 				m_barrier6->SetScale(objData.scale);
-			}
+			}*/
 
 			return true;
 	});
