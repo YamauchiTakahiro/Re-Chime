@@ -15,6 +15,7 @@ public:
 	{
 		m_title = title;
 	}
+	void Cursor();
 private:
 	Game* m_game = nullptr;
 	float m_bgmVolume = 1.0f;
@@ -33,6 +34,11 @@ private:
 	FontRender m_BGMValueText;
 	FontRender m_SEValueText;
 	FontRender m_BackText;
+
+	FontRender m_Cursor;
+
+	Vector3 m_cursorPos;
+	Vector3 m_targetPos;
 
 	float rightX = 700.0f;
 	int m_select = 0; //マスター 0 ,BGM 1 , SE 2
