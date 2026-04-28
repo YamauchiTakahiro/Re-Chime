@@ -44,6 +44,8 @@ public:
 	void AttackSpeedBuffTime();
 	void Heal();
 	void MakeHealEffect();
+	void MakePowerBuffEffect();
+	void MakeAttackSpeedBuffEffect();
 	void AttackState();
 	void IdleState();
 	void WalkState();

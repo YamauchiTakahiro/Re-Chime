@@ -46,7 +46,9 @@ bool Player::Start()
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
-	//EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
+	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
+	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
+	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
 
 	return true;
 }
@@ -289,6 +291,7 @@ void Player::Hit()
 		if (collision->IsHit(m_characterController) == true)
 		{
 			m_powerBuffFlag = true;
+			MakePowerBuffEffect();
 			m_powerBuffTime = 20.0f;
 		}
 	}
@@ -299,6 +302,7 @@ void Player::Hit()
 		if (collision->IsHit(m_characterController) == true)
 		{
 			m_attackSpeedBuffFlag = true;
+			MakeAttackSpeedBuffEffect();
 			m_attackSpeedBuffTime = 20.0f;
 		}
 	}
@@ -578,7 +582,7 @@ void Player::AttackSpeedBuffTime()
 void Player::Heal()
 {
 	m_playerHp += m_heal;
-	//MakeHealEffect();
+	MakeHealEffect();
 	if (m_playerHp > m_playerMaxHp)
 	{
 		m_playerHp = m_playerMaxHp;
@@ -589,7 +593,27 @@ void Player::MakeHealEffect()
 {
 	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(1);
-	effectEmitter->SetScale(Vector3::One * 11.0f);
+	effectEmitter->SetScale(Vector3::One * 50.0f);
+	Vector3 effectPos = m_position;
+	effectEmitter->SetPosition(effectPos);
+	effectEmitter->Play();
+}
+
+void Player::MakePowerBuffEffect()
+{
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(2);
+	effectEmitter->SetScale(Vector3::One * 50.0f);
+	Vector3 effectPos = m_position;
+	effectEmitter->SetPosition(effectPos);
+	effectEmitter->Play();
+}
+
+void Player::MakeAttackSpeedBuffEffect()
+{
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(3);
+	effectEmitter->SetScale(Vector3::One * 50.0f);
 	Vector3 effectPos = m_position;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
