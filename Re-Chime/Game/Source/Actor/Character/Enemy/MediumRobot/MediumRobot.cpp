@@ -180,6 +180,17 @@ void MediumRobot::Dide()
 	}
 }
 
+void MediumRobot::MakeExplosionEffect()
+{
+	//爆発エフェクトを作る処理。
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(4);
+	effectEmitter->SetScale(Vector3::One * 10.0f);
+	Vector3 effectPos = m_position;
+	effectEmitter->SetPosition(effectPos);
+	effectEmitter->Play();
+}
+
 Vector3 MediumRobot::GetPosition()const
 {
 	return m_position;
