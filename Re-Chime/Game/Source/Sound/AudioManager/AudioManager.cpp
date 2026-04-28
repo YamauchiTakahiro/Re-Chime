@@ -3,6 +3,7 @@
 #include "Sound/SoundEngine.h"
 #include "sound/SoundSource.h"
 #include <algorithm>
+#include <fstream>
 
 AudioManager::AudioManager()
 {
@@ -15,6 +16,7 @@ AudioManager::~AudioManager()
 bool AudioManager::Start()
 {
 	Init();
+	LoadVolume();
 	return true;
 }
 
@@ -191,4 +193,30 @@ void AudioManager::Load(AudioID id, const std::string& path)
 		return;
 	}
 	g_soundEngine->ResistWaveFileBank(id, path.c_str());
+}
+
+void AudioManager::SaveVolume()
+{
+	std::ofstream file("volume.dat");
+
+	if (!file.is_open()) return;
+
+	file << m_masterVolume << std::endl;
+	file << m_bgmVolume << std::endl;
+	file << m_seVolume << std::endl;
+
+	file.close();
+}
+
+void AudioManager::LoadVolume()
+{
+	std::ifstream file("volume.dat");
+
+	if (!file.is_open()) return;
+
+	file >> m_masterVolume;
+	file >> m_bgmVolume;
+	file >> m_seVolume;
+
+	file.close();
 }
