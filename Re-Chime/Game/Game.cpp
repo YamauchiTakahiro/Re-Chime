@@ -16,6 +16,7 @@
 #include "Source/UIBase/GameClear/GameClear.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
+#include "graphics/effect/EffectEmitter.h"
 
 Game::Game()
 {
@@ -131,6 +132,11 @@ bool Game::Start()
 				m_barrier6->SetRotation(objData.rotation);
 				m_barrier6->SetScale(objData.scale);
 			}*/
+
+			EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
+			EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
+			EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
+			EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/efk/Explosion.efk");
 
 			return true;
 	});
