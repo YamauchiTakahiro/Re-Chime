@@ -74,6 +74,7 @@ private:
 	DifficultyLevel* m_difficul = nullptr;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
+	FontRender m_Cursor;
 	FontRender m_TitleReturnText;
 	FontRender m_PlayerReturnText;
 	FontRender m_SoundText;
@@ -81,6 +82,7 @@ private:
 	GameClear* m_gameClear = nullptr;
 	AudioManager* m_audioManager = nullptr;
 	Heal* m_heal = nullptr;
+	Vector3 m_cursorPos;
 
 	int m_pauseSelect = 0; //ポーズメニュー、0:タイトルに戻る、1:ゲームに戻る、2:音量調整
 	bool m_isPause = false;
@@ -88,5 +90,6 @@ private:
 	int m_enemyCount = 0;		//!<敵の数。
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 	bool m_isSetting = false;
+	float m_pauseTime;
 };
 

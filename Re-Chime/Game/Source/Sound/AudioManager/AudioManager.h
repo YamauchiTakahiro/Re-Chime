@@ -51,6 +51,7 @@ public:
 	void SetBGMVolume(float volume);
 	void SetSEVolume(float volume);
 
+	float GetMasterVolume() const { return m_masterVolume; }
 	float GetBGMVolume() const { return m_bgmVolume; }
 	float GetSEVolume() const { return m_seVolume; }
 	void SetMasterVolume(float volume)
@@ -72,10 +73,9 @@ public:
 			}
 		}
 	}
-	float GetMasterVolume() const
-	{
-		return m_masterVolume;
-	}
+	void SaveVolume();
+	void LoadVolume();
+
 private:
 	void LoadAll();
 	void Load(AudioID id, const std::string& path);

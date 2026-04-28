@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Source/Actor/Actor.h"
+class Player;
 class Stage : public Actor
 {
 	public:
@@ -13,10 +14,19 @@ class Stage : public Actor
 		m_modelRender.SetPosition(position);
 	}
 	void Render(RenderContext& rc)override;
+	void Fade();
 
 private:
 	Vector3 m_position;
 	ModelRender m_modelRender;
 	PhysicsStaticObject m_physicsStaticObject;
+	SpriteRender m_fade;
+
+	float m_alpha = 0.0f;
+	float m_showDistance = 200.0f;
+	float m_fadeSpeed = 2.0f;
+
+	Player* m_player = nullptr;
+	Vector3 m_stairPos = { 100, 0, 200 };
 };
 
