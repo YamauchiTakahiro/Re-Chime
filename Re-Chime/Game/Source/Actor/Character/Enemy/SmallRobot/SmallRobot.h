@@ -32,6 +32,7 @@ public:
 	void AttackHit() override;
 	void Dide() override;
 	void EnemyHP();
+	void MakeExplosionEffect();
 	Vector3 GetPosition()const override
 	{
 		return m_position;

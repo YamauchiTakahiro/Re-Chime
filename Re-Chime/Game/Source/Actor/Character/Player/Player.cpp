@@ -8,7 +8,6 @@
 #include "Source/Actor/Character/Enemy/FloorBoss/FloorBoss.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
-#include "graphics/effect/EffectEmitter.h"
 
 Player::Player()
 {
@@ -45,10 +44,6 @@ bool Player::Start()
 	m_finalBoss = FindGO<FinalBoss>("finalBoss");
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
-
-	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
-	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
-	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
 
 	return true;
 }
@@ -140,7 +135,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		m_moveSpeed.y -= 20.0f;
+		//m_moveSpeed.y -= 20.0f;
 	}
 
 	Vector3 finalMoveSpeed = m_moveSpeed;
@@ -242,6 +237,7 @@ void Player::OnCollision()
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
 	collisionPos += m_forward * 250.0f;
+	collisionPos.y += 50.0f; // 攻撃の当たり判定を少し上にずらす
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("playerAttack");
 }

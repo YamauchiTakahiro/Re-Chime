@@ -28,6 +28,7 @@ bool SmallRobot::Start()
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
+
 	return true;
 }
 
@@ -171,6 +172,7 @@ void SmallRobot::Dide()
 	if (m_smallRobotHp <= 0)
 	{
 		m_game->EnemyCount();
+		MakeExplosionEffect();
 		int randomNum = rand() % 100 + 1;
 		if (randomNum <= 20)
 		{
@@ -227,6 +229,17 @@ void SmallRobot::EnemyHP()
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_enemyHPBarPosition, hpPos);
 	m_enemyHP.SetPosition(Vector3(m_enemyHPBarPosition.x, m_enemyHPBarPosition.y, 0.0f));
 	m_enemyHP.Update();
+}
+
+void SmallRobot::MakeExplosionEffect()
+{
+	//爆発エフェクトの生成
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(4);
+	effectEmitter->SetScale(Vector3::One * 50.0f);
+	Vector3 effectPos = m_position;
+	effectEmitter->SetPosition(effectPos);
+	effectEmitter->Play();
 }
 
 void SmallRobot::Render(RenderContext& rc)
