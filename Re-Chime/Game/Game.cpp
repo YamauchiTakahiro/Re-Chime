@@ -50,7 +50,7 @@ bool Game::Start()
 
 				m_stage->SetPosition(objData.position);
 			}
-			else if (objData.EqualObjectName(L"smallRobot") == true)
+			/*else if (objData.EqualObjectName(L"smallRobot") == true)
 			{
 				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
@@ -61,7 +61,7 @@ bool Game::Start()
 				m_smallRobot.push_back(smallRobot);
 
 				m_enemyCount++;
-			}
+			}*/
 			/*else if (objData.EqualObjectName(L"FloorBoss") == true)
 			{
 				auto floorBoss = NewGO<FloorBoss>(0, "FloorBoss");
@@ -73,7 +73,7 @@ bool Game::Start()
 				m_floorBoss.push_back(floorBoss);
 
 				m_enemyCount++;
-			}
+			}*/
 			else if (objData.EqualObjectName(L"mediumRobot") == true)
 			{
 				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
@@ -86,7 +86,7 @@ bool Game::Start()
 
 				m_enemyCount++;
 			}
-			else if (objData.EqualObjectName(L"finalBoss") == true)
+			/*else if (objData.EqualObjectName(L"finalBoss") == true)
 			{
 				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
 				
@@ -97,8 +97,8 @@ bool Game::Start()
 				m_finalBoss.push_back(finalBoss);
 
 				m_enemyCount++;
-			}
-			else if (objData.EqualObjectName(L"barrier1") == true)
+			}*/
+			/*else if (objData.EqualObjectName(L"barrier1") == true)
 			{
 				m_barrier1 = NewGO<Barrier>(0, "barrier");
 				m_barrier1->SetPosition(objData.position);
@@ -142,6 +142,9 @@ bool Game::Start()
 				m_barrier6->SetRotation(objData.rotation);
 				m_barrier6->SetScale(objData.scale);
 			}*/
+
+			m_gire = NewGO<Gire>(0, "gire");
+			m_gire->SetPosition(Vector3(0.0f, 7000.0f, 0.0f));
 
 			EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
 			EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");

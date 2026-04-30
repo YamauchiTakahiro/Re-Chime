@@ -24,6 +24,7 @@ void PowerBuff::Update()
 {
 	Move();
 	Rotation();
+	SetScale();
 	Delete();
 	m_modelRender.Update();
 }
@@ -44,6 +45,11 @@ void PowerBuff::Collision()
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("powerBuffPotion");
 	m_collisionObject->SetIsEnableAutoDelete(false);
+}
+
+void PowerBuff::SetScale()
+{
+	m_modelRender.SetScale(Vector3(2.0f, 2.0f, 2.0f));
 }
 
 void PowerBuff::Delete()

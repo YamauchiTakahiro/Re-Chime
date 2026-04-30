@@ -13,10 +13,12 @@ public:
 	void Move()override;
 	void Rotation()override;
 	void Collision();
+	void SetScale();
 	void Delete();
 	void SetPosition(Vector3 pos)
 	{
 		m_position = pos;
+		pos.y += 50.0f;
 	}
 	void Render(RenderContext& rc)override;
 

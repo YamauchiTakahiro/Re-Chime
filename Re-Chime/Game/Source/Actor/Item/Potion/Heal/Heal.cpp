@@ -24,6 +24,7 @@ void Heal::Update()
 {
 	Rotation();
 	Move();
+	SetScale();
 	Delete();
 	m_modelRender.Update();
 }
@@ -44,6 +45,11 @@ void Heal::Collision()
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("healPotion");
 	m_collisionObject->SetIsEnableAutoDelete(false);
+}
+
+void Heal::SetScale()
+{
+	m_modelRender.SetScale(Vector3(2.0f, 2.0f, 2.0f));
 }
 
 void Heal::Delete()
