@@ -17,7 +17,13 @@ MediumRobot::~MediumRobot()
 
 bool MediumRobot::Start()
 {
-	m_modelRender.Init("Assets/modelData/Enemy/mediumRobot/mediumRobot.tkm");
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Enemy/mediumRobot/mediumRobotIdle.tka");
+	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/mediumRobot/mediumRobotWalk.tka");
+	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/mediumRobot/mediumRobotDeath.tka");
+	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+	m_modelRender.Init("Assets/modelData/Enemy/mediumRobot/mediumRobot.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
@@ -44,7 +50,9 @@ void MediumRobot::Update()
 
 	AttackHit();
 
-	Dide();
+	ManageState();
+
+	PlayAnimation();
 	m_modelRender.Update();
 }
 
@@ -162,22 +170,20 @@ void MediumRobot::DamageIntarval()
 
 void MediumRobot::Dide()
 {
-	if (m_mediumRobotHp <= 0)
+	m_game->EnemyCount();
+	MakeExplosionEffect();
+	int randomNum = rand() % 100 + 1;
+	if (randomNum <= 20)
 	{
-		m_game->EnemyCount();
-		int randomNum = rand() % 100 + 1;
-		if (randomNum <= 20)
-		{
-			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
-			m_attackSpeedBuff->SetPosition(m_position);
-		}
-		else if (randomNum > 20 && randomNum <= 40)
-		{
-			m_powerBuff = NewGO<PowerBuff>(0);
-			m_powerBuff->SetPosition(m_position);
-		}
-		DeleteGO(this);
+		m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
+		m_attackSpeedBuff->SetPosition(m_position);
 	}
+	else if (randomNum > 20 && randomNum <= 40)
+	{
+		m_powerBuff = NewGO<PowerBuff>(0);
+		m_powerBuff->SetPosition(m_position);
+	}
+	DeleteGO(this);
 }
 
 void MediumRobot::MakeExplosionEffect()
@@ -189,6 +195,76 @@ void MediumRobot::MakeExplosionEffect()
 	Vector3 effectPos = m_position;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
+}
+
+void MediumRobot::ManageState()
+{
+	switch (m_mediumRobotState)
+	{
+	case enMediumRobotState_Idle:
+		IdleState();
+		break;
+	case enMediumRobotState_Walk:
+		WalkState();
+		break;
+	case enMediumRobotState_Death:
+		DeathState();
+		break;
+	default:
+		break;
+	}
+}
+
+void MediumRobot::PlayAnimation()
+{
+	switch (m_mediumRobotState)
+	{
+	case enMediumRobotState_Idle:
+		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		break;
+	case enMediumRobotState_Walk:
+		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+		break;
+	case enMediumRobotState_Death:
+		m_modelRender.PlayAnimation(enAnimationClip_Death);
+		break;
+	default:
+		break;
+	}
+}
+
+void MediumRobot::MediumRobotState()
+{
+	if (m_mediumRobotHp <= 0)
+	{
+		m_mediumRobotState = enMediumRobotState_Death;
+	}
+	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		m_mediumRobotState = enMediumRobotState_Walk;
+	}
+	else
+	{
+		m_mediumRobotState = enMediumRobotState_Idle;
+	}
+}
+
+void MediumRobot::IdleState()
+{
+	MediumRobotState();
+}
+
+void MediumRobot::WalkState()
+{
+	MediumRobotState();
+}
+
+void MediumRobot::DeathState()
+{
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		Dide();
+	}
 }
 
 Vector3 MediumRobot::GetPosition()const

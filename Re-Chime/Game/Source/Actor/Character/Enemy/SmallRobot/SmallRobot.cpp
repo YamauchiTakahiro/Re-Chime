@@ -20,7 +20,11 @@ SmallRobot::~SmallRobot()
 
 bool SmallRobot::Start()
 {
-	m_modelRender.Init("Assets/modelData/Enemy/smallRobot/smallRobot.tkm");
+	/*m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Enemy/smallRobot/smallRobotIdle.tka");
+	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/smallRobot/smallRobotWalk.tka");
+	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);*/
+	m_modelRender.Init("Assets/modelData/Enemy/smallRobot/smallRobot.tkm"/*, m_animationClips, enAnimationClip_Num*/);
 	m_enemyHP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
 	//m_enemyHP.SetScale(Vector3(0.41f, 3.0f, 0.5f));
 	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
@@ -55,6 +59,10 @@ void SmallRobot::Update()
 	Dide();
 
 	EnemyHP();
+
+	/*ManageState();
+
+	PlayAnimation();*/
 	m_modelRender.Update();
 }
 
@@ -241,6 +249,59 @@ void SmallRobot::MakeExplosionEffect()
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
 }
+
+//void SmallRobot::EnemyState()
+//{
+//	if(fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+//	{
+//		m_smallRobotState = enSmallRobotState_Walk;
+//	}
+//	else
+//	{
+//		m_smallRobotState = enSmallRobotState_Idle;
+//	}
+//}
+//
+//void SmallRobot::IdleState()
+//{
+//	EnemyState();
+//}
+//
+//void SmallRobot::WalkState()
+//{
+//	EnemyState();
+//}
+//
+//void SmallRobot::ManageState()
+//{
+//	switch (m_smallRobotState)
+//	{
+//	case enSmallRobotState_Idle:
+//		break;
+//	case enSmallRobotState_Walk:
+//		break;
+//	case enSmallRobotState_Num:
+//		break;
+//	default:
+//		break;
+//	}
+//}
+//void SmallRobot::PlayAnimation()
+//{
+//	switch (m_smallRobotState)
+//	{
+//	case enSmallRobotState_Idle:
+//		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+//		break;
+//	case enSmallRobotState_Walk:
+//		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+//		break;
+//	case enSmallRobotState_Num:
+//		break;
+//	default:
+//		break;
+//	}
+//}
 
 void SmallRobot::Render(RenderContext& rc)
 {

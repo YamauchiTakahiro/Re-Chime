@@ -128,9 +128,14 @@ void Player::Move()
 	if (m_characterController.IsOnGround())
 	{
 		m_moveSpeed.y = 0.0f;
-		if (g_pad[0]->IsTrigger(enButtonB))
+		if (m_isJump)
 		{
-			m_moveSpeed.y = 500.0f;
+			JumpTime();
+			if (m_jumpTime == 0.0f)
+			{
+				m_moveSpeed.y = 500.0f;
+				m_jumpTime = 1.0f;
+			}
 		}
 	}
 	if (m_characterController.IsOnGround() == false)
@@ -211,7 +216,7 @@ void Player::Attack()
 	{
 		return;
 	}
-	if (m_isAttack == true)
+	if (m_isAttack == true && !m_isKnockBack)
 	{
 		if(m_attackSpeedBuffFlag == true)
 		{
@@ -402,10 +407,10 @@ void Player::PlayerState()
 		m_guardFlag = false;
 	}
 
-	if(m_isKnockBack == false && m_characterController.IsOnGround() == false)
+	if(m_isKnockBack == false && g_pad[0]->IsTrigger(enButtonB))
 	{
 		m_playerState = enPlayerState_Jump;
-
+		m_isJump = true;
 		return;
 	}
 
@@ -432,7 +437,7 @@ void Player::PlayerState()
 
 void Player::AttackState()
 {
-	if (m_modelRender.IsPlayingAnimation() == false)
+	if (m_modelRender.IsPlayingAnimation() == false || m_isKnockBack)
 	{
 		PlayerState();
 	}
@@ -457,6 +462,7 @@ void Player::JumpState()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		m_isJump = false;
 		PlayerState();
 	}
 }
@@ -591,6 +597,7 @@ void Player::MakeHealEffect()
 	effectEmitter->Init(1);
 	effectEmitter->SetScale(Vector3::One * 50.0f);
 	Vector3 effectPos = m_position;
+	effectPos.y += 70.0f;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
 }
@@ -599,8 +606,9 @@ void Player::MakePowerBuffEffect()
 {
 	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(2);
-	effectEmitter->SetScale(Vector3::One * 1.0f);
+	effectEmitter->SetScale(Vector3::One * 10.0f);
 	Vector3 effectPos = m_position;
+	effectPos.y += 70.0f;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
 }
@@ -609,8 +617,9 @@ void Player::MakeAttackSpeedBuffEffect()
 {
 	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(3);
-	effectEmitter->SetScale(Vector3::One * 25.0f);
+	effectEmitter->SetScale(Vector3::One * 10.0f);
 	Vector3 effectPos = m_position;
+	effectPos.y += 70.0f;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
 }

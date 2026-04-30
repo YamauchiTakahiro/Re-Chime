@@ -6,10 +6,16 @@ class AttackSpeedBuff;
 class PowerBuff;
 class Game;
 
-class MediumRobot :
-    public Enemy
+class MediumRobot : public Enemy
 {
-    public:
+ public:
+    enum enMediumRobotState
+    {
+        enMediumRobotState_Idle,		//待機状態。
+        enMediumRobotState_Walk,		//移動状態。
+		enMediumRobotState_Death,		//死亡状態。
+        enMediumRobotState_Num,
+	};
     MediumRobot();
     ~MediumRobot();
     bool Start() override;
@@ -24,6 +30,12 @@ class MediumRobot :
     void AttackHit() override;
     void Dide() override;
 	void MakeExplosionEffect();
+	void ManageState();
+	void PlayAnimation();
+	void MediumRobotState();
+	void IdleState();
+    void WalkState();
+	void DeathState();
     Vector3 GetPosition()const override;
     int GetHP(int hp) override
     {
@@ -48,6 +60,14 @@ class MediumRobot :
 	virtual void Render(RenderContext& rc)override;
 
 private:
+    enum enAnimationClip {		//アニメーション。
+        enAnimationClip_Idle,
+        enAnimationClip_Walk,
+        enAnimationClip_Death,
+        enAnimationClip_Num,
+	};
+    AnimationClip m_animationClips[enAnimationClip_Num];	//!<アニメーションクリップ。
+	enMediumRobotState m_mediumRobotState = enMediumRobotState_Idle;	//!<中型ロボットの状態。
     ModelRender m_modelRender;
     CharacterController m_characterController;
     Vector3 m_position;
