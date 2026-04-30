@@ -318,6 +318,7 @@ void Game::PauseRender()
 void Game::FirstFloor()
 {
 	m_gire = NewGO<Gire>(0, "gire");
+	m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
 	DeleteGO(m_barrier1);
 	DeleteGO(m_barrier2);
 }
@@ -325,7 +326,7 @@ void Game::FirstFloor()
 void Game::SecondFloor()
 {
 	m_gire = NewGO<Gire>(0, "gire");
-	m_gire->SetPosition(Vector3(0.0f, 1000.0f, 0.0f));
+	m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
 	DeleteGO(m_barrier3);
 	DeleteGO(m_barrier4);
 }
@@ -333,7 +334,7 @@ void Game::SecondFloor()
 void Game::ThirdFloor()
 {
 	m_gire = NewGO<Gire>(0, "gire");
-	m_gire->SetPosition(Vector3(0.0f, 2000.0f, 0.0f));
+	m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
 	DeleteGO(m_barrier5);
 	DeleteGO(m_barrier6);
 }
