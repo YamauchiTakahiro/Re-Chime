@@ -9,6 +9,13 @@ class PowerBuff;
 class FloorBoss : public Enemy
 {
 public:
+	enum enFloorBossState
+	{
+		enFloorBossState_Idle,		//待機状態。
+		enFloorBossState_Walk,		//移動状態。
+		enFloorBossState_Death,		//死亡状態。
+		enFloorBossState_Num,
+	};
 	FloorBoss();
 	~FloorBoss();
 	bool Start() override;
@@ -23,6 +30,12 @@ public:
 	void DamageIntarval() override;
 	void Dide() override;
 	void MakeExplosionEffect();
+	/*void ManageState();
+	void PlayAnimation();
+	void FloorBossState();
+	void IdleState();
+	void WalkState();
+	void DeathState();*/
 	Vector3 GetPosition()const override
 	{
 		return m_position;
@@ -53,13 +66,14 @@ public:
 
 private:
 	ModelRender m_modelRender;
-	//enum EnAnimationClip {		//アニメーション。
-	//	enAnimationClip_Idle,
-	//	enAnimationClip_Walk,
-	//	enAnimationClip_Death,
-	//	enAnimationClip_Num,
-	//};
-	//AnimationClip m_animationClips[enAnimationClip_Num];
+	enum EnAnimationClip {		//アニメーション。
+		enAnimationClip_Idle,
+		enAnimationClip_Walk,
+		enAnimationClip_Death,
+		enAnimationClip_Num,
+	};
+	AnimationClip m_animationClips[enAnimationClip_Num];
+	enFloorBossState m_floorBossState = enFloorBossState_Idle;
 	CharacterController m_characterController;
 	Vector3 m_position;
 	Vector3 m_moveSpeed;

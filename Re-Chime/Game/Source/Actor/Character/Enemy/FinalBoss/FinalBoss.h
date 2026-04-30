@@ -2,11 +2,19 @@
 #include "Source/Actor/Character/Enemy/Enemy.h"
 
 class Player;
+class Gire;
 class Game;
 
 class FinalBoss : public Enemy
 {
     public:
+        enum EnFinalBossState {
+            enFinalBossState_Idle,		//待機状態。
+            enFinalBossState_Walk,		//移動。
+            enFinalBossState_Attack,		//攻撃。
+            enFinalBossState_Death,		//死亡。
+			enFinalBossState_Num,
+		};
     FinalBoss();
     ~FinalBoss();
     bool Start() override;
@@ -21,6 +29,13 @@ class FinalBoss : public Enemy
     void Dide() override;
     void MakeExplosionEffect();
     void AttackHit() override;
+	void ManageState();
+	void PlayAnimation();
+    void FinalBossState();
+	void IdleState();
+	void WalkState();
+	void AttackState();
+	void DeathState();
     Vector3 GetPosition()const override;
     int GetHP(int hp) override
     {
@@ -45,12 +60,22 @@ class FinalBoss : public Enemy
 	virtual void Render(RenderContext& rc)override;
 
 private:
+    enum EnAnimationClip {		//アニメーション。
+        enAnimationClip_Idle,
+        enAnimationClip_Walk,
+        enAnimationClip_Attack,
+        enAnimationClip_Death,
+        enAnimationClip_Num,
+	};
+	AnimationClip m_animationClips[enAnimationClip_Num];
+	EnFinalBossState m_finalBossState = enFinalBossState_Idle;
     ModelRender m_modelRender;
     CharacterController m_characterController;
     Vector3 m_position;
     Vector3 m_moveSpeed;
     Quaternion m_rotation;
     Player* m_player = nullptr;
+	Gire* m_gire = nullptr;
 	Game* m_game = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward;
@@ -60,5 +85,6 @@ private:
 	int m_attackPower = 20;		//!<攻撃力。
     float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
+	bool m_isAttack = false;		//!<攻撃しているかどうか。
 };
 
