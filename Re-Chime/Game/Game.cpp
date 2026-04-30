@@ -74,7 +74,7 @@ bool Game::Start()
 
 				m_enemyCount++;
 			}*/
-			else if (objData.EqualObjectName(L"mediumRobot") == true)
+			/*else if (objData.EqualObjectName(L"mediumRobot") == true)
 			{
 				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
 
@@ -85,8 +85,8 @@ bool Game::Start()
 				m_mediumRobot.push_back(mediumRobot);
 
 				m_enemyCount++;
-			}
-			/*else if (objData.EqualObjectName(L"finalBoss") == true)
+			}*/
+			else if (objData.EqualObjectName(L"finalBoss") == true)
 			{
 				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
 				
@@ -97,7 +97,7 @@ bool Game::Start()
 				m_finalBoss.push_back(finalBoss);
 
 				m_enemyCount++;
-			}*/
+			}
 			/*else if (objData.EqualObjectName(L"barrier1") == true)
 			{
 				m_barrier1 = NewGO<Barrier>(0, "barrier");

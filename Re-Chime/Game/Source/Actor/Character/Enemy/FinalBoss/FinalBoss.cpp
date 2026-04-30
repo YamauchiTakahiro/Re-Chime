@@ -2,6 +2,7 @@
 #include "FinalBoss.h"
 #include "Source/Actor/Character/Player/Player.h"
 #include "collision/CollisionObject.h"
+#include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
 
 FinalBoss::FinalBoss()
@@ -15,7 +16,15 @@ FinalBoss::~FinalBoss()
 
 bool FinalBoss::Start()
 {
-	m_modelRender.Init("Assets/modelData/Enemy/finalBoss/finalBoss.tkm");
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Enemy/finalBoss/finalBossIdle.tka");
+	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/finalBoss/finalBossWalk.tka");
+	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Enemy/finalBoss/finalBossAttack.tka");
+	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/finalBoss/finalBossDeath.tka");
+	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+	m_modelRender.Init("Assets/modelData/Enemy/finalBoss/finalBoss.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
@@ -31,11 +40,20 @@ void FinalBoss::Update()
 		return;
 	}
 	Move();
+
 	Rotation();
+
 	Time();
+
 	Hit();
+
 	DamageIntarval();
-	Dide();
+
+	AttackHit();
+
+	ManageState();
+
+	PlayAnimation();
 	m_modelRender.Update();
 }
 
@@ -44,12 +62,6 @@ void FinalBoss::Move()
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 500 && m_timeCount == 0.0f)
-	{
-		Attack();
-		m_timeCount = 1.0f;
-		Time();
-	}
 	if (distToPlayer <= 1000)
 	{
 		toPlayer.Normalize();
@@ -76,7 +88,16 @@ void FinalBoss::Rotation()
 
 void FinalBoss::Attack()
 {
-	OnCollision();
+	if(m_finalBossState != enFinalBossState_Attack)
+	{
+		return;
+	}
+	if (m_isAttack == true && m_timeCount == 0.0f)
+	{
+		OnCollision();
+		m_isAttack = false;
+		m_timeCount = 2.0f;
+	}
 }
 
 void FinalBoss::OnCollision()
@@ -143,6 +164,9 @@ void FinalBoss::Dide()
 	if (m_finalBossHp <= 0)
 	{
 		m_game->EnemyCount();
+		MakeExplosionEffect();
+		m_gire = NewGO<Gire>(0);
+		m_gire->SetPosition(Vector3(m_position.x, m_position.y + 50.0f, m_position.z));
 		DeleteGO(this);
 	}
 }
@@ -156,6 +180,98 @@ void FinalBoss::MakeExplosionEffect()
 	Vector3 effectPos = m_position;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
+}
+
+void FinalBoss::ManageState()
+{
+	switch (m_finalBossState)
+	{
+	case enFinalBossState_Idle:
+		IdleState();
+		break;
+	case enFinalBossState_Walk:
+		WalkState();
+		break;
+	case enFinalBossState_Attack:
+		AttackState();
+		break;
+	case enFinalBossState_Death:
+		DeathState();
+		break;
+	default:
+		break;
+	}
+}
+
+void FinalBoss::PlayAnimation()
+{
+	switch (m_finalBossState)
+	{
+	case enFinalBossState_Idle:
+		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		break;
+	case enFinalBossState_Walk:
+		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+		break;
+	case enFinalBossState_Attack:
+		m_modelRender.PlayAnimation(enAnimationClip_Attack);
+		break;
+	case enFinalBossState_Death:
+		m_modelRender.PlayAnimation(enAnimationClip_Death);
+		break;
+	default:
+		break;
+	}
+}
+
+void FinalBoss::FinalBossState()
+{
+	Vector3 playerPos = m_player->GetPosition();
+	Vector3 toPlayer = playerPos - m_position;
+	float distToPlayer = toPlayer.Length();
+	if (m_finalBossHp <= 0)
+	{
+		m_finalBossState = enFinalBossState_Death;
+	}
+	if (distToPlayer <= 500 && m_timeCount == 0.0f)
+	{
+		m_finalBossState = enFinalBossState_Attack;
+		m_isAttack = true;
+	}
+	else if (m_moveSpeed.Length() > 0.01f)
+	{
+		m_finalBossState = enFinalBossState_Walk;
+	}
+	else
+	{
+		m_finalBossState = enFinalBossState_Idle;
+	}
+}
+
+void FinalBoss::IdleState()
+{
+	FinalBossState();
+}
+
+void FinalBoss::WalkState()
+{
+	FinalBossState();
+}
+
+void FinalBoss::AttackState()
+{
+	if(m_modelRender.IsPlayingAnimation() == false)
+	{
+		FinalBossState();
+	}
+}
+
+void FinalBoss::DeathState()
+{
+	if(m_modelRender.IsPlayingAnimation() == false)
+	{
+		Dide();
+	}
 }
 
 Vector3 FinalBoss::GetPosition()const
