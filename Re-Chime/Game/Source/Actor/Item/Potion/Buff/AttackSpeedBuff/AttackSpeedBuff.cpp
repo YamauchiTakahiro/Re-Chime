@@ -24,6 +24,7 @@ void AttackSpeedBuff::Update()
 {
 	Move();
 	Rotation();
+	SetScale();
 	Delete();
 	m_modelRender.Update();
 }
@@ -45,6 +46,11 @@ void AttackSpeedBuff::Collision()
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("attackSpeedBuffPotion");
 	m_collisionObject->SetIsEnableAutoDelete(false);
+}
+
+void AttackSpeedBuff::SetScale()
+{
+	m_modelRender.SetScale(Vector3(2.0f, 2.0f, 2.0f));
 }
 
 void AttackSpeedBuff::Delete()

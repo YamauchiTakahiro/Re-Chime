@@ -8,16 +8,15 @@ class AttackSpeedBuff;
 class PowerBuff;
 class Heal;
 
-enum enSmallRobotState
-{
-	enSmallRobotState_Idle,		//待機状態。
-	enSmallRobotState_Walk,		//移動状態。
-	enSmallRobotState_Num,
-};
-
 class SmallRobot : public Enemy
 {
 public:
+	//enum enSmallRobotState
+//{
+//	enSmallRobotState_Idle,		//待機状態。
+//	enSmallRobotState_Walk,		//移動状態。
+//	enSmallRobotState_Num,
+//};
 	SmallRobot();
 	~SmallRobot();
 	bool Start() override;
@@ -33,6 +32,11 @@ public:
 	void Dide() override;
 	void EnemyHP();
 	void MakeExplosionEffect();
+	/*void ManageState();
+	void PlayAnimation();
+	void EnemyState();
+	void WalkState();
+	void IdleState();*/
 	Vector3 GetPosition()const override
 	{
 		return m_position;
@@ -62,12 +66,12 @@ public:
 	virtual void Render(RenderContext& rc)override;
 
 private:
-	enum EnAnimationClip {		//アニメーション。
-		enAnimationClip_Idle,
-		enAnimationClip_Walk,
-		enAnimationClip_Num,
-	};
-	AnimationClip m_animationClips[enAnimationClip_Num];
+	//enum EnAnimationClip {		//アニメーション。
+	//	enAnimationClip_Idle,
+	//	enAnimationClip_Walk,
+	//	enAnimationClip_Num,
+	//};
+	//AnimationClip m_animationClips[enAnimationClip_Num];
 	ModelRender m_modelRender;
 	CharacterController m_characterController;
 	Vector3 m_position;
@@ -83,6 +87,7 @@ private:
 	Vector3 m_scale;
 	SpriteRender m_enemyHP;//敵のHPを表示する。
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
+	//enSmallRobotState m_smallRobotState = enSmallRobotState_Idle;	//!<小型ロボットの状態。
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
 	int m_smallRobotMaxHp = 50;	//!<小型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
