@@ -110,7 +110,6 @@ public:
     void SetScale();
     void Render(RenderContext& rc)override;
 
-
 private:
     //メンバ変数
     enum EnAnimationClip {		//アニメーション。
