@@ -20,6 +20,7 @@ class Title;
 class GameClear;
 class AudioManager;
 class Heal;
+class Fade;
 
 class Game : public IGameObject
 {
@@ -83,6 +84,10 @@ private:
 	AudioManager* m_audioManager = nullptr;
 	Heal* m_heal = nullptr;
 	Vector3 m_cursorPos;
+	FontRender m_Pos;
+	Fade* m_fade = nullptr;
+	Vector3 m_stairMin = { 2350.0f - rangeX, 376.0f, 3300.0f };
+	Vector3 m_stairMax = { 2350.0f + rangeX, 376.8f, 3900.0f };
 
 	int m_pauseSelect = 0; //ポーズメニュー、0:タイトルに戻る、1:ゲームに戻る、2:音量調整
 	bool m_isPause = false;
@@ -91,5 +96,15 @@ private:
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 	bool m_isSetting = false;
 	float m_pauseTime;
+
+	bool m_isNear = false;
+	float rangeX = 300.0f;
+	float m_showDistance = 200.0f;
+	struct FadeArea {
+		Vector3 pos;
+		float radius;
+	};
+
+	std::vector<FadeArea> m_fadeAreas;
 };
 

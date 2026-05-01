@@ -17,6 +17,7 @@
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "graphics/effect/EffectEmitter.h"
+#include "Fade.h"
 
 namespace
 {
@@ -40,6 +41,7 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 	m_ui = NewGO<UI>(0, "ui");
+	m_fade = NewGO<Fade>(0, "fade");
 	/*m_heal = NewGO<Heal>(0, "heal");
 	m_heal->SetPosition(Vector3(1000.0f, 0.0f, 0.0f));*/
 	m_levelRender.Init("Assets/modelData/Level/ReChaim.tkl", [&](LevelObjectData& objData)
@@ -174,6 +176,10 @@ bool Game::Start()
 
 	m_cursorPos = Vector3(0, 0, 0);
 
+	m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f }); // 1階
+	m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f });      // 2階
+	m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f });      // 3階
+
 	return true;
 }
 
@@ -251,6 +257,44 @@ void Game::Update()
 	if (m_numDefeatedEnemy == 11)
 	{
 		ThirdFloor();
+	}
+
+	//プレイヤーの現在の座標を表示
+	Vector3 playerPos = m_player->GetPosition();
+
+	wchar_t text[256];
+	swprintf_s(text, L"X: %.1f Y: %.1f Z: %.1f",
+		playerPos.x, playerPos.y, playerPos.z);
+
+	m_Pos.SetText(text);
+
+	// フェード判定
+	if (m_fade != nullptr)
+	{
+		bool isInAnyArea = false;
+
+		for (auto& area : m_fadeAreas) {
+			Vector3 diff = playerPos - area.pos;
+			if (diff.Length() < area.radius &&
+				playerPos.y > area.pos.y - 50.0f) {
+
+				isInAnyArea = true;
+				break;
+			}
+		}
+
+		if (isInAnyArea) {
+			if (!m_isNear) {
+				m_fade->StartFadeOut();
+				m_isNear = true;
+			}
+		}
+		else {
+			if (m_isNear) {
+				m_fade->StartFadeIn();
+				m_isNear = false;
+			}
+		}
 	}
 }
 
@@ -345,6 +389,7 @@ void Game::ThirdFloor()
 void Game::Render(RenderContext& rc)
 {
 	m_gear.Draw(rc);
+	m_Pos.Draw(rc);
 	if (m_isPause)
 	{
 		float move = sinf(m_pauseTime) * 10.0f;
