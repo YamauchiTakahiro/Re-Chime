@@ -36,7 +36,7 @@ Game::Game()
 
 bool Game::Start()
 {
-	srand((unsigned)time(nullptr));
+	srand((unsigned)time(NULL));
 	m_Pause.Init("Assets/Sprite/pause.DDs", 1920.0f, 1080.0f);
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
@@ -66,7 +66,7 @@ bool Game::Start()
 			}*/
 			/*else if (objData.EqualObjectName(L"FloorBoss") == true)
 			{
-				auto floorBoss = NewGO<FloorBoss>(0, "FloorBoss");
+				auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
 
 				floorBoss->SetPosition(objData.position);
 
@@ -88,7 +88,7 @@ bool Game::Start()
 
 				m_enemyCount++;
 			}*/
-			else if (objData.EqualObjectName(L"finalBoss") == true)
+			/*else if (objData.EqualObjectName(L"finalBoss") == true)
 			{
 				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
 				
@@ -99,7 +99,7 @@ bool Game::Start()
 				m_finalBoss.push_back(finalBoss);
 
 				m_enemyCount++;
-			}
+			}*/
 			/*else if (objData.EqualObjectName(L"barrier1") == true)
 			{
 				m_barrier1 = NewGO<Barrier>(0, "barrier");
@@ -145,9 +145,6 @@ bool Game::Start()
 				m_barrier6->SetScale(objData.scale);
 			}*/
 
-			m_gire = NewGO<Gire>(0, "gire");
-			m_gire->SetPosition(Vector3(0.0f, 7000.0f, 0.0f));
-
 			EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
 			EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
 			EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
@@ -176,9 +173,9 @@ bool Game::Start()
 
 	m_cursorPos = Vector3(0, 0, 0);
 
-	m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f }); // 1階
-	m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f });      // 2階
-	m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f });      // 3階
+	m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f) }); // 1階
+	m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f) });      // 2階
+	m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f) });      // 3階
 
 	return true;
 }
@@ -225,7 +222,7 @@ void Game::Update()
 
 	//プレイヤーのHPが0以下になったらゲームオーバー。
 	int hp = 0;
-	int playerHP = m_player->GetHP(hp);
+	int playerHP = m_player->GetHP();
 	if (playerHP <= 0)
 	{
 		NewGO<GameOver>(0, "GameOver");
@@ -246,27 +243,43 @@ void Game::Update()
 	//	DeleteGO(this);
 	//	return;
 	//}
-	if (m_numDefeatedEnemy == 6)
+
+	CreateGire();
+
+	int gireCount = m_player->GetGireCount();
+	if (gireCount == 1)
 	{
 		FirstFloor();
+		m_createGire = false;
 	}
-	if(m_numDefeatedEnemy == 10)
+	if (gireCount == 2)
 	{
 		SecondFloor();
+		m_createGire = false;
 	}
-	if (m_numDefeatedEnemy == 11)
+	if (gireCount == 3)
 	{
 		ThirdFloor();
+		m_createGire = false;
+	}
+	if (gireCount == 4)
+	{
+		m_gameClear = NewGO<GameClear>(0, "gameClear");
+		if (m_audioManager)
+		{
+			m_audioManager->StopBGM();
+		}
+		DeleteGO(this);
 	}
 
 	//プレイヤーの現在の座標を表示
 	Vector3 playerPos = m_player->GetPosition();
 
-	wchar_t text[256];
+	/*wchar_t text[256];
 	swprintf_s(text, L"X: %.1f Y: %.1f Z: %.1f",
 		playerPos.x, playerPos.y, playerPos.z);
 
-	m_Pos.SetText(text);
+	m_Pos.SetText(text);*/
 
 	// フェード判定
 	if (m_fade != nullptr)
@@ -277,7 +290,7 @@ void Game::Update()
 			Vector3 diff = playerPos - area.pos;
 			if (diff.Length() < area.radius &&
 				playerPos.y > area.pos.y - 50.0f) {
-
+				m_player->SetPosition(area.targetPos);
 				isInAnyArea = true;
 				break;
 			}
@@ -364,26 +377,43 @@ void Game::PauseRender()
 
 void Game::FirstFloor()
 {
-	m_gire = NewGO<Gire>(0, "gire");
-	m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
 	DeleteGO(m_barrier1);
 	DeleteGO(m_barrier2);
 }
 
 void Game::SecondFloor()
 {
-	m_gire = NewGO<Gire>(0, "gire");
-	m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
 	DeleteGO(m_barrier3);
 	DeleteGO(m_barrier4);
 }
 
 void Game::ThirdFloor()
 {
-	m_gire = NewGO<Gire>(0, "gire");
-	m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
 	DeleteGO(m_barrier5);
 	DeleteGO(m_barrier6);
+}
+
+void Game::CreateGire()
+{
+
+	if (m_numDefeatedEnemy == 6 && !m_createGire)
+	{
+		m_gire = NewGO<Gire>(0, "gire");
+		m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+		m_createGire = true;
+	}
+	if (m_numDefeatedEnemy == 11 && !m_createGire)
+	{
+		m_gire = NewGO<Gire>(0, "gire");
+		m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
+		m_createGire = true;
+	}
+	if (m_numDefeatedEnemy == 13 && !m_createGire)
+	{
+		m_gire = NewGO<Gire>(0, "gire");
+		m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
+		m_createGire = true;
+	}
 }
 
 void Game::Render(RenderContext& rc)

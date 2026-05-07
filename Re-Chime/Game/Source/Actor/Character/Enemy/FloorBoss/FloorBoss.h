@@ -28,21 +28,20 @@ public:
 	void Hit() override;
 	void AttackHit() override;
 	void DamageIntarval() override;
-	void Dide() override;
+	void Death() override;
 	void MakeExplosionEffect();
-	/*void ManageState();
+	void ManageState();
 	void PlayAnimation();
 	void FloorBossState();
 	void IdleState();
 	void WalkState();
-	void DeathState();*/
+	void DeathState();
 	Vector3 GetPosition()const override
 	{
 		return m_position;
 	}
-	int GetAttackPower(int attackPower)
+	int GetAttackPower()const
 	{
-		attackPower = m_attackPower;
 		return m_attackPower;
 	}
 	void SetPosition(Vector3 position) override
@@ -55,9 +54,8 @@ public:
 		m_scale = scale;
 		m_modelRender.SetScale(scale);
 	}
-	int GetHP(int hp) override
+	int GetHP() const override
 	{
-		hp = m_floorBossHP;
 		return m_floorBossHP;
 	}
 	void Render(RenderContext& rc)override;
@@ -85,8 +83,8 @@ private:
 	PowerBuff* m_powerBuff = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
-	int m_floorBossHP = 100;
-	int m_floorBossMaxHP = 100;
+	int m_floorBossHP = 10;
+	int m_floorBossMaxHP = 10;
 	int m_attackPower = 20;
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。

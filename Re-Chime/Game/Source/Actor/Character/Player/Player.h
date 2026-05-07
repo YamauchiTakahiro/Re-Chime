@@ -31,6 +31,7 @@ public:
 	void OnCollision() override;
 	void Time() override;
 	void Hit() override;
+	void GetGires();
 	void DamageIntarval() override;
 	void TakeDamage(int damage, const Vector3& enemyPos);
     void GuardCollision();
@@ -54,35 +55,42 @@ public:
 	void GuardState();
 	void KnockBackState();
 	void ManageState();
+    void FadeTime();
     Vector3 GetPosition()const override
     {
         return m_position;
     }
+    void SetPosition(Vector3 position) override
+    {
+        m_position = position;
+        m_modelRender.SetPosition(position);
+		m_characterController.SetPosition(position);
+    }
     const CharacterController& GetCharacterController() const;
     CharacterController& GetCharacterController();
-    int GetHP(int hp) override
+    int GetHP() const override
     {
-		hp = m_playerHp;
-		return hp;
+		return m_playerHp;
     }
-    int GetMaxHP(int maxhp)
+    int GetMaxHP()const
     {
-        maxhp = m_playerMaxHp;
-        return maxhp;
+        return m_playerMaxHp;
     }
-    int GetAttackPower(int attackPower)
+    int GetAttackPower()const
     {
-        attackPower = m_attackPower;
-        return attackPower;
+        return m_attackPower;
 	}
-    bool GetGier(bool getGier)
+    bool GetGier() const
     {
-        getGier = m_isGetGire;
-		return getGier;
+        return m_isGetGire;
     }
-    int GetGireCount()
+    void addGireCount()
     {
-        //m_gireCount++;
+        m_gireCount++;
+        m_isGetGire = false;
+	}
+    int GetGireCount() const
+    {
         return m_gireCount;
     }
     bool GetPowerBuffFlag()const
@@ -93,17 +101,16 @@ public:
     {
         return m_attackSpeedBuffFlag;
 	}
-    bool GetHealFlag(bool isHeal)
+    bool GetHealFlag() const
     {
-        isHeal = m_isHealFlag;
-		return isHeal;
+        return m_isHealFlag;
     }
-    float GetPowerBuffTime()
+    float GetPowerBuffTime() const
     {
         return m_powerBuffTime;
     }
 
-    float GetAttackSpeedBuffTime()
+    float GetAttackSpeedBuffTime() const
     {
         return m_attackSpeedBuffTime;
     }
@@ -155,6 +162,7 @@ private:
 	float m_footStepInterval = 1.2f;				//!<歩行時の足音の間隔。
 	float m_footStepCooldown = 0.0f;				//!<走行時の足音の間隔。
 	float m_jumpTime = 1.0f;					//!<ジャンプの時間。
+	float m_fadeTime = 0.0f;					//!<フェードの時間。
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;

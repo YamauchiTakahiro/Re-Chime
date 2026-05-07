@@ -10,7 +10,7 @@ class FinalBoss : public Enemy
     public:
         enum EnFinalBossState {
             enFinalBossState_Idle,		//待機状態。
-            enFinalBossState_Walk,		//移動。
+            enFinalBossState_Chase,		//追跡。
             enFinalBossState_Attack,		//攻撃。
             enFinalBossState_Death,		//死亡。
 			enFinalBossState_Num,
@@ -23,12 +23,12 @@ class FinalBoss : public Enemy
     void Rotation() override;
     void Attack() override;
     void OnCollision() override;
-    void Time() override;
     void Hit() override;
     void DamageIntarval() override;
-    void Dide() override;
+    void Death() override;
     void MakeExplosionEffect();
     void AttackHit() override;
+	const bool SearchPlayer()const;
 	void ManageState();
 	void PlayAnimation();
     void FinalBossState();
@@ -36,16 +36,15 @@ class FinalBoss : public Enemy
 	void WalkState();
 	void AttackState();
 	void DeathState();
+	const bool IsCanAttack()const;
     Vector3 GetPosition()const override;
-    int GetHP(int hp) override
+    int GetHP() const override
     {
-        hp = m_finalBossHp;
-        return hp;
+        return m_finalBossHp;
     }
-    int GetAttackPower(int attackPower)
+    int GetAttackPower() const
     {
-        attackPower = m_attackPower;
-        return attackPower;
+        return m_attackPower;
 	}
     void SetPosition(Vector3 position) override
     {
@@ -80,11 +79,13 @@ private:
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward;
     Vector3 m_scale;
-    int m_finalBossHp = 200;		//!<最終ボスのHP。
+    int m_finalBossHp = 10;		//!<最終ボスのHP。
 	int m_finalBossMaxHp = 200;	//!<最終ボスの最大HP。
 	int m_attackPower = 20;		//!<攻撃力。
-    float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
+    float m_chaseTimer = 0.0f;						//追跡タイマー。
+    float m_idleTimer = 0.0f;						//待機タイマー。
 	bool m_isAttack = false;		//!<攻撃しているかどうか。
+	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
 };
 

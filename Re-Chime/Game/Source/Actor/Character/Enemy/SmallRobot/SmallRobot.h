@@ -29,7 +29,7 @@ public:
 	void Hit() override;
 	void DamageIntarval() override;
 	void AttackHit() override;
-	void Dide() override;
+	void Death() override;
 	void EnemyHP();
 	void MakeExplosionEffect();
 	/*void ManageState();
@@ -41,16 +41,14 @@ public:
 	{
 		return m_position;
 	}
-	int GetHP(int hp) override
+	int GetHP() const override
 	{
-		hp = m_smallRobotHp;
-		return hp;
+		return m_smallRobotHp;
 	}
 
-	int GetAttackPower(int attackPower) 
+	int GetAttackPower() const
 	{
-		attackPower = m_attackPower;
-		return attackPower;
+		return m_attackPower;
 	}
 
 	void SetPosition(Vector3 position) override
@@ -88,8 +86,8 @@ private:
 	SpriteRender m_enemyHP;//敵のHPを表示する。
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
 	//enSmallRobotState m_smallRobotState = enSmallRobotState_Idle;	//!<小型ロボットの状態。
-	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
-	int m_smallRobotMaxHp = 50;	//!<小型ロボットの最大HP。
+	int m_smallRobotHp = 10;		//!<小型ロボットのHP。
+	int m_smallRobotMaxHp = 10;	//!<小型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。

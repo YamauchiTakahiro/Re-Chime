@@ -50,13 +50,8 @@ void Enemy::DamageIntarval()
 {
 }
 
-void Enemy::Dide()
+void Enemy::Death()
 {
-}
-
-int Enemy::GetHP(int hp)
-{
-	return hp;
 }
 
 void Enemy::Render(RenderContext& rc)
