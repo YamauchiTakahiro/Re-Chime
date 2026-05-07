@@ -46,6 +46,8 @@ void MediumRobot::Update()
 
 	Hit();
 
+	//Attack();
+
 	DamageIntarval();
 
 	AttackHit();
@@ -63,8 +65,8 @@ void MediumRobot::Move()
 	float distToPlayer = toPlayer.Length();
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
 	{
-		Attack();
 		m_timeCount = 2.0f;
+		Attack();
 		Time();
 	}
 	if (distToPlayer <= 1000)
@@ -103,6 +105,15 @@ void MediumRobot::Rotation()
 
 void MediumRobot::Attack()
 {
+	/*if (m_isAttack == false)
+	{
+		return;
+	}
+	else
+	{
+		OnCollision();
+		m_isAttack = false;
+	}*/
 	OnCollision();
 }
 
@@ -120,13 +131,10 @@ void MediumRobot::OnCollision()
 
 void MediumRobot::Time()
 {
-	if (m_timeCount > 0.0f)
+	m_timeCount -= g_gameTime->GetFrameDeltaTime();
+	if (m_timeCount < 0.0f)
 	{
-		m_timeCount += 2.0f / 60.0f;
-		if (m_timeCount >= 3.0f)
-		{
-			m_timeCount = 0.0f;
-		}
+		m_timeCount = 0.0f;
 	}
 }
 
@@ -138,7 +146,7 @@ void MediumRobot::Hit()
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
 		{
 			int damage = 0;
-			damage = m_player->GetAttackPower(damage);
+			damage = m_player->GetAttackPower();
 			m_mediumRobotHp -= damage;
 			m_damageIntarvalTime = 1.0f;
 		}
@@ -153,7 +161,7 @@ void MediumRobot::AttackHit()
 		if (collision->IsHit(m_player->GetCharacterController()) == true)
 		{
 			int mediumRobotAttackPower = 0;
-			mediumRobotAttackPower = GetAttackPower(mediumRobotAttackPower);
+			mediumRobotAttackPower = GetAttackPower();
 			m_player->TakeDamage(mediumRobotAttackPower, m_position);
 		}
 	}
@@ -168,7 +176,7 @@ void MediumRobot::DamageIntarval()
 	}
 }
 
-void MediumRobot::Dide()
+void MediumRobot::Death()
 {
 	m_game->EnemyCount();
 	MakeExplosionEffect();
@@ -235,6 +243,12 @@ void MediumRobot::PlayAnimation()
 
 void MediumRobot::MediumRobotState()
 {
+	//if (m_timeCount == 0)
+	//{
+	//	//m_mediumRobotState = enMediumRobotState_Attack;
+	//	//m_isAttack = true;
+	//	Attack();
+	//}
 	if (m_mediumRobotHp <= 0)
 	{
 		m_mediumRobotState = enMediumRobotState_Death;
@@ -259,11 +273,16 @@ void MediumRobot::WalkState()
 	MediumRobotState();
 }
 
+//void MediumRobot::AttackState()
+//{
+//	MediumRobotState();
+//}
+
 void MediumRobot::DeathState()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		Dide();
+		Death();
 	}
 }
 

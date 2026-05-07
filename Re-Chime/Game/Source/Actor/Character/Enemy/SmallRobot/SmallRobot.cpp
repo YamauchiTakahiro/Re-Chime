@@ -56,7 +56,7 @@ void SmallRobot::Update()
 
 	AttackHit();
 
-	Dide();
+	Death();
 
 	EnemyHP();
 
@@ -145,7 +145,7 @@ void SmallRobot::Hit()
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
 		{
 			int damage = 0;
-			damage = m_player->GetAttackPower(damage);
+			damage = m_player->GetAttackPower();
 			m_smallRobotHp -= damage;
 			m_damageIntarvalTime = 1.5f;
 		}
@@ -160,7 +160,7 @@ void SmallRobot::AttackHit()
 		if (collision->IsHit(m_player->GetCharacterController()) == true)
 		{
 			int smallRobotAttackPower = 0;
-			smallRobotAttackPower = GetAttackPower(smallRobotAttackPower);
+			smallRobotAttackPower = GetAttackPower();
 			m_player->TakeDamage(smallRobotAttackPower, m_position);
 		}
 	}
@@ -175,7 +175,7 @@ void SmallRobot::DamageIntarval()
 	}
 }
 
-void SmallRobot::Dide()
+void SmallRobot::Death()
 {
 	if (m_smallRobotHp <= 0)
 	{
@@ -215,7 +215,7 @@ void SmallRobot::EnemyHP()
 	int nowHP = 0;
 	int MaxHP = 0;
 
-	nowHP = GetHP(nowHP);
+	nowHP = GetHP();
 	MaxHP = m_smallRobotMaxHp;
 	float Wari = (float)nowHP / (float)MaxHP;
 	Vector3 scale = { 0.28f, 0.28f, 0.5f };

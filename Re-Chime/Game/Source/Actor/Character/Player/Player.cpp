@@ -36,7 +36,6 @@ bool Player::Start()
 	//モデルを初期化する。
 	m_modelRender.Init("Assets/modelData/Player/player.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(100.0f, 300.0f, m_position);
-	m_gire = FindGO<Gire>("gire");
 	m_game = FindGO<Game>("game");	
 	m_smallRobot = FindGO<SmallRobot>("smallRobot");
 	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
@@ -45,11 +44,14 @@ bool Player::Start()
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
+	SetScale();
+
 	return true;
 }
 
 void Player::Update()
 {
+	m_gire = FindGO<Gire>("gire");
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 	if (isPause)
@@ -57,18 +59,27 @@ void Player::Update()
 		return;
 	}
 
-	if (!m_guardFlag)
+	bool fadeFlag = m_game->FadeFlag();
+
+	if(fadeFlag)
+	{
+		m_fadeTime = 1.0f;
+	}
+
+	if (!m_guardFlag && !m_isAttack && m_fadeTime <= 0)
 	{
 		Move();
 
 		Rotation();
 	}
 
-	SetScale();
+	FadeTime();
 
 	Time();
 
 	Hit();
+
+	GetGires();
 
 	DamageIntarval();
 
@@ -221,13 +232,11 @@ void Player::Attack()
 		if(m_attackSpeedBuffFlag == true)
 		{
 			OnCollision();
-			m_isAttack = false;
 			m_timeCount = 1.0f; // 攻撃クールタイムを短縮する例
 		}
 		else if (m_attackSpeedBuffFlag == false)
 		{
 			OnCollision();
-			m_isAttack = false;
 			m_timeCount = 2.0f; // 通常の攻撃クールタイム
 		}
 		Time();
@@ -256,29 +265,41 @@ void Player::Time()
 	}
 }
 
+void Player::FadeTime()
+{
+	m_fadeTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_fadeTime < 0.0f)
+	{
+		m_fadeTime = 0.0f;
+	}
+}
+
 void Player::TakeDamage(int damage, const Vector3& enemyPos)
 {
 	if (m_damageIntarvalTime > 0.0f)
 	{
 		return;
 	}
-	if (!m_guardFlag)
-	{
-		m_playerHp -= damage;
-
-		// ノックバックの計算
-		Vector3 dir = m_position - enemyPos;
-		dir.y = 0.0f; // 水平方向のみにノックバックを適用
-		dir.Normalize();
-
-		m_knockBack = dir * 500.0f; // ノックバックの強さを調整
-		m_knockBack.y = 0.0f; // ノックバックの垂直成分をゼロにする
-
-		m_isKnockBack = true;
-	}
 	else
 	{
-		m_playerHp -= damage / 2; // ガードしている場合はダメージを半減
+		if (!m_guardFlag)
+		{
+			m_playerHp -= damage;
+
+			// ノックバックの計算
+			Vector3 dir = m_position - enemyPos;
+			dir.y = 0.0f; // 水平方向のみにノックバックを適用
+			dir.Normalize();
+
+			m_knockBack = dir * 500.0f; // ノックバックの強さを調整
+			m_knockBack.y = 0.0f; // ノックバックの垂直成分をゼロにする
+
+			m_isKnockBack = true;
+		}
+		else
+		{
+			m_playerHp -= damage / 2; // ガードしている場合はダメージを半減
+		}
 	}
 
 	m_damageIntarvalTime = 1.0f; // ダメージのインターバルを設定
@@ -317,18 +338,26 @@ void Player::Hit()
 			m_isHealFlag = true;
 		}
 	}
+}
 
-	const auto& collisions4 = g_collisionObjectManager->FindCollisionObjects("gireCollision");
-	for (auto collision : collisions4)
+void Player::GetGires()
+{
+	if(m_gire == nullptr)
 	{
-		if (collision->IsHit(m_characterController) == true)
+		return;
+	}
+	else if (m_gire != nullptr)
+	{
+		Vector3 diff = m_gire->GetPosition() - m_position;
+		if (diff.LengthSq() < 250.0f * 250.0f)
 		{
-			m_gireCount++;
-			//m_isGetGire = true;
+			if (g_pad[0]->IsTrigger(enButtonA))
+			{
+				m_isGetGire = true;
+			}
 		}
 	}
 }
-
 void Player::DamageIntarval()
 {
 	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
@@ -439,6 +468,7 @@ void Player::AttackState()
 {
 	if (m_modelRender.IsPlayingAnimation() == false || m_isKnockBack)
 	{
+		m_isAttack = false;
 		PlayerState();
 	}
 }

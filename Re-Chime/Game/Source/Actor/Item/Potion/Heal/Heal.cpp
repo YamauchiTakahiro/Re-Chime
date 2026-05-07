@@ -54,8 +54,7 @@ void Heal::SetScale()
 
 void Heal::Delete()
 {
-	bool isHit = false;
-	isHit = m_player->GetHealFlag(isHit);
+	bool isHit = m_player->GetHealFlag();
 	if (isHit)
 	{
 		isHit = false;

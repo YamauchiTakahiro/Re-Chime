@@ -17,7 +17,6 @@ bool Gire::Start()
 {
 	m_modelRender.Init("Assets/modelData/Item/Gear/Gear.tkm");
 	m_player = FindGO<Player>("player");
-	OnCollision();
 	return true;
 }
 
@@ -25,9 +24,8 @@ void Gire::Update()
 {
 	Move();
 
-	bool isGetGire = false;
-	m_player->GetGier(false);
-	if (m_player->GetGier(isGetGire) == true)
+	bool isGetGire = m_player->GetGier();
+	if (isGetGire == true)
 	{
 		GetGier();
 	}
@@ -39,18 +37,9 @@ void Gire::Move()
 	m_modelRender.SetPosition(m_position);
 }
 
-void Gire::OnCollision()
-{
-	m_collisionObject = NewGO<CollisionObject>(0);
-	Vector3 collisionPos = m_position;
-	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 100.0f);
-	m_collisionObject->SetName("gireCollision");
-	m_collisionObject->SetIsEnableAutoDelete(false);
-}
-
 void Gire::GetGier()
 {
-	m_player->GetGireCount();
+	m_player->addGireCount();
 	DeleteGO(this);
 }
 

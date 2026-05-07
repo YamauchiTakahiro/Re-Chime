@@ -46,13 +46,8 @@ void Character::DamageIntarval()
 {
 }
 
-void Character::Dide()
+void Character::Death()
 {
-}
-
-int Character::GetHP(int hp)
-{
-	return hp;
 }
 
 void Character::Render(RenderContext& rc)

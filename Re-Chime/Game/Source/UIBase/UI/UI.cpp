@@ -72,8 +72,8 @@ void UI::Update()
 	int nowHP = 0;
 	int MaxHP = 0;
 
-	nowHP = m_player->GetHP(nowHP);
-	MaxHP = m_player->GetMaxHP(MaxHP);
+	nowHP = m_player->GetHP();
+	MaxHP = m_player->GetMaxHP();
 	float Wari = (float)nowHP / (float)MaxHP;
 	Vector3 scale = { 0.28f, 0.28f, 0.5f };
 	scale.x *= Wari;

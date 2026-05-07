@@ -16,7 +16,7 @@ class Enemy :
 	virtual void Hit() override;
 	virtual void AttackHit();
 	virtual void DamageIntarval() override;
-	virtual void Dide() override;
+	virtual void Death() override;
 	virtual Vector3 GetPosition()const override
 	{
 		return m_position;
@@ -28,9 +28,13 @@ class Enemy :
 	virtual void SetScale(Vector3 scale)
 	{
 	}	
-	virtual int GetHP(int) override;
+	virtual int GetHP() const override
+	{
+		return m_hp;
+	}
 	virtual void Render(RenderContext& rc)override;
 private:
 	Vector3 m_position;
+	int m_hp;
 };
 
