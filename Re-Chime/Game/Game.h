@@ -31,6 +31,7 @@ public:
 	void Update();
 	void Pause();
 	void PauseRender();
+	void CreateGire();
 	void FirstFloor();
 	void SecondFloor();
 	void ThirdFloor();
@@ -51,6 +52,10 @@ public:
 	void SetDifficulty(DifficultyLevel* dl)
 	{
 		m_difficul = dl;
+	}
+	bool FadeFlag()
+	{
+		return m_isNear;
 	}
 	void Render(RenderContext& rc);
 private:
@@ -103,8 +108,10 @@ private:
 	struct FadeArea {
 		Vector3 pos;
 		float radius;
+		Vector3 targetPos;
 	};
 
 	std::vector<FadeArea> m_fadeAreas;
+	bool m_createGire = false;
 };
 

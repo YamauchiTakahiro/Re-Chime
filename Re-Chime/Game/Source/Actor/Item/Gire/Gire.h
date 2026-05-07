@@ -11,12 +11,10 @@ public:
 	bool Start();
 	void Update()override;
 	void Move()override;
-	void OnCollision();
 	void GetGier();
-	Vector3 GetPosition(Vector3 pos)
+	Vector3 GetPosition()const	
 	{
-		pos = m_position;
-		return pos;
+		return m_position;
 	}
 	Vector3 SetPosition(Vector3 position)
 	{

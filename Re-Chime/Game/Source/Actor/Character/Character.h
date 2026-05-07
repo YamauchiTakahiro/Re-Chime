@@ -15,22 +15,25 @@ public:
 	virtual void Time();
 	virtual void Hit();
 	virtual void DamageIntarval();
-	virtual void Dide();
+	virtual void Death();
 	virtual Vector3 GetPosition()const
-		{
+	{
 		return m_position;
 	}
-	virtual void SetPosition(Vector3)
+	virtual void SetPosition(Vector3 position)
 	{
-
 	}
 	virtual void SetScale(Vector3 scale)
 	{
 	}
-	virtual int GetHP(int);
+	virtual int GetHP() const
+	{
+		return m_hp;
+	}
 	virtual void Render(RenderContext& rc)override;
 
 private:
-	Vector3 m_position;
+	Vector3 m_position;	//位置。
+	int m_hp;			//体力。
 };
 
