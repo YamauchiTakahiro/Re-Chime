@@ -31,6 +31,8 @@ public:
 	void Death() override;
 	void MakeExplosionEffect();
 	void ManageState();
+	void FloorBossHP();
+	//void ManageState();
 	void PlayAnimation();
 	void FloorBossState();
 	void IdleState();
@@ -83,10 +85,14 @@ private:
 	PowerBuff* m_powerBuff = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
-	int m_floorBossHP = 10;
-	int m_floorBossMaxHP = 10;
+	//int m_floorBossHP = 10;
+	//int m_floorBossMaxHP = 10;
+	SpriteRender m_enemyHP;//敵のHPを表示する。
+	Vector2 m_enemyHPBarPosition = Vector2::Zero;
+	bool m_isShowHP = false;
+	int m_floorBossHP = 100;
+	int m_floorBossMaxHP = 100;
 	int m_attackPower = 20;
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
 };
-

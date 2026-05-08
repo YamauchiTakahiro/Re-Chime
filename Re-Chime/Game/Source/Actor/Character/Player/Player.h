@@ -114,6 +114,12 @@ public:
     {
         return m_attackSpeedBuffTime;
     }
+
+    float GetCoolTime() const
+    {
+        return m_timeCount;
+    }
+
     void SetScale();
     void Render(RenderContext& rc)override;
 

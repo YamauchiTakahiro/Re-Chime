@@ -25,6 +25,9 @@ bool FloorBoss::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/FloorBoss.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
 	m_characterController.Init(200.0f, 100.0f, m_position);
+	m_enemyHP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
+	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
+	m_enemyHP.Update();
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	return true;
@@ -38,7 +41,7 @@ void FloorBoss::Update()
 	{
 		return;
 	}
-	Move();
+	/*Move();
 
 	Rotation();
 
@@ -51,9 +54,12 @@ void FloorBoss::Update()
 	AttackHit();
 
 	ManageState();
+	EnemyHP();
+
+	ManageState();
 
 	PlayAnimation();
-	m_modelRender.Update();
+	m_modelRender.Update();*/
 }
 
 void FloorBoss::Move()
@@ -212,6 +218,11 @@ void FloorBoss::ManageState()
 	}
 }
 
+void FloorBoss::FloorBossHP()
+{
+
+}
+
 void FloorBoss::PlayAnimation()
 {
 	switch (m_floorBossState)
@@ -264,7 +275,81 @@ void FloorBoss::DeathState()
 	}
 }
 
+//void FloorBoss::ManageState()
+//{
+//	switch (m_floorBossState)
+//	{
+//	case enFloorBossState_Idle:
+//		IdleState();
+//		break;
+//	case enFloorBossState_Walk:
+//		WalkState();
+//		break;
+//	case enFloorBossState_Death:
+//		DeathState();
+//		break;
+//	default:
+//		break;
+//	}
+//}
+//
+//void FloorBoss::PlayAnimation()
+//{
+//	switch (m_floorBossState)
+//	{
+//	case enFloorBossState_Idle:
+//		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+//		break;
+//	case enFloorBossState_Walk:
+//		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+//		break;
+//	case enFloorBossState_Death:
+//		m_modelRender.PlayAnimation(enAnimationClip_Death);
+//		break;
+//	default:
+//		break;
+//	}
+//}
+//
+//void FloorBoss::FloorBossState()
+//{
+//	if (m_floorBossHP <= 0)
+//	{
+//		m_floorBossState = enFloorBossState_Death;
+//	}
+//	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+//	{
+//		m_floorBossState = enFloorBossState_Walk;
+//	}
+//	else
+//	{
+//		m_floorBossState = enFloorBossState_Idle;
+//	}
+//}
+//
+//void FloorBoss::IdleState()
+//{
+//	FloorBossState();
+//}
+//
+//void FloorBoss::WalkState()
+//{
+//	FloorBossState();
+//}
+//
+//void FloorBoss::DeathState()
+//{
+//	if(m_modelRender.IsPlayingAnimation() == false)
+//	{
+//		Dide();
+//	}
+//}
+
 void FloorBoss::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+	if (m_isShowHP)
+	{
+		m_enemyHP.Draw(rc);
+	}
 }

@@ -54,6 +54,7 @@ void FinalBoss::Update()
 	ManageState();
 
 	PlayAnimation();
+
 	m_modelRender.Update();
 }
 
@@ -318,6 +319,11 @@ const bool FinalBoss::IsCanAttack() const
 		return true;
 	}
 	return false;
+}
+
+void FinalBoss::FinalBossHP()
+{
+
 }
 
 void FinalBoss::Render(RenderContext& rc)
