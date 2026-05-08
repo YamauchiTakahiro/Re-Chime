@@ -3,6 +3,7 @@
 
 #include<InitGUID.h>
 #include<dxgidebug.h>
+#include"Game.h"
 #include "Source/UIBase/Title/Title.h"
 #include "Source/UIBase/Load/Load.h"
 #include "Source/Sound/AudioManager/AudioManager.h"

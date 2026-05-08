@@ -5,13 +5,13 @@
 
 UI::UI()
 {
-	m_HPBar.Init("Assets/UIData/HPBar.DDs", 1024.0f, 128.0f);
-	m_HPBar.SetPosition(Vector3(0.0f, -380.0f, 0.0f));
-	m_HPBar.SetScale(Vector3(0.5f, 3.0f, 0.5f));
+	m_HPBar.Init("Assets/UIData/HPFrame.DDs", 1024.0f, 128.0f);
+	m_HPBar.SetPosition(Vector3(0.0f, -382.0f, 0.0f));
+	m_HPBar.SetScale(Vector3(0.38f, 0.59f, 0.5f));
 	m_HPBar.Update();
 
-	m_HP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
-	m_HP.SetPosition(Vector3(-115.0f, -367.7f, 0.0f));
+	m_HP.Init("Assets/UIData/HPBar.DDs", 1024.0f, 128.0f);
+	m_HP.SetPosition(Vector3(-115.0f, -380.0f, 0.0f));
 	m_HP.SetScale(Vector3(0.41f, 3.0f, 0.5f));
 	m_HP.SetPivot(Vector2(0.0f, 0.5f));
 	m_HP.Update();
@@ -80,7 +80,7 @@ void UI::Update()
 	m_HP.SetScale(scale);
 	if (nowHP <= MaxHP / 4)
 	{
-		m_HP.SetMulColor(g_vec4Red);
+		m_HP.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
@@ -139,6 +139,37 @@ void UI::Update()
 	m_GireText.SetScale(2.0f);
 	m_GireText.SetText(text);
 	m_GireText.SetColor(g_vec4Black);
+
+	//クールタイム表示
+	float coolTime = m_player->GetCoolTime();
+
+	// クールタイムが始まったら表示
+	if (coolTime > 0.0f)
+	{
+		m_isShowCoolTime = true;
+	}
+
+	// クールタイム終了で非表示
+	if (coolTime <= 0.0f)
+	{
+		m_isShowCoolTime = false;
+	}
+
+	if (m_isShowCoolTime)
+	{
+		wchar_t coolText[256];
+
+		swprintf_s(coolText, L"CL:%.1f", coolTime);
+
+		m_CoolTimeText.SetPosition(Vector3(665.0f, -450.0f, 0.0f));
+		m_CoolTimeText.SetScale(0.9f);
+		m_CoolTimeText.SetText(coolText);
+		m_CoolTimeText.SetColor(g_vec4White);
+	}
+	else
+	{
+		m_CoolTimeText.SetText(L"");
+	}
 }
 
 void UI::Render(RenderContext& rc)
@@ -186,4 +217,5 @@ void UI::Render(RenderContext& rc)
 			m_AttackSpeed.Draw(rc);
 		}
 	}
+	m_CoolTimeText.Draw(rc);
 }
