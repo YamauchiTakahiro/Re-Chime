@@ -13,7 +13,9 @@ class UI :public UIBase
 private:
     Player* m_player = nullptr;
     Game* m_game = nullptr;
+    FontRender m_CoolTimeText;
     float m_blinkTimer = 0.0f;//点滅タイマー
     bool m_isBlinkOn = true;
+    bool m_isShowCoolTime = false;
 };
 

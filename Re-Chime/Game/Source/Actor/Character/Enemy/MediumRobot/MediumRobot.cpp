@@ -25,6 +25,16 @@ bool MediumRobot::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/mediumRobot/mediumRobot.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(200.0f, 100.0f, m_position);
+
+	m_enemyHP.Init("Assets/UIData/enemyHPBar.DDs", 1024.0f, 128.0f);
+	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
+	m_enemyHP.Update();
+
+	m_enemyHPFrame.Init("Assets/UIData/enemyHPFrame.DDs", 1024.0f, 128.0f);
+	m_enemyHPFrame.SetScale(Vector3(0.29f, 0.29f, 0.0f));
+	m_enemyHPFrame.SetPivot(Vector2(0.02f, 0.4f));
+	m_enemyHPFrame.Update();
+
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	return true;
@@ -55,6 +65,9 @@ void MediumRobot::Update()
 	ManageState();
 
 	PlayAnimation();
+
+	MediumRobotHP();
+
 	m_modelRender.Update();
 }
 
@@ -291,7 +304,54 @@ Vector3 MediumRobot::GetPosition()const
 	return m_position;
 }
 
+void MediumRobot::MediumRobotHP()
+{
+	float dist = (m_player->GetPosition() - m_position).Length();
+	if (dist > 1000.0f)
+	{
+		m_isShowHP = false;
+		return;
+	}
+
+	m_isShowHP = true;
+
+	int nowHP = 0;
+	int MaxHP = 0;
+
+	nowHP = GetHP();
+	MaxHP = m_mediumRobotMaxHp;
+	float Wari = (float)nowHP / (float)MaxHP;
+	Vector3 scale = { 0.28f,0.28f,0.5f };
+	scale.x *= Wari;
+	m_enemyHP.SetScale(scale);
+	if (nowHP <= MaxHP / 4)
+	{
+		m_enemyHP.SetMulColor(g_vec4Red);
+	}
+	else
+	{
+		m_enemyHP.SetMulColor(g_vec4White);
+	}
+
+	//HPの位置の調整
+	Vector3 hpPos = m_position;
+	hpPos.y += 450.0f;
+
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_enemyHPBarPosition, hpPos);
+	m_enemyHP.SetPosition(Vector3(m_enemyHPBarPosition.x, m_enemyHPBarPosition.y, 0.0f));
+	m_enemyHP.Update();
+
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_enemyHPFramePosition, hpPos);
+	m_enemyHPFrame.SetPosition(Vector3(m_enemyHPFramePosition.x, m_enemyHPFramePosition.y, 0.0f));
+	m_enemyHPFrame.Update();
+}
+
 void MediumRobot::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+	if (m_isShowHP)
+	{
+		m_enemyHPFrame.Draw(rc);
+		m_enemyHP.Draw(rc);
+	}
 }

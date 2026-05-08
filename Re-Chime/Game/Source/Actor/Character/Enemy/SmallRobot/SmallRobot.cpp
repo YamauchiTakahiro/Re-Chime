@@ -7,6 +7,7 @@
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
+#include "DamageText.h"
 
 SmallRobot::SmallRobot()
 {
@@ -25,10 +26,17 @@ bool SmallRobot::Start()
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/smallRobot/smallRobotWalk.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);*/
 	m_modelRender.Init("Assets/modelData/Enemy/smallRobot/smallRobot.tkm"/*, m_animationClips, enAnimationClip_Num*/);
-	m_enemyHP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
+
+	m_enemyHP.Init("Assets/UIData/enemyHPBar.DDs", 1024.0f, 128.0f);
 	//m_enemyHP.SetScale(Vector3(0.41f, 3.0f, 0.5f));
 	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
 	m_enemyHP.Update();
+
+	m_enemyHPFrame.Init("Assets/UIData/enemyHPFrame.DDs", 1024, 128.0f);
+	m_enemyHPFrame.SetScale(Vector3(0.29f, 0.29f, 0.0f));
+	m_enemyHPFrame.SetPivot(Vector2(0.02f, 0.4f));
+	m_enemyHPFrame.Update();
+
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
@@ -148,6 +156,19 @@ void SmallRobot::Hit()
 			damage = m_player->GetAttackPower();
 			m_smallRobotHp -= damage;
 			m_damageIntarvalTime = 1.5f;
+
+//========================
+// ダメージ表示生成
+//========================
+			DamageText* damageText = NewGO<DamageText>(0);
+
+			Vector3 textPos = m_position;
+
+			textPos.y += 250.0f;
+
+			damageText->SetPosition(textPos);
+
+			damageText->SetDamage(damage);
 		}
 	}
 }
@@ -237,6 +258,10 @@ void SmallRobot::EnemyHP()
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_enemyHPBarPosition, hpPos);
 	m_enemyHP.SetPosition(Vector3(m_enemyHPBarPosition.x, m_enemyHPBarPosition.y, 0.0f));
 	m_enemyHP.Update();
+
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_enemyHPFramePosition, hpPos);
+	m_enemyHPFrame.SetPosition(Vector3(m_enemyHPFramePosition.x, m_enemyHPFramePosition.y, 0.0f));
+	m_enemyHPFrame.Update();
 }
 
 void SmallRobot::MakeExplosionEffect()
@@ -309,6 +334,7 @@ void SmallRobot::Render(RenderContext& rc)
 	
 	if (m_isShowHP)
 	{
+		m_enemyHPFrame.Draw(rc);
 		m_enemyHP.Draw(rc);
 	}
 }

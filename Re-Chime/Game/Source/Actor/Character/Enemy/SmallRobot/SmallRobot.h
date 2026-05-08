@@ -7,6 +7,7 @@ class Game;
 class AttackSpeedBuff;
 class PowerBuff;
 class Heal;
+class DamageText;
 
 class SmallRobot : public Enemy
 {
@@ -81,10 +82,13 @@ private:
 	Heal* m_heal = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Game* m_game = nullptr;
+	DamageText* m_damageText = nullptr;
 	Vector3 m_forward;
 	Vector3 m_scale;
 	SpriteRender m_enemyHP;//敵のHPを表示する。
+	SpriteRender m_enemyHPFrame;
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
+	Vector2 m_enemyHPFramePosition = Vector2::Zero;
 	//enSmallRobotState m_smallRobotState = enSmallRobotState_Idle;	//!<小型ロボットの状態。
 	int m_smallRobotHp = 10;		//!<小型ロボットのHP。
 	int m_smallRobotMaxHp = 10;	//!<小型ロボットの最大HP。

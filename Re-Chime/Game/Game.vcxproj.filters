@@ -175,6 +175,7 @@
       <Filter>Source\Actor\Item\Potion\Heal</Filter>
     </ClCompile>
     <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="DamageText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -261,5 +262,6 @@
       <Filter>Source\Actor\Item\Potion\Heal</Filter>
     </ClInclude>
     <ClInclude Include="Fade.h" />
+    <ClInclude Include="DamageText.h" />
   </ItemGroup>
 </Project>

@@ -38,6 +38,7 @@ class MediumRobot : public Enemy
     void WalkState();
 	//void AttackState();
 	void DeathState();
+    void MediumRobotHP();
     Vector3 GetPosition()const override;
     int GetHP()const override
     {
@@ -80,7 +81,13 @@ private:
     Game* m_game = nullptr;
     Vector3 m_forward;
     Vector3 m_scale;
-    int m_mediumRobotHp = 10;		//!<中型ロボットのHP。
+    //int m_mediumRobotHp = 10;		//!<中型ロボットのHP。
+    SpriteRender m_enemyHP;//敵のHPを表示する。
+    SpriteRender m_enemyHPFrame;
+    Vector2 m_enemyHPBarPosition = Vector2::Zero;
+    Vector2 m_enemyHPFramePosition = Vector2::Zero;
+    bool m_isShowHP = false;
+    int m_mediumRobotHp = 50;		//!<中型ロボットのHP。
 	int m_mediumRobotMaxHp = 50;	//!<中型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
     float m_timeCount = 0.0f;		//!<タイマー用の変数。
