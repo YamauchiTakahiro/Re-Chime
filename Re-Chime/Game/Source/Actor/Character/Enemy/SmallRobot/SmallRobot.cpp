@@ -248,7 +248,7 @@ void SmallRobot::EnemyHP()
 	}
 	else
 	{
-		m_enemyHP.SetMulColor(g_vec4White);
+		m_enemyHP.SetMulColor(g_vec4Green);
 	}
 
 	//HPの位置の調整

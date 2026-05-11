@@ -4,6 +4,7 @@
 class Player;
 class Gire;
 class Game;
+class DamageText;
 
 class FinalBoss : public Enemy
 {
@@ -77,12 +78,13 @@ private:
     Player* m_player = nullptr;
 	Gire* m_gire = nullptr;
 	Game* m_game = nullptr;
+    DamageText* m_damageText = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward;
     Vector3 m_scale;
     //int m_finalBossHp = 10;		//!<最終ボスのHP。
-    SpriteRender m_enemyHP;//敵のHPを表示する。
-    Vector2 m_enemyHPBarPosition = Vector2::Zero;
+    SpriteRender m_bossHPFrame;
+    SpriteRender m_bossHPBar;
     bool m_isShowHP = false;
     int m_finalBossHp = 200;		//!<最終ボスのHP。
 	int m_finalBossMaxHp = 200;	//!<最終ボスの最大HP。
@@ -92,5 +94,6 @@ private:
     float m_idleTimer = 0.0f;						//待機タイマー。
 	bool m_isAttack = false;		//!<攻撃しているかどうか。
 	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
+    bool m_isShowBossHP = false;
 };
 
