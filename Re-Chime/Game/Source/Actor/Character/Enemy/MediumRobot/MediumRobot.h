@@ -5,6 +5,7 @@ class Player;
 class AttackSpeedBuff;
 class PowerBuff;
 class Game;
+class DamageText;
 
 class MediumRobot : public Enemy
 {
@@ -79,6 +80,7 @@ private:
     PowerBuff* m_powerBuff = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Game* m_game = nullptr;
+    DamageText* m_damageText = nullptr;
     Vector3 m_forward;
     Vector3 m_scale;
     //int m_mediumRobotHp = 10;		//!<中型ロボットのHP。

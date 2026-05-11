@@ -4,6 +4,7 @@
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
+#include "DamageText.h"
 
 FinalBoss::FinalBoss()
 {
@@ -26,6 +27,18 @@ bool FinalBoss::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/finalBoss/finalBoss.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(300.0f, 100.0f, m_position);
+
+	m_bossHPFrame.Init("Assets/UIData/enemyHPFrame.DDs", 1024, 128.0f);
+	m_bossHPFrame.SetPosition(Vector3(10.5f, 450.0f, 0.0f));
+	m_bossHPFrame.SetScale(Vector3(1.52f, 0.3f, 1.0f));
+	m_bossHPFrame.Update();
+
+	m_bossHPBar.Init("Assets/UIData/enemyHPBar.DDs", 1024, 128.0f);
+	m_bossHPBar.SetPosition(Vector3(-760.0f, 447.0f, 0.0f));
+	m_bossHPBar.SetScale(Vector3(1.48f, 0.3f, 1.0f));
+	m_bossHPBar.SetPivot(Vector2(0.0f, 0.5f));
+	m_bossHPBar.Update();
+
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	return true;
@@ -54,6 +67,19 @@ void FinalBoss::Update()
 	ManageState();
 
 	PlayAnimation();
+
+	FinalBossHP();
+
+	float dist = (m_player->GetPosition() - m_position).Length();
+
+	if (dist <= 2000.0f)
+	{
+		m_isShowBossHP = true;
+	}
+	else
+	{
+		m_isShowBossHP = false;
+	}
 
 	m_modelRender.Update();
 }
@@ -118,6 +144,19 @@ void FinalBoss::Hit()
 			damage = m_player->GetAttackPower();
 			m_finalBossHp -= damage;
 			m_damageIntarvalTime = 1.0f;
+
+//========================
+// ダメージ表示生成
+//========================
+			DamageText* damageText = NewGO<DamageText>(0);
+
+			Vector3 textPos = m_position;
+
+			textPos.y += 250.0f;
+
+			damageText->SetPosition(textPos);
+
+			damageText->SetDamage(damage);
 		}
 	}
 }
@@ -323,10 +362,32 @@ const bool FinalBoss::IsCanAttack() const
 
 void FinalBoss::FinalBossHP()
 {
+	float rate = (float)m_finalBossHp / (float)m_finalBossMaxHp;
 
+	Vector3 scale = { 1.5f, 0.3f, 1.0f };
+	scale.x *= rate;
+
+	m_bossHPBar.SetScale(scale);
+
+	// HP少なくなったら色変更
+	if (m_finalBossHp <= m_finalBossMaxHp / 4)
+	{
+		m_bossHPBar.SetMulColor(g_vec4Red);
+	}
+	else
+	{
+		m_bossHPBar.SetMulColor(g_vec4Green);
+	}
+	m_bossHPBar.Update();
 }
 
 void FinalBoss::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+
+	if (m_isShowBossHP)
+	{
+		m_bossHPFrame.Draw(rc);
+		m_bossHPBar.Draw(rc);
+	}
 }

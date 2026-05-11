@@ -5,6 +5,7 @@
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
+#include "DamageText.h"
 
 MediumRobot::MediumRobot()
 {
@@ -162,6 +163,19 @@ void MediumRobot::Hit()
 			damage = m_player->GetAttackPower();
 			m_mediumRobotHp -= damage;
 			m_damageIntarvalTime = 1.0f;
+
+//========================
+// ダメージ表示生成
+//========================
+			DamageText* damageText = NewGO<DamageText>(0);
+
+			Vector3 textPos = m_position;
+
+			textPos.y += 250.0f;
+
+			damageText->SetPosition(textPos);
+
+			damageText->SetDamage(damage);
 		}
 	}
 }
@@ -330,7 +344,7 @@ void MediumRobot::MediumRobotHP()
 	}
 	else
 	{
-		m_enemyHP.SetMulColor(g_vec4White);
+		m_enemyHP.SetMulColor(g_vec4Green);
 	}
 
 	//HPの位置の調整

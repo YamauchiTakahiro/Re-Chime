@@ -52,30 +52,30 @@ bool Game::Start()
 
 				m_stage->SetPosition(objData.position);
 			}
-			//else if (objData.EqualObjectName(L"smallRobot") == true)
+	       else if (objData.EqualObjectName(L"smallRobot") == true)
+			{
+				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+
+				smallRobot->SetPosition(objData.position);
+
+				smallRobot->SetScale(objData.scale);
+
+				m_smallRobot.push_back(smallRobot);
+
+				m_enemyCount++;
+			}
+			//else if (objData.EqualObjectName(L"FloorBoss") == true)
 			//{
-			//	auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+			//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
 
-			//	smallRobot->SetPosition(objData.position);
+			//	floorBoss->SetPosition(objData.position);
 
-			//	smallRobot->SetScale(objData.scale);
+			//	floorBoss->SetScale(objData.scale);
 
-			//	m_smallRobot.push_back(smallRobot);
+			//	m_floorBoss.push_back(floorBoss);
 
 			//	m_enemyCount++;
 			//}
-			/*else if (objData.EqualObjectName(L"FloorBoss") == true)
-			{
-				auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
-
-				floorBoss->SetPosition(objData.position);
-
-				floorBoss->SetScale(objData.scale);
-
-				m_floorBoss.push_back(floorBoss);
-
-				m_enemyCount++;
-			}*/
 			//else if (objData.EqualObjectName(L"mediumRobot") == true)
 			//{
 			//	auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
@@ -88,18 +88,18 @@ bool Game::Start()
 
 			//	m_enemyCount++;
 			//}
-			/*else if (objData.EqualObjectName(L"finalBoss") == true)
-			{
-				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
-				
-				finalBoss->SetPosition(objData.position);
-				
-				finalBoss->SetScale(objData.scale);
+			//else if (objData.EqualObjectName(L"finalBoss") == true)
+			//{
+			//	auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+			//	
+			//	finalBoss->SetPosition(objData.position);
+			//	
+			//	finalBoss->SetScale(objData.scale);
 
-				m_finalBoss.push_back(finalBoss);
+			//	m_finalBoss.push_back(finalBoss);
 
-				m_enemyCount++;
-			}*/
+			//	m_enemyCount++;
+			//}
 			/*else if (objData.EqualObjectName(L"barrier1") == true)
 			{
 				m_barrier1 = NewGO<Barrier>(0, "barrier");
