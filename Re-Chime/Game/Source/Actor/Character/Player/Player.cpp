@@ -408,6 +408,7 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 		if (!m_guardFlag && m_damageIntarvalTime == 0.0f)
 		{
 			m_playerHp -= damage;
+			m_audioManager->PlaySE(enSound_PlayerDamageSE, 1.0f, enSEPlay_AllowOverlap);
 
 			// ノックバックの計算
 			Vector3 dir = m_position - enemyPos;
@@ -424,6 +425,7 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 		{
 			m_playerHp -= damage / 2; // ガードしている場合はダメージを半減
 			m_damageIntarvalTime = 2.0f; // ダメージのインターバルを設定
+			m_audioManager->PlaySE(enSound_PlayerGuardSE, 1.0f, enSEPlay_AllowOverlap);
 		}
 	}
 
@@ -663,8 +665,6 @@ void Player::ManageState()
 	switch (m_playerState)
 	{
 	case enPlayerState_Idle:
-		m_audioManager->StopSE(enSound_PlayerGuardSE);
-		m_audioManager->StopSE(enSound_PlayerDamageSE);
 		IdleState();
 		break;
 	case enPlayerState_Jump:\
