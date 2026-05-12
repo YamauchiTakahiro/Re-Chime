@@ -23,8 +23,13 @@ enum AudioID
 	enSound_EnemyDeathSE,
 	enSound_BrokenBarricadeSE,
 	enSound_PlayerDamageSE,
-	enSound_PlayerAttackSE,
+	enSound_PlayerAttackSE_01,
+	enSound_PlayerAttackSE_02,
+	enSound_PlayerAttackSE_03,
 	enSound_PlayerGuardSE,
+	enSound_MissSE_01,
+	enSound_MissSE_02,
+	enSound_MissSE_03,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
 };
 

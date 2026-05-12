@@ -107,6 +107,10 @@ public:
     {
         return m_isHealFlag;
     }
+    void SetAttackHit(bool hit)
+    {
+        m_enemyHitFlag = hit;
+    }
     float GetPowerBuffTime() const
     {
         return m_powerBuffTime;
@@ -170,6 +174,7 @@ private:
 	float m_jumpTime = 1.0f;					//!<ジャンプの時間。
 	float m_fadeTime = 0.0f;					//!<フェードの時間。
     float m_attackCollisionLife = 0.0f;
+	float m_attackStartTime = 0.0f;
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;
@@ -181,5 +186,8 @@ private:
 	bool m_isPlayingRunSE = false;
     bool m_isHealFlag = false;
 	bool m_isJump = false;
+	bool m_hasCreatedAttackCollision = false;
+	bool m_enemyHitFlag = false;
+	bool m_hasPlayedHitSE = false;
 };
 

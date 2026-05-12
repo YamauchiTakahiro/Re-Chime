@@ -182,6 +182,7 @@ void MediumRobot::Hit()
 			damage = m_player->GetAttackPower();
 			m_mediumRobotHp -= damage;
 			m_damageIntarvalTime = 1.0f;
+			m_player->SetAttackHit(true);
 
 //========================
 // ダメージ表示生成
