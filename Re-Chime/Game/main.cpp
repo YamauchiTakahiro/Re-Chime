@@ -37,11 +37,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	g_soundEngine->Init();
 	NewGO<AudioManager>(0, "audioManager");
 	NewGO<Title>(0, "title");
-	
 	//////////////////////////////////////
 	// 初期化を行うコードを書くのはここまで！！！
 	//////////////////////////////////////
 	
+
+
 	// ここからゲームループ。
 	while (DispatchWindowMessage())
 	{

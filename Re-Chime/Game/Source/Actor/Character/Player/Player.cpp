@@ -44,6 +44,8 @@ bool Player::Start()
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
+	m_modelRender.SetShadowCasterFlag(true);
+
 	SetScale();
 
 	return true;
@@ -73,7 +75,19 @@ void Player::Update()
 		Rotation();
 	}
 
+	if (m_collisionObject != nullptr)
+	{
+		m_attackCollisionLife -= g_gameTime->GetFrameDeltaTime();
+		if (m_attackCollisionLife <= 0.0f)
+		{
+			DeleteGO(m_collisionObject);
+			m_collisionObject = nullptr;
+		}
+	}
+
 	FadeTime();
+
+	FootStepTime();
 
 	Time();
 
@@ -94,6 +108,8 @@ void Player::Update()
 	Attack();
 
 	ManageState();
+
+	FootStep();
 
 	PlayAnimation();
 	m_modelRender.Update();
@@ -118,7 +134,7 @@ void Player::Move()
 
 		Vector3 moveDir = forward * stickL.y + right * stickL.x;
 
-		if(moveDir.LengthSq() > 0.0f > 0.0001f)
+		if(moveDir.LengthSq() > 0.0001f)
 		{
 			moveDir.Normalize();
 		}
@@ -151,7 +167,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		m_moveSpeed.y -= 20.0f;
+		//m_moveSpeed.y -= 20.0f;
 	}
 
 	Vector3 finalMoveSpeed = m_moveSpeed;
@@ -171,35 +187,6 @@ void Player::Move()
 			m_isKnockBack = false;
 		}
 	}
-
-	/*Vector3 vel = m_moveSpeed;
-	vel.y = 0.0f;
-
-	float moveSpeed = vel.Length();
-	float speedRate = moveSpeed / 480.0f;
-
-	if (speedRate < 0.0f) speedRate = 0.0f;
-	if (speedRate > 1.0f) speedRate = 1.0f;
-
-	if (m_characterController.IsOnGround() == false || speedRate < 0.05f)
-	{
-		m_footStepDistance = 0.0f;
-		m_footStepCooldown = 0.0f;
-		return;
-	}
-
-	float footInterval = 1.2f + (0.4f - 1.2f) * speedRate;
-
-	m_footStepDistance += moveSpeed * g_gameTime->GetFrameDeltaTime();
-	m_footStepCooldown -= g_gameTime->GetFrameDeltaTime();
-
-	if (m_footStepCooldown <= 0.0f && m_footStepDistance >= footInterval)
-	{
-		m_audioManager->PlaySE(enSound_PlayerWalkSE);
-
-		m_footStepDistance -= footInterval;
-		m_footStepCooldown = footInterval;
-	}*/
 
 	m_position = m_characterController.Execute(finalMoveSpeed, 2.0f / 60.0f);
 
@@ -221,6 +208,76 @@ void Player::SetScale()
 	m_modelRender.SetScale(m_scale);
 }
 
+void Player::FootStep()
+{
+	if (!m_characterController.IsOnGround())
+	{
+		return;
+	}
+
+	switch (m_playerState)
+	{
+	case enPlayerState_Walk:
+
+		if (m_footStepTime <= 0.0f)
+		{
+			printf("walk footstep\n");
+
+			// 歩き足音をランダム再生
+			int r = rand() % 3;
+
+			AudioID id;
+
+			switch (r)
+			{
+			case 0: id = enSound_PlayerWalkSE1; break;
+			case 1: id = enSound_PlayerWalkSE2; break;
+			case 2: id = enSound_PlayerWalkSE3; break;
+			}
+
+			m_audioManager->PlaySE(
+				id,
+				1.0f,
+				enSEPlay_AllowOverlap
+			);
+
+			m_footStepTime = 0.5f;
+		}
+
+		break;
+
+	case enPlayerState_Run:
+
+		if (m_footStepTime <= 0.0f)
+		{
+			printf("run footstep\n");
+
+			// ダッシュ足音をランダム再生
+			int r = rand() % 3;
+
+			AudioID id;
+
+			switch (r)
+			{
+			case 0: id = enSound_PlayerDashSE1; break;
+			case 1: id = enSound_PlayerDashSE2; break;
+			case 2: id = enSound_PlayerDashSE3; break;
+			}
+			m_audioManager->PlaySE(
+				id,
+				1.0f,
+				enSEPlay_AllowOverlap
+			);
+
+			m_footStepTime = 0.3f;
+		}
+
+		break;
+
+	default:
+		break;
+	}
+}
 void Player::Attack()
 {
 	if (m_playerState != enPlayerState_Attack)
@@ -245,6 +302,11 @@ void Player::Attack()
 
 void Player::OnCollision()
 {
+	if (m_collisionObject != nullptr)
+	{
+		DeleteGO(m_collisionObject);
+		m_collisionObject = nullptr;
+	}
 	m_collisionObject = NewGO<CollisionObject>(0);
 
 	Vector3 collisionPos = m_position;
@@ -254,6 +316,8 @@ void Player::OnCollision()
 	collisionPos.y += 50.0f; // 攻撃の当たり判定を少し上にずらす
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("playerAttack");
+
+	m_attackCollisionLife = 0.1f;
 }
 
 void Player::Time()
@@ -282,7 +346,7 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 	}
 	else
 	{
-		if (!m_guardFlag)
+		if (!m_guardFlag && m_damageIntarvalTime == 0.0f)
 		{
 			m_playerHp -= damage;
 
@@ -295,14 +359,15 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 			m_knockBack.y = 0.0f; // ノックバックの垂直成分をゼロにする
 
 			m_isKnockBack = true;
+			m_damageIntarvalTime = 2.0f; // ダメージのインターバルを設定
 		}
-		else
+		else if (m_guardFlag && m_damageIntarvalTime == 0.0f)
 		{
 			m_playerHp -= damage / 2; // ガードしている場合はダメージを半減
+			m_damageIntarvalTime = 2.0f; // ダメージのインターバルを設定
 		}
 	}
 
-	m_damageIntarvalTime = 1.0f; // ダメージのインターバルを設定
 }
 
 void Player::Hit()
@@ -314,6 +379,7 @@ void Player::Hit()
 		{
 			m_powerBuffFlag = true;
 			MakePowerBuffEffect();
+			m_audioManager->PlaySE(enSound_BuffSE, 1.0f, enSEPlay_AllowOverlap);
 			m_powerBuffTime = 20.0f;
 		}
 	}
@@ -325,6 +391,7 @@ void Player::Hit()
 		{
 			m_attackSpeedBuffFlag = true;
 			MakeAttackSpeedBuffEffect();
+			m_audioManager->PlaySE(enSound_BuffSE, 1.0f, enSEPlay_AllowOverlap);
 			m_attackSpeedBuffTime = 20.0f;
 		}
 	}
@@ -408,6 +475,15 @@ void Player::JumpTime()
 	}
 }
 
+void Player::FootStepTime()
+{
+	m_footStepTime -= g_gameTime->GetFrameDeltaTime();
+	if (m_footStepTime < 0.0f)
+	{
+		m_footStepTime = 0.0f;
+	}
+}
+
 void Player::PlayerState()
 {
 	if (m_isKnockBack)
@@ -418,6 +494,7 @@ void Player::PlayerState()
 
 	if (g_pad[0]->IsTrigger(enButtonA) && m_timeCount == 0.0f && !m_guardFlag)
 	{
+		m_audioManager->PlaySE(enSound_PlayerAttackSE, 1.0f, enSEPlay_AllowOverlap);
 		m_playerState = enPlayerState_Attack;
 		m_isAttack = true;
 		return;
@@ -515,14 +592,11 @@ void Player::ManageState()
 	switch (m_playerState)
 	{
 	case enPlayerState_Idle:
-		m_audioManager->StopSE(enSound_PlayerWalkSE);
-		m_audioManager->StopSE(enSound_PlayerDashSE);
-		m_audioManager->StopSE(enSound_PlayerAttackSE);
 		m_audioManager->StopSE(enSound_PlayerGuardSE);
 		m_audioManager->StopSE(enSound_PlayerDamageSE);
 		IdleState();
 		break;
-	case enPlayerState_Jump:
+	case enPlayerState_Jump:\
 		JumpState();
 		break;
 	case enPlayerState_Walk:
@@ -547,6 +621,12 @@ void Player::ManageState()
 
 void Player::PlayAnimation()
 {
+	if (m_fadeTime > 0.0f)
+	{
+		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		return;
+	}
+
 	switch(m_playerState)
 	{
 	case enPlayerState_Idle:
@@ -577,9 +657,10 @@ void Player::PlayAnimation()
 
 void Player::PowerBuff()
 {
+	int attakcPower = rand() % 5 + 15; // 攻撃力を5から10の範囲でランダムに決定
 	if (m_powerBuffFlag == true)
 	{
-		m_attackPower = 20;
+		m_attackPower = attakcPower * 2;
 		if (m_powerBuffTime <= 0)
 		{
 			m_powerBuffFlag = false;
@@ -587,7 +668,7 @@ void Player::PowerBuff()
 	}
 	else
 	{
-		m_attackPower = 10;
+		m_attackPower = attakcPower;
 	}
 }
 
@@ -614,6 +695,7 @@ void Player::AttackSpeedBuffTime()
 void Player::Heal()
 {
 	m_playerHp += m_heal;
+	m_audioManager->PlaySE(enSound_HealSE, 1.0f, enSEPlay_AllowOverlap);
 	MakeHealEffect();
 	if (m_playerHp > m_playerMaxHp)
 	{

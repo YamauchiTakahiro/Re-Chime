@@ -8,6 +8,7 @@ class AttackSpeedBuff;
 class PowerBuff;
 class Heal;
 class DamageText;
+class AudioManager;
 
 class SmallRobot : public Enemy
 {
@@ -83,6 +84,7 @@ private:
 	CollisionObject* m_collisionObject = nullptr;
 	Game* m_game = nullptr;
 	DamageText* m_damageText = nullptr;
+	AudioManager* m_audioManager = nullptr;
 	Vector3 m_forward;
 	Vector3 m_scale;
 	SpriteRender m_enemyHP;//敵のHPを表示する。
@@ -90,8 +92,8 @@ private:
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
 	Vector2 m_enemyHPFramePosition = Vector2::Zero;
 	//enSmallRobotState m_smallRobotState = enSmallRobotState_Idle;	//!<小型ロボットの状態。
-	int m_smallRobotHp = 10;		//!<小型ロボットのHP。
-	int m_smallRobotMaxHp = 10;	//!<小型ロボットの最大HP。
+	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
+	int m_smallRobotMaxHp = 50;	//!<小型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。

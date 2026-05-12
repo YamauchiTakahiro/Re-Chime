@@ -69,6 +69,7 @@ private:
         enAnimationClip_Num,
 	};
 	AnimationClip m_animationClips[enAnimationClip_Num];
+	EnAnimationClip m_currentAnimationClip = enAnimationClip_Num;
 	EnFinalBossState m_finalBossState = enFinalBossState_Idle;
     ModelRender m_modelRender;
     CharacterController m_characterController;
@@ -92,6 +93,7 @@ private:
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
     float m_chaseTimer = 0.0f;						//追跡タイマー。
     float m_idleTimer = 0.0f;						//待機タイマー。
+	float m_attackCollisionLife = 0.0f;				//攻撃判定の有効時間。
 	bool m_isAttack = false;		//!<攻撃しているかどうか。
 	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
     bool m_isShowBossHP = false;

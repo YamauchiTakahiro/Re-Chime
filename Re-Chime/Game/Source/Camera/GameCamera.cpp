@@ -54,7 +54,7 @@ void GameCamera::Update()
 	Vector3 position;
 	Vector3 target = m_player->GetPosition();
 	//プレイヤの足元からちょっと上を注視点とする。
-	target.y += 220.0f;
+	target.y += 280.0f;
 	target += g_camera3D->GetForward() * 20.0f;
 
 	Vector3 toCameraPosOld = m_toCameraPos;
