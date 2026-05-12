@@ -32,7 +32,6 @@ public:
 	void MakeExplosionEffect();
 	void ManageState();
 	void FloorBossHP();
-	//void ManageState();
 	void PlayAnimation();
 	void FloorBossState();
 	void IdleState();

@@ -37,7 +37,7 @@ class MediumRobot : public Enemy
 	void MediumRobotState();
 	void IdleState();
     void WalkState();
-	//void AttackState();
+	void AttackState();
 	void DeathState();
     void MediumRobotHP();
     Vector3 GetPosition()const override;
@@ -94,6 +94,8 @@ private:
 	int m_attackPower = 10;		//!<攻撃力。
     float m_timeCount = 0.0f;		//!<タイマー用の変数。
     float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
+    float m_attackCollisionLife = 0.0f;
 	bool m_isAttack = false;		//!<攻撃しているかどうか。
+	bool m_isDeath = false;		//!<死亡しているかどうか。
 };
 
