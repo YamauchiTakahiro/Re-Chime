@@ -7,14 +7,17 @@ enum AudioID
 	enSound_StageBGM,
 	enSound_GameOverBGM,
 	enSound_GameClearBGM,
-	enSound_PlayerWalkSE,
-	enSound_PlayerDashSE,
+	enSound_PlayerWalkSE1,
+	enSound_PlayerWalkSE2,
+	enSound_PlayerWalkSE3,
+	enSound_PlayerDashSE1,
+	enSound_PlayerDashSE2,
+	enSound_PlayerDashSE3,
 	enSound_EnemyWalkSE,
 	enSound_BossWalkSE,
 	enSound_FloorBossWalkSE,
 	enSound_HealSE,
-	enSound_PowerUpSE,
-	enSound_SpeedUpSE,
+	enSound_BuffSE,
 	enSound_BellSE,
 	enSound_GearDropSE,
 	enSound_EnemyDeathSE,
@@ -23,6 +26,12 @@ enum AudioID
 	enSound_PlayerAttackSE,
 	enSound_PlayerGuardSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
+};
+
+enum SEPlayType
+{
+	enSEPlay_AllowOverlap,
+	enSEPlay_NoOverlap,
 };
 
 struct SEHandle
@@ -45,8 +54,9 @@ public:
 	void PlayBGM(AudioID id, float volume = 1.0f);
 	void StopBGM();
 
-	void PlaySE(AudioID id, float volume = 1.0f);
+	void PlaySE(AudioID id, float volume = 1.0f, SEPlayType type = enSEPlay_AllowOverlap);
 	void StopSE(AudioID id);
+	bool IsPlayingSE(AudioID id);
 
 	void SetBGMVolume(float volume);
 	void SetSEVolume(float volume);

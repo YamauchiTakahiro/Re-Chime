@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 
+
 AudioManager::AudioManager()
 {
 }
@@ -46,13 +47,6 @@ void AudioManager::Init()
 	m_isReady = true;
 
 	LoadAll();
-
-	for (int i = 0; i < SE_POOL_SIZE; ++i)
-	{
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Num); //仮のIDで初期化。再生する際にIDを変更する。
-		m_sePool.push_back(se);
-	}
 }
 
 void AudioManager::PlayBGM(AudioID id, float volume)
@@ -106,20 +100,60 @@ SoundSource* AudioManager::GetFreeSE()
 	return nullptr;
 }
 
-void AudioManager::PlaySE(AudioID id, float volume)
+void AudioManager::PlaySE(AudioID id, float volume, SEPlayType type)
 {
-	SoundSource* se = GetFreeSE();
-
-	if (!se)
+	if (type == enSEPlay_NoOverlap)
 	{
-		return;
+		if (IsPlayingSE(id))
+		{
+			return;
+		}
 	}
 
+	SoundSource* se = NewGO<SoundSource>(0);
+
 	se->Init(id);
+
 	se->SetVolume(volume * m_seVolume * m_masterVolume);
+
 	se->Play(false);
 
 	m_playingSE.push_back({ id, se });
+}
+
+void AudioManager::StopSE(AudioID id)
+{
+	for (auto it = m_playingSE.begin(); it != m_playingSE.end();)
+	{
+		if (it->id == id)
+		{
+			if (it->se)
+			{
+				it->se->Stop();
+			}
+
+			it = m_playingSE.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
+bool AudioManager::IsPlayingSE(AudioID id)
+{
+	for (auto& se : m_playingSE)
+	{
+		if (se.id == id)
+		{
+			if (se.se && se.se->IsPlaying())
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void AudioManager::SetSEVolume(float volume)
@@ -135,25 +169,6 @@ void AudioManager::SetSEVolume(float volume)
 	}
 }
 
-void AudioManager::StopSE(AudioID id)
-{
-	for (auto it = m_playingSE.begin(); it != m_playingSE.end();)
-	{
-		if (it->id == id)
-		{
-			if (it->se)
-			{
-				it->se->Stop();
-			}
-			it = m_playingSE.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}
-}
-
 void AudioManager::LoadAll()
 {
 	//BGMの読み込み
@@ -164,14 +179,17 @@ void AudioManager::LoadAll()
 	Load(enSound_GameClearBGM, "Assets/Sound/BGM/GameClearBGM.wav");
 
 	//SEの読み込み
-	Load(enSound_PlayerWalkSE, "Assets/Sound/SE/PlayerWalkSE.wav");
-	Load(enSound_PlayerDashSE, "Assets/Sound/SE/PlayerDashSE.wav");
+	Load(enSound_PlayerWalkSE1, "Assets/Sound/SE/PlayerWalkSE_01.wav");
+	Load(enSound_PlayerWalkSE2, "Assets/Sound/SE/PlayerWalkSE_02.wav");
+	Load(enSound_PlayerWalkSE3, "Assets/Sound/SE/PlayerWalkSE_03.wav");
+	Load(enSound_PlayerDashSE1, "Assets/Sound/SE/PlayerDashSE_01.wav");
+	Load(enSound_PlayerDashSE2, "Assets/Sound/SE/PlayerDashSE_02.wav");
+	Load(enSound_PlayerDashSE3, "Assets/Sound/SE/PlayerDashSE_03.wav");
 	Load(enSound_EnemyWalkSE, "Assets/Sound/SE/EnemyWalkSE.wav");
 	Load(enSound_BossWalkSE, "Assets/Sound/SE/BossWalkSE.wav");
 	Load(enSound_FloorBossWalkSE, "Assets/Sound/SE/FloorBossWalkSE.wav");
 	Load(enSound_HealSE, "Assets/Sound/SE/HealSE.wav");
-	Load(enSound_PowerUpSE, "Assets/Sound/SE/PowerUpSE.wav");
-	Load(enSound_SpeedUpSE, "Assets/Sound/SE/SpeedUpSE.wav");
+	Load(enSound_BuffSE, "Assets/Sound/SE/BuffSE.wav");
 	Load(enSound_BellSE, "Assets/Sound/SE/BellSE.wav");
 	Load(enSound_GearDropSE, "Assets/Sound/SE/GearDropSE.wav");
 	Load(enSound_EnemyDeathSE, "Assets/Sound/SE/EnemyDeathSE.wav");

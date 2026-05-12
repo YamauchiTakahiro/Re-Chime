@@ -56,6 +56,8 @@ public:
 	void KnockBackState();
 	void ManageState();
     void FadeTime();
+	void FootStepTime();
+	void FootStep();
     Vector3 GetPosition()const override
     {
         return m_position;
@@ -164,11 +166,10 @@ private:
 	float m_powerBuffTime = 0.0f;				//!<攻撃力バフの時間。
 	float m_attackSpeedBuffTime = 0.0f;		//!<攻撃速度バフの時間。
 	float m_guardTimeLimit = 3.0f;				//!<ガードできる時間の上限。
-	float m_footStepDistance = 0.0f;			//!<歩行時の足音の距離
-	float m_footStepInterval = 1.2f;				//!<歩行時の足音の間隔。
-	float m_footStepCooldown = 0.0f;				//!<走行時の足音の間隔。
+	float m_footStepTime = 0.0f;					//!<足音の時間。
 	float m_jumpTime = 1.0f;					//!<ジャンプの時間。
 	float m_fadeTime = 0.0f;					//!<フェードの時間。
+    float m_attackCollisionLife = 0.0f;
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;

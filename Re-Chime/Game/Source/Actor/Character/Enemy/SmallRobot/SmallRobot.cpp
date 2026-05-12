@@ -7,6 +7,7 @@
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 #include "DamageText.h"
 
 SmallRobot::SmallRobot()
@@ -40,6 +41,8 @@ bool SmallRobot::Start()
 	m_characterController.Init(200.0f, 100.0f, m_position);
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
+
+	m_audioManager = FindGO<AudioManager>("audioManager");
 
 	return true;
 }
@@ -201,6 +204,7 @@ void SmallRobot::Death()
 	if (m_smallRobotHp <= 0)
 	{
 		m_game->EnemyCount();
+		m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
 		MakeExplosionEffect();
 		int randomNum = rand() % 100 + 1;
 		if (randomNum <= 20)

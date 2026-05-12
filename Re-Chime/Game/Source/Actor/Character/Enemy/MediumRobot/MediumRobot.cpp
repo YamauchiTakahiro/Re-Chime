@@ -49,15 +49,28 @@ void MediumRobot::Update()
 	{
 		return;
 	}
-	Move();
 
-	Rotation();
+	if (m_collisionObject != nullptr)
+	{
+		m_attackCollisionLife -= g_gameTime->GetFrameDeltaTime();
+		if (m_attackCollisionLife <= 0.0f)
+		{
+			DeleteGO(m_collisionObject);
+			m_collisionObject = nullptr;
+		}
+	}
+	if (!m_isDeath)
+	{
+		Move();
+
+		Rotation();
+	}
 
 	Time();
 
 	Hit();
 
-	//Attack();
+	Attack();
 
 	DamageIntarval();
 
@@ -80,7 +93,6 @@ void MediumRobot::Move()
 	if (distToPlayer <= 500 && m_timeCount == 0.0f)
 	{
 		m_timeCount = 2.0f;
-		Attack();
 		Time();
 	}
 	if (distToPlayer <= 1000)
@@ -119,7 +131,7 @@ void MediumRobot::Rotation()
 
 void MediumRobot::Attack()
 {
-	/*if (m_isAttack == false)
+	if (m_isAttack == false)
 	{
 		return;
 	}
@@ -127,12 +139,17 @@ void MediumRobot::Attack()
 	{
 		OnCollision();
 		m_isAttack = false;
-	}*/
-	OnCollision();
+	}
+	//OnCollision();
 }
 
 void MediumRobot::OnCollision()
 {
+	if(m_collisionObject != nullptr)
+	{
+		DeleteGO(m_collisionObject);
+		m_collisionObject = nullptr;
+	}
 	m_collisionObject = NewGO<CollisionObject>(0);
 
 	Vector3 collisionPos = m_position;
@@ -141,6 +158,8 @@ void MediumRobot::OnCollision()
 	collisionPos += m_forward * 250.0f;
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("mediumRobotAttack");
+	
+	m_attackCollisionLife = 0.1f; // 攻撃の当たり判定の寿命を設定
 }
 
 void MediumRobot::Time()
@@ -176,6 +195,7 @@ void MediumRobot::Hit()
 			damageText->SetPosition(textPos);
 
 			damageText->SetDamage(damage);
+			m_damageIntarvalTime = 2.0f;
 		}
 	}
 }
@@ -270,15 +290,15 @@ void MediumRobot::PlayAnimation()
 
 void MediumRobot::MediumRobotState()
 {
-	//if (m_timeCount == 0)
-	//{
-	//	//m_mediumRobotState = enMediumRobotState_Attack;
-	//	//m_isAttack = true;
-	//	Attack();
-	//}
+	if (m_timeCount == 0 && !m_isDeath)
+	{
+		m_mediumRobotState = enMediumRobotState_Attack;
+		m_isAttack = true;
+	}
 	if (m_mediumRobotHp <= 0)
 	{
 		m_mediumRobotState = enMediumRobotState_Death;
+		m_isDeath = true;
 	}
 	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
