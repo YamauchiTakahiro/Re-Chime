@@ -195,8 +195,13 @@ void AudioManager::LoadAll()
 	Load(enSound_EnemyDeathSE, "Assets/Sound/SE/EnemyDeathSE.wav");
 	Load(enSound_BrokenBarricadeSE, "Assets/Sound/SE/BrokenBarricadeSE.wav");
 	Load(enSound_PlayerDamageSE, "Assets/Sound/SE/PlayerDamageSE.wav");
-	Load(enSound_PlayerAttackSE, "Assets/Sound/SE/PlayerAttackSE.wav");
+	Load(enSound_PlayerAttackSE_01, "Assets/Sound/SE/PlayerAttackSE_01.wav");
+	Load(enSound_PlayerAttackSE_02, "Assets/Sound/SE/PlayerAttackSE_02.wav");
+	Load(enSound_PlayerAttackSE_03, "Assets/Sound/SE/PlayerAttackSE_03.wav");
 	Load(enSound_PlayerGuardSE, "Assets/Sound/SE/PlayerGuardSE.wav");
+	Load(enSound_MissSE_01, "Assets/Sound/SE/MissSE_01.wav");
+	Load(enSound_MissSE_02, "Assets/Sound/SE/MissSE_02.wav");
+	Load(enSound_MissSE_03, "Assets/Sound/SE/MissSE_03.wav");
 }
 
 void AudioManager::Load(AudioID id, const std::string& path)

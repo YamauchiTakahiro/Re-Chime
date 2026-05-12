@@ -112,6 +112,7 @@ void Player::Update()
 	FootStep();
 
 	PlayAnimation();
+	
 	m_modelRender.Update();
 }
 
@@ -167,7 +168,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		//m_moveSpeed.y -= 20.0f;
+		m_moveSpeed.y -= 20.0f;
 	}
 
 	Vector3 finalMoveSpeed = m_moveSpeed;
@@ -284,19 +285,77 @@ void Player::Attack()
 	{
 		return;
 	}
-	if (m_isAttack == true && !m_isKnockBack)
+
+	if (m_isAttack && !m_isKnockBack)
 	{
-		if(m_attackSpeedBuffFlag == true)
+		// 攻撃開始からの時間を計測
+		m_attackStartTime += g_gameTime->GetFrameDeltaTime();
+
+		// 0.2秒後に当たり判定生成
+		if (m_attackStartTime >= 0.2f &&
+			!m_hasCreatedAttackCollision)
 		{
 			OnCollision();
-			m_timeCount = 1.0f; // 攻撃クールタイムを短縮する例
+
+			m_hasCreatedAttackCollision = true;
+
+			if (m_attackSpeedBuffFlag)
+			{
+				m_timeCount = 1.0f;
+			}
+			else
+			{
+				m_timeCount = 2.0f;
+			}			
 		}
-		else if (m_attackSpeedBuffFlag == false)
+		if (m_attackStartTime >= 0.25f &&
+			!m_hasPlayedHitSE)
 		{
-			OnCollision();
-			m_timeCount = 2.0f; // 通常の攻撃クールタイム
+			if (m_enemyHitFlag)
+			{
+				// 敵に攻撃が当たった場合の処理
+				int r = rand() % 3;
+
+				AudioID id;
+
+				switch (r)
+				{
+				case 0: id = enSound_PlayerAttackSE_01; break;
+				case 1: id = enSound_PlayerAttackSE_02; break;
+				case 2: id = enSound_PlayerAttackSE_03; break;
+				}
+
+				m_audioManager->PlaySE(
+					id,
+					1.0f,
+					enSEPlay_AllowOverlap
+				);
+				m_hasPlayedHitSE = true;
+			}
+			if (!m_enemyHitFlag)
+			{
+				int r = rand() % 3;
+
+				AudioID id;
+
+				switch (r)
+				{
+				case 0: id = enSound_MissSE_01; break;
+				case 1: id = enSound_MissSE_02; break;
+				case 2: id = enSound_MissSE_03; break;
+				}
+
+				m_audioManager->PlaySE(
+					id,
+					1.0f,
+					enSEPlay_AllowOverlap
+				);
+				m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
+				m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
+				m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
+				m_hasPlayedHitSE = true;
+			}
 		}
-		Time();
 	}
 }
 
@@ -494,9 +553,14 @@ void Player::PlayerState()
 
 	if (g_pad[0]->IsTrigger(enButtonA) && m_timeCount == 0.0f && !m_guardFlag)
 	{
-		m_audioManager->PlaySE(enSound_PlayerAttackSE, 1.0f, enSEPlay_AllowOverlap);
 		m_playerState = enPlayerState_Attack;
+
 		m_isAttack = true;
+
+		// 追加
+		m_attackStartTime = 0.0f;
+		m_hasCreatedAttackCollision = false;
+
 		return;
 	}
 
@@ -546,6 +610,13 @@ void Player::AttackState()
 	if (m_modelRender.IsPlayingAnimation() == false || m_isKnockBack)
 	{
 		m_isAttack = false;
+		
+		// 追加
+		m_hasCreatedAttackCollision = false;
+		m_attackStartTime = 0.0f;
+		m_enemyHitFlag = false;
+		m_hasPlayedHitSE = false;
+
 		PlayerState();
 	}
 }
