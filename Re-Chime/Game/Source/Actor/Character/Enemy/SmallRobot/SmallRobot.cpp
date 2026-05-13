@@ -211,16 +211,19 @@ void SmallRobot::Death()
 		{
 			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
 			m_attackSpeedBuff->SetPosition(m_position);
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
 		}
 		else if (randomNum > 20 && randomNum <= 40)
 		{
 			m_powerBuff = NewGO<PowerBuff>(0);
 			m_powerBuff->SetPosition(m_position);
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
 		}
-		else if (randomNum >/* 0*/40 && randomNum <= 60)
+		else if (randomNum > 40 && randomNum <= 60)
 		{
 			m_heal = NewGO<Heal>(0);
 			m_heal->SetPosition(m_position);
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
 		}
 		DeleteGO(this);
 	}
