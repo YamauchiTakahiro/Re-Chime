@@ -52,7 +52,7 @@ bool Game::Start()
 
 				m_stage->SetPosition(objData.position);
 			}
-	       /*else if (objData.EqualObjectName(L"smallRobot") == true)
+	       else if (objData.EqualObjectName(L"smallRobot") == true)
 			{
 				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
@@ -63,7 +63,7 @@ bool Game::Start()
 				m_smallRobot.push_back(smallRobot);
 
 				m_enemyCount++;
-			}*/
+			}
 			//else if (objData.EqualObjectName(L"FloorBoss") == true)
 			//{
 			//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
@@ -291,6 +291,7 @@ void Game::Update()
 			if (diff.Length() < area.radius &&
 				playerPos.y > area.pos.y - 50.0f) {
 				m_player->SetPosition(area.targetPos);
+				m_audioManager->PlaySE(enSound_StairsSE, 0.5f, enSEPlay_AllowOverlap);
 				isInAnyArea = true;
 				break;
 			}
@@ -395,23 +396,27 @@ void Game::ThirdFloor()
 
 void Game::CreateGire()
 {
+	int gireCount = m_player->GetGireCount();
 
-	if (m_numDefeatedEnemy == 6 && !m_createGire)
+	if (m_numDefeatedEnemy == 6 && !m_createGire && gireCount == 0)
 	{
 		m_gire = NewGO<Gire>(0, "gire");
 		m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
 	}
-	if (m_numDefeatedEnemy == 11 && !m_createGire)
+	if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
 	{
 		m_gire = NewGO<Gire>(0, "gire");
 		m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
+		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
 	}
-	if (m_numDefeatedEnemy == 13 && !m_createGire)
+	if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
 	{
 		m_gire = NewGO<Gire>(0, "gire");
 		m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
+		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
 	}
 }

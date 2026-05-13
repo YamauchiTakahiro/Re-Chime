@@ -189,7 +189,8 @@ void AudioManager::LoadAll()
 	Load(enSound_BossWalkSE, "Assets/Sound/SE/BossWalkSE.wav");
 	Load(enSound_FloorBossWalkSE, "Assets/Sound/SE/FloorBossWalkSE.wav");
 	Load(enSound_HealSE, "Assets/Sound/SE/HealSE.wav");
-	Load(enSound_BuffSE, "Assets/Sound/SE/BuffSE.wav");
+	Load(enSound_PowerUPSE, "Assets/Sound/SE/PowerUPSE.wav");
+	Load(enSound_AttackSpeedUPSE, "Assets/Sound/SE/AttackSpeedUpSE.wav");
 	Load(enSound_BellSE, "Assets/Sound/SE/BellSE.wav");
 	Load(enSound_GearDropSE, "Assets/Sound/SE/GearDropSE.wav");
 	Load(enSound_EnemyDeathSE, "Assets/Sound/SE/EnemyDeathSE.wav");
@@ -202,6 +203,8 @@ void AudioManager::LoadAll()
 	Load(enSound_MissSE_01, "Assets/Sound/SE/MissSE_01.wav");
 	Load(enSound_MissSE_02, "Assets/Sound/SE/MissSE_02.wav");
 	Load(enSound_MissSE_03, "Assets/Sound/SE/MissSE_03.wav");
+	Load(enSound_StairsSE, "Assets/Sound/SE/StairsSE.wav");
+	Load(enSound_ItemDropSE, "Assets/Sound/SE/ItemDropSE.wav");
 }
 
 void AudioManager::Load(AudioID id, const std::string& path)

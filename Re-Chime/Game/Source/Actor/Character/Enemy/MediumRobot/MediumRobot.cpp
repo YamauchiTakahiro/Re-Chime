@@ -3,6 +3,7 @@
 #include "Source/Actor/Character/Player/Player.h"
 #include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
+#include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
 #include "DamageText.h"
@@ -238,6 +239,11 @@ void MediumRobot::Death()
 	{
 		m_powerBuff = NewGO<PowerBuff>(0);
 		m_powerBuff->SetPosition(m_position);
+	}
+	else if (randomNum > 40 && randomNum <= 60)
+	{
+		m_heal = NewGO<Heal>(0);
+		m_heal->SetPosition(m_position);
 	}
 	DeleteGO(this);
 }
