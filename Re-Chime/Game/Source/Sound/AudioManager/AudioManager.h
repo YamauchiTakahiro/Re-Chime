@@ -17,7 +17,8 @@ enum AudioID
 	enSound_BossWalkSE,
 	enSound_FloorBossWalkSE,
 	enSound_HealSE,
-	enSound_BuffSE,
+	enSound_PowerUPSE,
+	enSound_AttackSpeedUPSE,
 	enSound_BellSE,
 	enSound_GearDropSE,
 	enSound_EnemyDeathSE,
@@ -30,6 +31,8 @@ enum AudioID
 	enSound_MissSE_01,
 	enSound_MissSE_02,
 	enSound_MissSE_03,
+	enSound_StairsSE,
+	enSound_ItemDropSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
 };
 

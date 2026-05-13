@@ -80,12 +80,8 @@ private:
 	Vector3 m_scale;
 	Player* m_player = nullptr;
 	Game* m_game = nullptr;
-	AttackSpeedBuff* m_attackSpeedBuff = nullptr;
-	PowerBuff* m_powerBuff = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
-	//int m_floorBossHP = 10;
-	//int m_floorBossMaxHP = 10;
 	SpriteRender m_enemyHP;//敵のHPを表示する。
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
 	bool m_isShowHP = false;

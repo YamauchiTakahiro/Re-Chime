@@ -371,7 +371,7 @@ void Player::OnCollision()
 	Vector3 collisionPos = m_position;
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 300.0f;
+	collisionPos += m_forward * 350.0f;
 	collisionPos.y += 50.0f; // 攻撃の当たり判定を少し上にずらす
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("playerAttack");
@@ -440,7 +440,7 @@ void Player::Hit()
 		{
 			m_powerBuffFlag = true;
 			MakePowerBuffEffect();
-			m_audioManager->PlaySE(enSound_BuffSE, 1.0f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(enSound_PowerUPSE, 1.0f, enSEPlay_AllowOverlap);
 			m_powerBuffTime = 20.0f;
 		}
 	}
@@ -452,7 +452,7 @@ void Player::Hit()
 		{
 			m_attackSpeedBuffFlag = true;
 			MakeAttackSpeedBuffEffect();
-			m_audioManager->PlaySE(enSound_BuffSE, 1.0f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(enSound_AttackSpeedUPSE, 1.0f, enSEPlay_AllowOverlap);
 			m_attackSpeedBuffTime = 20.0f;
 		}
 	}

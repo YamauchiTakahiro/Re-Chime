@@ -4,6 +4,7 @@
 class Player;
 class AttackSpeedBuff;
 class PowerBuff;
+class Heal;
 class Game;
 class DamageText;
 
@@ -78,12 +79,12 @@ private:
     Player* m_player = nullptr;
     AttackSpeedBuff* m_attackSpeedBuff = nullptr;
     PowerBuff* m_powerBuff = nullptr;
+	Heal* m_heal = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Game* m_game = nullptr;
     DamageText* m_damageText = nullptr;
     Vector3 m_forward;
     Vector3 m_scale;
-    //int m_mediumRobotHp = 10;		//!<中型ロボットのHP。
     SpriteRender m_enemyHP;//敵のHPを表示する。
     SpriteRender m_enemyHPFrame;
     Vector2 m_enemyHPBarPosition = Vector2::Zero;
