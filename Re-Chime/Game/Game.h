@@ -16,6 +16,7 @@ class FloorBoss;
 class DifficultyLevel;
 class MediumRobot;
 class FinalBoss;
+class RareRobot;
 class Title;
 class GameClear;
 class AudioManager;
@@ -75,6 +76,7 @@ private:
 	std::vector<FloorBoss*> m_floorBoss;
 	std::vector<MediumRobot*> m_mediumRobot;
 	std::vector<FinalBoss*> m_finalBoss;
+	std::vector<RareRobot*> m_rareRobot;
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
 	DifficultyLevel* m_difficul = nullptr;
@@ -100,6 +102,7 @@ private:
 	int m_enemyCount = 0;		//!<敵の数。
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 	bool m_isSetting = false;
+	bool m_spawnRareRobot = false;
 	float m_pauseTime;
 
 	bool m_isNear = false;
