@@ -101,13 +101,14 @@ bool Game::Start()
 
 			//	m_enemyCount++;
 			//}
-			else if (objData.EqualObjectName(L"rareRobot") == true)
+			else if (objData.EqualObjectName(L"rareRobot1") == true)
 			{
 				// 0～99 の乱数
 				int randValue = rand() % 100;
+				int spawnRate = 20;
 
 				// 30%で生成
-				if (randValue < 30)
+				if (randValue < spawnRate)
 				{
 					auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
 
@@ -116,9 +117,6 @@ bool Game::Start()
 					rareRobot->SetScale(objData.scale);
 
 					m_rareRobot.push_back(rareRobot);
-
-					m_spawnRareRobot = true;
-					m_enemyCount++;
 				}
 			}
 			/*else if (objData.EqualObjectName(L"barrier1") == true)
@@ -424,54 +422,26 @@ void Game::CreateGire()
 {
 	int gireCount = m_player->GetGireCount();
 
-	if (m_spawnRareRobot == false)
+	if (m_numDefeatedEnemy == 6 && !m_createGire && gireCount == 0)
 	{
-		if (m_numDefeatedEnemy == 6 && !m_createGire && gireCount == 0)
-		{
-			m_gire = NewGO<Gire>(0, "gire");
-			m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-			m_createGire = true;
-		}
-		if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
-		{
-			m_gire = NewGO<Gire>(0, "gire");
-			m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
-			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-			m_createGire = true;
-		}
-		if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
-		{
-			m_gire = NewGO<Gire>(0, "gire");
-			m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
-			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-			m_createGire = true;
-		}
-
+		m_gire = NewGO<Gire>(0, "gire");
+		m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+		m_createGire = true;
 	}
-	else
+	if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
 	{
-		if (m_numDefeatedEnemy == 8 && !m_createGire && gireCount == 0)
-		{
-			m_gire = NewGO<Gire>(0, "gire");
-			m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-			m_createGire = true;
-		}
-		if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 1)
-		{
-			m_gire = NewGO<Gire>(0, "gire");
-			m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
-			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-			m_createGire = true;
-		}
-		if (m_numDefeatedEnemy == 15 && !m_createGire && gireCount == 2)
-		{
-			m_gire = NewGO<Gire>(0, "gire");
-			m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
-			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-			m_createGire = true;
-		}
+		m_gire = NewGO<Gire>(0, "gire");
+		m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
+		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+		m_createGire = true;
+	}
+	if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
+	{
+		m_gire = NewGO<Gire>(0, "gire");
+		m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
+		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+		m_createGire = true;
 	}
 }
 
