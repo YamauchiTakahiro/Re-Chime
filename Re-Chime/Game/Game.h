@@ -102,7 +102,6 @@ private:
 	int m_enemyCount = 0;		//!<敵の数。
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 	bool m_isSetting = false;
-	bool m_spawnRareRobot = false;
 	float m_pauseTime;
 
 	bool m_isNear = false;
