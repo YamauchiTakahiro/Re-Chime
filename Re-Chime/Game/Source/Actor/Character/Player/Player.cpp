@@ -7,6 +7,7 @@
 #include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
 #include "Source/Actor/Character/Enemy/FloorBoss/FloorBoss.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
+#include "Source/Actor/Character/Enemy/RareRobot/RareRobot.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 
 Player::Player()
@@ -41,6 +42,7 @@ bool Player::Start()
 	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
 	m_floorBoss = FindGO<FloorBoss>("FloorBoss");
 	m_finalBoss = FindGO<FinalBoss>("finalBoss");
+	m_rareRobot = FindGO<RareRobot>("rareRobot");
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 

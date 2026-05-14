@@ -13,6 +13,7 @@
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
+#include "Source/Actor/Character/Enemy/RareRobot/RareRobot.h"
 #include "Source/UIBase/GameClear/GameClear.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
@@ -52,7 +53,7 @@ bool Game::Start()
 
 				m_stage->SetPosition(objData.position);
 			}
-	       else if (objData.EqualObjectName(L"smallRobot") == true)
+	       /*else if (objData.EqualObjectName(L"smallRobot") == true)
 			{
 				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
@@ -63,7 +64,7 @@ bool Game::Start()
 				m_smallRobot.push_back(smallRobot);
 
 				m_enemyCount++;
-			}
+			}*/
 			//else if (objData.EqualObjectName(L"FloorBoss") == true)
 			//{
 			//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
@@ -76,7 +77,7 @@ bool Game::Start()
 
 			//	m_enemyCount++;
 			//}
-			else if (objData.EqualObjectName(L"mediumRobot") == true)
+			/*else if (objData.EqualObjectName(L"mediumRobot") == true)
 			{
 				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
 
@@ -87,7 +88,7 @@ bool Game::Start()
 				m_mediumRobot.push_back(mediumRobot);
 
 				m_enemyCount++;
-			}
+			}*/
 			//else if (objData.EqualObjectName(L"finalBoss") == true)
 			//{
 			//	auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
@@ -100,6 +101,26 @@ bool Game::Start()
 
 			//	m_enemyCount++;
 			//}
+			else if (objData.EqualObjectName(L"rareRobot") == true)
+			{
+				// 0～99 の乱数
+				int randValue = rand() % 100;
+
+				// 30%で生成
+				if (randValue < 30)
+				{
+					auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
+
+					rareRobot->SetPosition(objData.position);
+
+					rareRobot->SetScale(objData.scale);
+
+					m_rareRobot.push_back(rareRobot);
+
+					m_spawnRareRobot = true;
+					m_enemyCount++;
+				}
+			}
 			/*else if (objData.EqualObjectName(L"barrier1") == true)
 			{
 				m_barrier1 = NewGO<Barrier>(0, "barrier");
@@ -201,6 +222,11 @@ Game::~Game()
 	for (auto finalBoss : finalBosses)
 	{
 		DeleteGO(finalBoss);
+	}
+	const auto& rareRobots = FindGOs<RareRobot>("rareRobot");
+	for (auto rareRobot : rareRobots)
+	{
+		DeleteGO(rareRobot);
 	}
 	DeleteGO(m_player);
 	DeleteGO(m_gameCamera);
@@ -398,26 +424,54 @@ void Game::CreateGire()
 {
 	int gireCount = m_player->GetGireCount();
 
-	if (m_numDefeatedEnemy == 6 && !m_createGire && gireCount == 0)
+	if (m_spawnRareRobot == false)
 	{
-		m_gire = NewGO<Gire>(0, "gire");
-		m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-		m_createGire = true;
+		if (m_numDefeatedEnemy == 6 && !m_createGire && gireCount == 0)
+		{
+			m_gire = NewGO<Gire>(0, "gire");
+			m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+			m_createGire = true;
+		}
+		if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
+		{
+			m_gire = NewGO<Gire>(0, "gire");
+			m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
+			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+			m_createGire = true;
+		}
+		if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
+		{
+			m_gire = NewGO<Gire>(0, "gire");
+			m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
+			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+			m_createGire = true;
+		}
+
 	}
-	if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
+	else
 	{
-		m_gire = NewGO<Gire>(0, "gire");
-		m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
-		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-		m_createGire = true;
-	}
-	if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
-	{
-		m_gire = NewGO<Gire>(0, "gire");
-		m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
-		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-		m_createGire = true;
+		if (m_numDefeatedEnemy == 8 && !m_createGire && gireCount == 0)
+		{
+			m_gire = NewGO<Gire>(0, "gire");
+			m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+			m_createGire = true;
+		}
+		if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 1)
+		{
+			m_gire = NewGO<Gire>(0, "gire");
+			m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
+			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+			m_createGire = true;
+		}
+		if (m_numDefeatedEnemy == 15 && !m_createGire && gireCount == 2)
+		{
+			m_gire = NewGO<Gire>(0, "gire");
+			m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
+			m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
+			m_createGire = true;
+		}
 	}
 }
 

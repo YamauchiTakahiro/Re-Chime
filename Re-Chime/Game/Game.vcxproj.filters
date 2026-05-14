@@ -88,6 +88,9 @@
     <Filter Include="Source\Actor\Item\Potion\Heal">
       <UniqueIdentifier>{4e1640f3-fe38-4254-865a-61191a72f4b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Actor\Character\Enemy\RareRobot">
+      <UniqueIdentifier>{581a22c9-713e-41cd-9e28-380249ec6b6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -176,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="DamageText.cpp" />
+    <ClCompile Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.cpp">
+      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -263,5 +269,8 @@
     </ClInclude>
     <ClInclude Include="Fade.h" />
     <ClInclude Include="DamageText.h" />
+    <ClInclude Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.h">
+      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@ class SmallRobot;
 class MediumRobot;
 class FloorBoss;
 class FinalBoss;    
+class RareRobot;
 class AudioManager;
 
 class Player : public Character
@@ -158,6 +159,7 @@ private:
 	MediumRobot* m_mediumRobot = nullptr;
 	FloorBoss* m_floorBoss = nullptr;
 	FinalBoss* m_finalBoss = nullptr;
+    RareRobot* m_rareRobot = nullptr;
 	AudioManager* m_audioManager = nullptr;
     int m_playerHp = 100;				//!<プレイヤーのHP。
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
