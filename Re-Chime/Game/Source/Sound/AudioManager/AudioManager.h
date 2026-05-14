@@ -33,6 +33,8 @@ enum AudioID
 	enSound_MissSE_03,
 	enSound_StairsSE,
 	enSound_ItemDropSE,
+	enSound_GetGearSE,
+	enSound_GetItemSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
 };
 

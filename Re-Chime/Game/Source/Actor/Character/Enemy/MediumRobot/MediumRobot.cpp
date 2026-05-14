@@ -4,6 +4,7 @@
 #include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
 #include "DamageText.h"
@@ -36,6 +37,8 @@ bool MediumRobot::Start()
 	m_enemyHPFrame.SetScale(Vector3(0.29f, 0.29f, 0.0f));
 	m_enemyHPFrame.SetPivot(Vector2(0.02f, 0.4f));
 	m_enemyHPFrame.Update();
+
+	m_audioManager = FindGO<AudioManager>("audioManager");
 
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
@@ -182,7 +185,7 @@ void MediumRobot::Hit()
 			int damage = 0;
 			damage = m_player->GetAttackPower();
 			m_mediumRobotHp -= damage;
-			m_damageIntarvalTime = 1.0f;
+			m_damageIntarvalTime = 1.5f;
 			m_player->SetAttackHit(true);
 
 //========================
@@ -229,21 +232,25 @@ void MediumRobot::Death()
 {
 	m_game->EnemyCount();
 	MakeExplosionEffect();
+	m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
 	int randomNum = rand() % 100 + 1;
 	if (randomNum <= 20)
 	{
 		m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
 		m_attackSpeedBuff->SetPosition(m_position);
+		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
 	}
 	else if (randomNum > 20 && randomNum <= 40)
 	{
 		m_powerBuff = NewGO<PowerBuff>(0);
 		m_powerBuff->SetPosition(m_position);
+		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
 	}
 	else if (randomNum > 40 && randomNum <= 60)
 	{
 		m_heal = NewGO<Heal>(0);
 		m_heal->SetPosition(m_position);
+		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
 	}
 	DeleteGO(this);
 }

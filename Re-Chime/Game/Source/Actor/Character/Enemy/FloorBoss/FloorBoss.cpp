@@ -143,7 +143,8 @@ void FloorBoss::Hit()
 			int damage = 0;
 			damage = m_player->GetAttackPower();
 			m_floorBossHP -= damage;
-			m_damageIntarvalTime = 1.0f;
+			m_damageIntarvalTime = 1.5f;
+			m_player->SetAttackHit(true);
 		}
 	}
 }
