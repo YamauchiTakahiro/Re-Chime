@@ -2,6 +2,7 @@
 #include "PowerBuff.h"
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Character/Player/Player.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 
 PowerBuff::PowerBuff()
 {
@@ -16,6 +17,7 @@ bool PowerBuff::Start()
 {
 	m_modelRender.Init("Assets/modelData/Item/Potion/PowerBuffPotion.tkm");
 	m_player = FindGO<Player>("player");
+	m_audioManager = FindGO<AudioManager>("audioManager");
 	Collision();
 	return true;
 }
@@ -57,6 +59,7 @@ void PowerBuff::Delete()
 	bool isHit = m_player->GetPowerBuffFlag();
 	if (isHit == true)
 	{
+		m_audioManager->PlaySE(enSound_GetItemSE, 1.0f, enSEPlay_AllowOverlap);
 		DeleteGO(this);
 	}
 }

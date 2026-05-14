@@ -2,6 +2,7 @@
 #include "Source/Actor/Item/Potion/Potion.h"
 
 class Player;
+class AudioManager;
 
 class Heal : public Potion
 {
@@ -26,6 +27,7 @@ private:
 	ModelRender m_modelRender;
 	CollisionObject* m_collisionObject;
 	Player* m_player;
+	AudioManager* m_audioManager;
 	Vector3 m_position;
 };
 

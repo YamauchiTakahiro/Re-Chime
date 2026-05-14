@@ -2,6 +2,7 @@
 #include "Source/Actor/Item/Potion/Buff/Buff.h"
 
 class Player;
+class AudioManager;
 
 class AttackSpeedBuff : public Buff
 {
@@ -26,6 +27,7 @@ private:
 	ModelRender m_modelRender;
 	CollisionObject* m_collisionObject;
 	Player* m_player;
+	AudioManager* m_audioManager;
 	Vector3 m_position;
 };
 
