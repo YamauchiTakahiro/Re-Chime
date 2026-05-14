@@ -234,6 +234,7 @@
     <ClCompile Include="Source\Actor\Character\Enemy\FinalBoss\FinalBoss.cpp" />
     <ClCompile Include="Source\Actor\Character\Enemy\FloorBoss\FloorBoss.cpp" />
     <ClCompile Include="Source\Actor\Character\Enemy\MediumRobot\MediumRobot.cpp" />
+    <ClCompile Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.cpp" />
     <ClCompile Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.cpp" />
     <ClCompile Include="Source\Actor\Character\Player\Player.cpp" />
     <ClCompile Include="Source\Actor\Item\Gire\Gire.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Source\Actor\Character\Enemy\FinalBoss\FinalBoss.h" />
     <ClInclude Include="Source\Actor\Character\Enemy\FloorBoss\FloorBoss.h" />
     <ClInclude Include="Source\Actor\Character\Enemy\MediumRobot\MediumRobot.h" />
+    <ClInclude Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.h" />
     <ClInclude Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.h" />
     <ClInclude Include="Source\Actor\Character\Player\Player.h" />
     <ClInclude Include="Source\Actor\Item\Gire\Gire.h" />
