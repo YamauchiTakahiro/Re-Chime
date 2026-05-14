@@ -223,6 +223,11 @@ Game::~Game()
 	{
 		DeleteGO(finalBoss);
 	}
+	const auto& rareRobots = FindGOs<RareRobot>("rareRobot");
+	for (auto rareRobot : rareRobots)
+	{
+		DeleteGO(rareRobot);
+	}
 	DeleteGO(m_player);
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_stage);
