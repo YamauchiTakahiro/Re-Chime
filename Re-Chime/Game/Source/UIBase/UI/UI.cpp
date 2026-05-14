@@ -48,6 +48,41 @@ UI::UI()
 	m_AttackSpeed.SetPosition(Vector3(825.0f, 450.0f, 0.0f));
 	m_AttackSpeed.SetScale(Vector3(3.0f, 3.0f, 0.0f));
 	m_AttackSpeed.Update();
+
+	m_inventory.Init("Assets/UIData/Inventory.DDs", 128.0f, 45.0f);
+	m_inventory.SetPosition(Vector3(-893.0f, 0.0f, 0.0f));
+	m_inventory.SetScale(Vector3(3.0f, 3.0f, 0.0f));
+	//画像の向きを変える
+	m_inventoryRotation.SetRotationZ(45.55f);
+	m_inventory.SetRotation(m_inventoryRotation);
+	m_inventory.Update();
+
+	m_Inventoryback.Init("Assets/sprite/pause.DDs", 1920.0f, 1080.0f);
+
+	m_pickUpText.SetText(L"A:拾う");
+	m_pickUpText.SetPosition({ -75.0f, 300.0f, 0.0f });
+	m_pickUpText.SetScale(1.0f);
+	m_pickUpText.SetColor(g_vec4White);
+
+	//攻撃スピードアップ
+	m_PS1.Init("Assets/UIData/ps1.DDs", 72.0f, 100.0f);
+	m_PS1.SetPosition(Vector3(-893.0f, 125.0f, 0.0f));
+	//m_PS1.SetScale(Vector3(3.0f, 3.0f, 0.0f));
+	m_PS1.Update();
+
+	//攻撃力アップ
+	m_PS2.Init("Assets/UIData/ps2.DDs", 72.0f, 100.0f);
+	m_PS2.SetPosition(Vector3(-893.0f, 0.0f, 0.0f));
+	m_PS2.Update();
+	
+	//回復
+	m_PS3.Init("Assets/UIData/ps3.DDs", 72.0f, 100.0f);
+	m_PS3.SetPosition(Vector3(-893.0f, -125.0f, 0.0f));
+	m_PS3.Update();
+
+	m_selectFrame.Init("Assets/UIData/SelectFrame.DDs", 132.0f, 128.0f);
+	m_selectFrame.SetPosition(Vector3(-893.0f, 125.0f, 0.0f));
+	m_selectFrame.Update();
 }
 
 UI::~UI()
@@ -69,6 +104,27 @@ void UI::Update()
 		return;
 	}
 
+	if (g_pad[0]->IsTrigger(enButtonSelect))
+	{
+		m_isInventoryOpen = !m_isInventoryOpen;
+
+		m_game->SetGameStop(m_isInventoryOpen);
+	}
+
+	if (m_isInventoryOpen && g_pad[0]->IsTrigger(enButtonB))
+	{
+		m_isInventoryOpen = false;
+		m_game->SetGameStop(false);
+	}
+
+	if (m_isInventoryOpen)
+	{
+		if (g_pad[0]->IsTrigger(enButtonX))
+		{
+			m_player->UseItem(m_selectItem);
+		}
+	}
+
 	int nowHP = 0;
 	int MaxHP = 0;
 
@@ -80,11 +136,11 @@ void UI::Update()
 	m_HP.SetScale(scale);
 	if (nowHP <= MaxHP / 4)
 	{
-		m_HP.SetMulColor(g_vec4Gray);
+		m_HP.SetMulColor(g_vec4Red);
 	}
 	else
 	{
-		m_HP.SetMulColor(g_vec4White);
+		m_HP.SetMulColor(g_vec4Green);
 	}
 	m_HP.Update();
 
@@ -170,10 +226,86 @@ void UI::Update()
 	{
 		m_CoolTimeText.SetText(L"");
 	}
+	if (m_isInventoryOpen)
+	{
+		Inventory();
+	}
+}
+
+void UI::Inventory()
+{
+	if (!m_isInventoryOpen)
+	{
+		return;
+	}
+
+	if (g_pad[0]->IsTrigger(enButtonUp))
+	{
+		m_selectItem--;
+
+		if (m_selectItem < 0)
+		{
+			m_selectItem = 2;
+		}
+	}
+
+	if (g_pad[0]->IsTrigger(enButtonDown))
+	{
+		m_selectItem++;
+
+		if (m_selectItem > 2)
+		{
+			m_selectItem = 0;
+		}
+	}
+
+	Vector3 framePos;
+
+	switch (m_selectItem)
+	{
+	case 0:
+		framePos = Vector3(-893.0f, 125.0f, 0.0f);
+		break;
+
+	case 1:
+		framePos = Vector3(-893.0f, 0.0f, 0.0f);
+		break;
+
+	case 2:
+		framePos = Vector3(-893.0f, -125.0f, 0.0f);
+		break;
+	}
+
+	m_selectFrame.SetPosition(framePos);
+	m_selectFrame.Update();
+
+	wchar_t text[64];
+
+	swprintf_s(text, L"x%d", m_player->GetAttackSpeedPotionCount());
+
+	m_PS3CountText.SetText(text);
+	m_PS3CountText.SetPosition(Vector3(-820.0f, 125.0f, 0.0f));
+	m_PS3CountText.SetScale(1.0f);
+
+	swprintf_s(text, L"x%d", m_player->GetPowerPotionCount());
+
+	m_PS2CountText.SetText(text);
+	m_PS2CountText.SetPosition(Vector3(-820.0f, 0.0f, 0.0f));
+	m_PS2CountText.SetScale(1.0f);
+
+	swprintf_s(text, L"x%d", m_player->GetHealPotionCount());
+
+	m_PS1CountText.SetText(text);
+	m_PS1CountText.SetPosition(Vector3(-820.0f, -125.0f, 0.0f));
+	m_PS1CountText.SetScale(1.0f);
 }
 
 void UI::Render(RenderContext& rc)
 {
+	if (!m_isVisible)
+	{
+		return;
+	}
 	m_HPBar.Draw(rc);
 	m_HP.Draw(rc);
 	m_Gear.Draw(rc);
@@ -218,4 +350,22 @@ void UI::Render(RenderContext& rc)
 		}
 	}
 	m_CoolTimeText.Draw(rc);
+	if (m_player->IsNearItem())
+	{
+		m_pickUpText.Draw(rc);
+	}
+
+	if (m_isInventoryOpen)
+	{
+		m_Inventoryback.SetMulColor({ 1.0f, 1.0f, 1.0f, 0.4f });
+		m_Inventoryback.Draw(rc);
+		m_inventory.Draw(rc);
+		m_PS1.Draw(rc);
+		m_PS2.Draw(rc);
+		m_PS3.Draw(rc);
+		m_PS1CountText.Draw(rc);
+		m_PS2CountText.Draw(rc);
+		m_PS3CountText.Draw(rc);
+		m_selectFrame.Draw(rc);
+	}
 }

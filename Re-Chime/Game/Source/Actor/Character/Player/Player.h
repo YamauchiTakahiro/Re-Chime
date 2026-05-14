@@ -9,6 +9,10 @@ class FloorBoss;
 class FinalBoss;    
 class RareRobot;
 class AudioManager;
+class AttackSpeedBuff;
+class PowerBuff;
+class Heal;
+class UI;
 
 class Player : public Character
 {
@@ -127,6 +131,27 @@ public:
         return m_timeCount;
     }
 
+    bool IsNearItem() const
+    {
+        return isNearItem;
+    }
+
+    int GetHealPotionCount() const
+    {
+        return m_healPotionCount;
+    }
+
+    int GetPowerPotionCount() const
+    {
+        return m_powerBuffPotionCount;
+    }
+
+    int GetAttackSpeedPotionCount() const
+    {
+        return m_attackSpeedPotionCount;
+    }
+
+    void UseItem(int itemNo);
     void SetScale();
     void Render(RenderContext& rc)override;
 
@@ -161,11 +186,15 @@ private:
 	FinalBoss* m_finalBoss = nullptr;
     RareRobot* m_rareRobot = nullptr;
 	AudioManager* m_audioManager = nullptr;
+    UI* m_ui = nullptr;
+    EnPlayerState m_playerState = enPlayerState_Idle;
     int m_playerHp = 100;				//!<プレイヤーのHP。
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
-    EnPlayerState m_playerState = enPlayerState_Idle;
 	int m_attackPower = 0;				//!<攻撃力。
     int m_heal = 20;
+    int m_healPotionCount = 0;
+    int m_powerBuffPotionCount = 0;
+    int m_attackSpeedPotionCount = 0;
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。
 	float m_damageIntarvalTime = 3.0f;		//!<ダメージを受けてからのクールタイム。
 	float m_guardIntervalTime = 0.0f;			//!<ガード後のクールタイム。
@@ -191,5 +220,7 @@ private:
 	bool m_hasCreatedAttackCollision = false;
 	bool m_enemyHitFlag = false;
 	bool m_hasPlayedHitSE = false;
+    bool isNearItem = false; //アイテムに近いかどうか
+    bool m_canPickItem = false;
 };
 

@@ -49,7 +49,8 @@ void MediumRobot::Update()
 {
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
-	if (isPause)
+
+	if (isPause || m_game->IsGameStop())
 	{
 		return;
 	}
