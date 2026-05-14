@@ -18,6 +18,7 @@ bool Heal::Start()
 	m_modelRender.Init("Assets/modelData/Item/Potion/Heal.tkm");
 	m_player = FindGO<Player>("player");
 	m_audioManager = FindGO<AudioManager>("audioManager");
+	m_oldPotionCount = m_player->GetHealPotionCount();
 	Collision();
 	return true;
 }
@@ -56,10 +57,14 @@ void Heal::SetScale()
 
 void Heal::Delete()
 {
-	bool isHit = m_player->GetHealFlag();
-	if (isHit)
+	if (m_player->GetHealPotionCount() > m_oldPotionCount)
 	{
-		m_audioManager->PlaySE(enSound_GetItemSE, 1.0f, enSEPlay_AllowOverlap);
+		m_audioManager->PlaySE(
+			enSound_GetItemSE,
+			1.0f,
+			enSEPlay_AllowOverlap
+		);
+
 		DeleteGO(this);
 	}
 }

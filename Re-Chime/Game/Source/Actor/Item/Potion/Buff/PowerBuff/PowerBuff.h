@@ -29,5 +29,6 @@ private:
 	Player* m_player;
 	AudioManager* m_audioManager;
 	Vector3 m_position;
+	int m_oldPotionCount = 0;
 };
 

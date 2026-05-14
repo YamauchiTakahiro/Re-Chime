@@ -18,6 +18,7 @@ bool PowerBuff::Start()
 	m_modelRender.Init("Assets/modelData/Item/Potion/PowerBuffPotion.tkm");
 	m_player = FindGO<Player>("player");
 	m_audioManager = FindGO<AudioManager>("audioManager");
+	m_oldPotionCount = m_player->GetPowerPotionCount();
 	Collision();
 	return true;
 }
@@ -56,10 +57,14 @@ void PowerBuff::SetScale()
 
 void PowerBuff::Delete()
 {
-	bool isHit = m_player->GetPowerBuffFlag();
-	if (isHit == true)
+	if (m_player->GetPowerPotionCount() > m_oldPotionCount)
 	{
-		m_audioManager->PlaySE(enSound_GetItemSE, 1.0f, enSEPlay_AllowOverlap);
+		m_audioManager->PlaySE(
+			enSound_GetItemSE,
+			1.0f,
+			enSEPlay_AllowOverlap
+		);
+
 		DeleteGO(this);
 	}
 }

@@ -58,6 +58,15 @@ public:
 	{
 		return m_isNear;
 	}
+	void SetGameStop(bool flag)
+	{
+		m_isGameStop = flag;
+	}
+
+	bool IsGameStop() const
+	{
+		return m_isGameStop;
+	}
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;
@@ -115,5 +124,6 @@ private:
 
 	std::vector<FadeArea> m_fadeAreas;
 	bool m_createGire = false;
+	bool m_isGameStop = false;
 };
 

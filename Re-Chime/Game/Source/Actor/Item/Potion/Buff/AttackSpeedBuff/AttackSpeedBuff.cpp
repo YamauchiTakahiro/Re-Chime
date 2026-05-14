@@ -18,6 +18,7 @@ bool AttackSpeedBuff::Start()
 	m_modelRender.Init("Assets/modelData/Item/Potion/SpeedBuffPotion.tkm");
 	m_player = FindGO<Player>("player");
 	m_audioManager = FindGO<AudioManager>("audioManager");
+	m_oldPotionCount = m_player->GetAttackSpeedPotionCount();
 	Collision();
 	return true;
 }
@@ -57,10 +58,14 @@ void AttackSpeedBuff::SetScale()
 
 void AttackSpeedBuff::Delete()
 {
-	bool isHit = m_player->GetAttackSpeedBuffFlag();
-	if (isHit == true)
+	if (m_player->GetAttackSpeedPotionCount() > m_oldPotionCount)
 	{
-		m_audioManager->PlaySE(enSound_GetItemSE, 1.0f, enSEPlay_AllowOverlap);
+		m_audioManager->PlaySE(
+			enSound_GetItemSE,
+			1.0f,
+			enSEPlay_AllowOverlap
+		);
+
 		DeleteGO(this);
 	}
 }

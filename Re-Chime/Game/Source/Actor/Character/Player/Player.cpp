@@ -9,6 +9,10 @@
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 #include "Source/Actor/Character/Enemy/RareRobot/RareRobot.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"
+#include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
+#include "Source/Actor/Item/Potion/Heal/Heal.h"
+#include "Source/UIBase/UI/UI.h"
 
 Player::Player()
 {
@@ -55,13 +59,16 @@ bool Player::Start()
 
 void Player::Update()
 {
-	m_gire = FindGO<Gire>("gire");
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
-	if (isPause)
+
+	if (isPause || m_game->IsGameStop())
 	{
 		return;
 	}
+
+	isNearItem = false;
+	m_canPickItem = false;
 
 	bool fadeFlag = m_game->FadeFlag();
 
@@ -440,10 +447,22 @@ void Player::Hit()
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{
-			m_powerBuffFlag = true;
-			MakePowerBuffEffect();
-			m_audioManager->PlaySE(enSound_PowerUPSE, 1.0f, enSEPlay_AllowOverlap);
-			m_powerBuffTime = 20.0f;
+			isNearItem = true;
+			m_canPickItem = true;
+			if (g_pad[0]->IsTrigger(enButtonA))
+			{
+				m_powerBuffPotionCount++;
+
+				m_audioManager->PlaySE(
+					enSound_PowerUPSE,
+					1.0f,
+					enSEPlay_AllowOverlap
+				);
+
+				DeleteGO(collision);
+
+				return;
+			}
 		}
 	}
 
@@ -452,10 +471,22 @@ void Player::Hit()
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{
-			m_attackSpeedBuffFlag = true;
-			MakeAttackSpeedBuffEffect();
-			m_audioManager->PlaySE(enSound_AttackSpeedUPSE, 1.0f, enSEPlay_AllowOverlap);
-			m_attackSpeedBuffTime = 20.0f;
+			isNearItem = true;
+			m_canPickItem = true;
+			if (g_pad[0]->IsTrigger(enButtonA))
+			{
+				m_attackSpeedPotionCount++;
+
+				m_audioManager->PlaySE(
+					enSound_AttackSpeedUPSE,
+					1.0f,
+					enSEPlay_AllowOverlap
+				);
+
+				DeleteGO(collision);
+
+				return;
+			}
 		}
 	}
 
@@ -464,8 +495,23 @@ void Player::Hit()
 	{
 		if (collision->IsHit(m_characterController) == true)
 		{
-			Heal();
-			m_isHealFlag = true;
+			isNearItem = true;
+			m_canPickItem = true;
+
+			if (g_pad[0]->IsTrigger(enButtonA))
+			{
+				m_healPotionCount++;
+
+				m_audioManager->PlaySE(
+					enSound_HealSE,
+					1.0f,
+					enSEPlay_AllowOverlap
+				);
+
+				DeleteGO(collision);
+
+				return;
+			}
 		}
 	}
 }
@@ -481,6 +527,7 @@ void Player::GetGires()
 		Vector3 diff = m_gire->GetPosition() - m_position;
 		if (diff.LengthSq() < 250.0f * 250.0f)
 		{
+			isNearItem = true;
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
 				m_isGetGire = true;
@@ -555,7 +602,7 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonA) && m_timeCount == 0.0f && !m_guardFlag)
+	if (!isNearItem && g_pad[0]->IsTrigger(enButtonA) && m_timeCount == 0.0f && !m_guardFlag)
 	{
 		m_playerState = enPlayerState_Attack;
 
@@ -807,6 +854,46 @@ void Player::MakeAttackSpeedBuffEffect()
 	effectPos.y += 70.0f;
 	effectEmitter->SetPosition(effectPos);
 	effectEmitter->Play();
+}
+
+void Player::UseItem(int itemNo)
+{
+	switch (itemNo)
+	{
+	case 0:
+		if (m_attackSpeedPotionCount > 0)
+		{
+			m_attackSpeedPotionCount--;
+
+			m_attackSpeedBuffFlag = true;
+			m_attackSpeedBuffTime = 20.0f;
+
+			MakeAttackSpeedBuffEffect();
+		}
+
+		break;
+
+	case 1:
+		if (m_powerBuffPotionCount > 0)
+		{
+			m_powerBuffPotionCount--;
+			m_powerBuffFlag = true;
+			m_powerBuffTime = 20.0f;
+			MakePowerBuffEffect();
+		}
+
+		break;
+
+	case 2:
+		if (m_healPotionCount > 0)
+		{
+			m_healPotionCount--;
+
+			Heal();
+		}
+
+		break;
+	}
 }
 
 const CharacterController& Player::GetCharacterController() const
