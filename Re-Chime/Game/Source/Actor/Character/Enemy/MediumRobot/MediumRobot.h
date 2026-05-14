@@ -7,6 +7,7 @@ class PowerBuff;
 class Heal;
 class Game;
 class DamageText;
+class AudioManager;
 
 class MediumRobot : public Enemy
 {
@@ -80,6 +81,7 @@ private:
     AttackSpeedBuff* m_attackSpeedBuff = nullptr;
     PowerBuff* m_powerBuff = nullptr;
 	Heal* m_heal = nullptr;
+    AudioManager* m_audioManager = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Game* m_game = nullptr;
     DamageText* m_damageText = nullptr;
