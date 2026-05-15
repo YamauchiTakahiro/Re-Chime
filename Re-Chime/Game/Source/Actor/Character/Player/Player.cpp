@@ -42,6 +42,7 @@ bool Player::Start()
 	m_modelRender.Init("Assets/modelData/Player/player.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_game = FindGO<Game>("game");	
+	m_gire = FindGO<Gire>("gire");
 	m_smallRobot = FindGO<SmallRobot>("smallRobot");
 	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
 	m_floorBoss = FindGO<FloorBoss>("FloorBoss");
@@ -177,26 +178,29 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		m_moveSpeed.y -= 20.0f;
+		//m_moveSpeed.y -= 20.0f;
 	}
 
-	Vector3 finalMoveSpeed = m_moveSpeed;
+	Vector3 finalMoveSpeed = Vector3::Zero;
 
-	finalMoveSpeed.y = m_moveSpeed.y;
-
-	if(m_isKnockBack)
+	if (m_isKnockBack)
 	{
-		finalMoveSpeed.x += m_knockBack.x;
-		finalMoveSpeed.z += m_knockBack.z;
+		finalMoveSpeed = m_knockBack;
 
 		m_knockBack *= 0.9f;
 
-		if(m_knockBack.LengthSq() < 10.0f)
+		if (m_knockBack.LengthSq() < 10.0f)
 		{
 			m_knockBack = Vector3::Zero;
 			m_isKnockBack = false;
 		}
 	}
+	else
+	{
+		finalMoveSpeed = m_moveSpeed;
+	}
+
+	finalMoveSpeed.y = m_moveSpeed.y;
 
 	m_position = m_characterController.Execute(finalMoveSpeed, 2.0f / 60.0f);
 
@@ -205,6 +209,11 @@ void Player::Move()
 
 void Player::Rotation()
 {
+	if (m_isKnockBack)
+	{
+		return;
+	}
+
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
@@ -408,24 +417,36 @@ void Player::FadeTime()
 
 void Player::TakeDamage(int damage, const Vector3& enemyPos)
 {
+	if (m_isKnockBack)
+	{
+		return;
+	}
 	if (m_damageIntarvalTime > 0.0f)
 	{
 		return;
 	}
 	else
 	{
-		if (!m_guardFlag && m_damageIntarvalTime == 0.0f)
+		if (!m_guardFlag && m_damageIntarvalTime <= 0.0f)
 		{
 			m_playerHp -= damage;
 			m_audioManager->PlaySE(enSound_PlayerDamageSE, 1.0f, enSEPlay_AllowOverlap);
 
 			// ノックバックの計算
 			Vector3 dir = m_position - enemyPos;
-			dir.y = 0.0f; // 水平方向のみにノックバックを適用
-			dir.Normalize();
+			dir.y = 0.0f;
 
-			m_knockBack = dir * 500.0f; // ノックバックの強さを調整
-			m_knockBack.y = 0.0f; // ノックバックの垂直成分をゼロにする
+			if (dir.LengthSq() < 0.01f)
+			{
+				dir = m_forward * -1.0f;
+			}
+			else
+			{
+				dir.Normalize();
+			}
+
+			m_knockBack = dir * 500.0f;
+			m_knockBack.y = 0.0f;
 
 			m_isKnockBack = true;
 			m_damageIntarvalTime = 2.0f; // ダメージのインターバルを設定
@@ -437,7 +458,6 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 			m_audioManager->PlaySE(enSound_PlayerGuardSE, 1.0f, enSEPlay_AllowOverlap);
 		}
 	}
-
 }
 
 void Player::Hit()

@@ -24,7 +24,7 @@ bool FloorBoss::Start()
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/floorBoss/floorBossDeath.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/FloorBoss.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
-	m_characterController.Init(200.0f, 100.0f, m_position);
+	m_characterController.Init(1000.0f, 300.0f, m_position);
 	m_enemyHP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
 	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
 	m_enemyHP.Update();
