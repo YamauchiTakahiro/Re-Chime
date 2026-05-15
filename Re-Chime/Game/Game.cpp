@@ -53,7 +53,7 @@ bool Game::Start()
 
 				m_stage->SetPosition(objData.position);
 			}
-	       else if (objData.EqualObjectName(L"smallRobot") == true)
+			else if (objData.EqualObjectName(L"smallRobot") == true)
 			{
 				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
@@ -65,19 +65,19 @@ bool Game::Start()
 
 				m_enemyCount++;
 			}
-			//else if (objData.EqualObjectName(L"FloorBoss") == true)
-			//{
-			//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
+			else if (objData.EqualObjectName(L"FloorBoss") == true)
+			{
+				auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
 
-			//	floorBoss->SetPosition(objData.position);
+				floorBoss->SetPosition(objData.position);
 
-			//	floorBoss->SetScale(objData.scale);
+				floorBoss->SetScale(objData.scale);
 
-			//	m_floorBoss.push_back(floorBoss);
+				m_floorBoss.push_back(floorBoss);
 
-			//	m_enemyCount++;
-			//}
-			/*else if (objData.EqualObjectName(L"mediumRobot") == true)
+				m_enemyCount++;
+			}
+			else if (objData.EqualObjectName(L"mediumRobot") == true)
 			{
 				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
 
@@ -88,38 +88,38 @@ bool Game::Start()
 				m_mediumRobot.push_back(mediumRobot);
 
 				m_enemyCount++;
-			}*/
-			//else if (objData.EqualObjectName(L"finalBoss") == true)
-			//{
-			//	auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
-			//	
-			//	finalBoss->SetPosition(objData.position);
-			//	
-			//	finalBoss->SetScale(objData.scale);
+			}
+			else if (objData.EqualObjectName(L"finalBoss") == true)
+			{
+				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+				
+				finalBoss->SetPosition(objData.position);
+				
+				finalBoss->SetScale(objData.scale);
 
-			//	m_finalBoss.push_back(finalBoss);
+				m_finalBoss.push_back(finalBoss);
 
-			//	m_enemyCount++;
-			//}
-			//else if (objData.EqualObjectName(L"rareRobot") == true)
-			//{
-			//	// 0～99 の乱数
-			//	int randValue = rand() % 100;
-			//	int spawnRate = 20;
+				m_enemyCount++;
+			}
+			else if (objData.EqualObjectName(L"rareRobot") == true)
+			{
+				// 0～99 の乱数
+				int randValue = rand() % 100;
+				int spawnRate = 20;
 
-			//	// 30%で生成
-			//	if (randValue < spawnRate)
-			//	{
-			//		auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
+				// 30%で生成
+				if (randValue < spawnRate)
+				{
+					auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
 
-			//		rareRobot->SetPosition(objData.position);
+					rareRobot->SetPosition(objData.position);
 
-			//		rareRobot->SetScale(objData.scale);
+					rareRobot->SetScale(objData.scale);
 
-			//		m_rareRobot.push_back(rareRobot);
-			//	}
-			//}
-			/*else if (objData.EqualObjectName(L"barrier1") == true)
+					m_rareRobot.push_back(rareRobot);
+				}
+			}
+			else if (objData.EqualObjectName(L"barrier1") == true)
 			{
 				m_barrier1 = NewGO<Barrier>(0, "barrier");
 				m_barrier1->SetPosition(objData.position);
@@ -162,7 +162,7 @@ bool Game::Start()
 				m_barrier6->SetPosition(objData.position);
 				m_barrier6->SetRotation(objData.rotation);
 				m_barrier6->SetScale(objData.scale);
-			}*/
+			}
 
 			EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
 			EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");

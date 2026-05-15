@@ -207,7 +207,7 @@ void RareRobot::Hit()
 
 void RareRobot::AttackHit()
 {
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("mediumRobotAttack");
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("rareRobotAttack");
 	for (auto collision : collisions)
 	{
 		if (collision->IsHit(m_player->GetCharacterController()) == true)
