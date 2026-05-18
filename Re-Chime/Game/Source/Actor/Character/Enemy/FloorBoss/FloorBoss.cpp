@@ -147,8 +147,8 @@ void FloorBoss::Hit()
 		{
 			int damage = 0;
 			damage = m_player->GetAttackPower();
-			int randomNum = rand() % 10 + 1;
-			if (randomNum <= 2)
+			int randomNum = rand() % 100 + 1;
+			if (randomNum <= 5)
 			{
 				damage *= 2;
 				bool isHit = m_player->GetAttackHit();
