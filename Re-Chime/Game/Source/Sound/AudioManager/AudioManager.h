@@ -35,6 +35,7 @@ enum AudioID
 	enSound_ItemDropSE,
 	enSound_GetGearSE,
 	enSound_GetItemSE,
+	enSound_CriticalSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
 };
 

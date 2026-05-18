@@ -185,9 +185,50 @@ void MediumRobot::Hit()
 		{
 			int damage = 0;
 			damage = m_player->GetAttackPower();
-			m_mediumRobotHp -= damage;
+			int randomNum = rand() % 10 + 1;
+			if (randomNum <= 2)
+			{
+				damage *= 2;
+				bool isHit = m_player->GetAttackHit();
+				if (!isHit)
+				{
+					m_player->SetAttackHit(true);
+
+					m_audioManager->PlaySE(
+						enSound_CriticalSE,
+						1.0f,
+						enSEPlay_AllowOverlap
+					);
+				}
+				m_mediumRobotHp -= damage;
+			}
+			else
+			{
+				damage *= 1;
+				bool isHit = m_player->GetAttackHit();
+				if (!isHit)
+				{
+					m_player->SetAttackHit(true);
+					int r = rand() % 3;
+
+					AudioID id;
+
+					switch (r)
+					{
+					case 0: id = enSound_PlayerAttackSE_01; break;
+					case 1: id = enSound_PlayerAttackSE_02; break;
+					case 2: id = enSound_PlayerAttackSE_03; break;
+					}
+
+					m_audioManager->PlaySE(
+						id,
+						1.0f,
+						enSEPlay_AllowOverlap
+					);
+				}
+				m_mediumRobotHp -= damage;
+			}
 			m_damageIntarvalTime = 1.5f;
-			m_player->SetAttackHit(true);
 
 //========================
 // ダメージ表示生成

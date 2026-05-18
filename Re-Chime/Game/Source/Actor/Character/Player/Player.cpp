@@ -61,6 +61,7 @@ bool Player::Start()
 
 void Player::Update()
 {
+	m_gire = FindGO<Gire>("gire");
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
@@ -327,30 +328,9 @@ void Player::Attack()
 				m_timeCount = 2.0f;
 			}			
 		}
-		if (m_attackStartTime >= 0.25f &&
+		if (m_attackStartTime >= 0.45f &&
 			!m_hasPlayedHitSE)
 		{
-			if (m_enemyHitFlag)
-			{
-				// 敵に攻撃が当たった場合の処理
-				int r = rand() % 3;
-
-				AudioID id;
-
-				switch (r)
-				{
-				case 0: id = enSound_PlayerAttackSE_01; break;
-				case 1: id = enSound_PlayerAttackSE_02; break;
-				case 2: id = enSound_PlayerAttackSE_03; break;
-				}
-
-				m_audioManager->PlaySE(
-					id,
-					1.0f,
-					enSEPlay_AllowOverlap
-				);
-				m_hasPlayedHitSE = true;
-			}
 			if (!m_enemyHitFlag)
 			{
 				int r = rand() % 3;
@@ -369,11 +349,9 @@ void Player::Attack()
 					1.0f,
 					enSEPlay_AllowOverlap
 				);
-				m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
-				m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
-				m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
-				m_hasPlayedHitSE = true;
 			}
+
+			m_hasPlayedHitSE = true;
 		}
 	}
 }
@@ -800,7 +778,7 @@ void Player::PlayAnimation()
 
 void Player::PowerBuff()
 {
-	int attakcPower = rand() % 5 + 15; // 攻撃力を5から10の範囲でランダムに決定
+	int attakcPower = rand() % 5 + 15; // 攻撃力を5から15の範囲でランダムに決定
 	if (m_powerBuffFlag == true)
 	{
 		m_attackPower = attakcPower * 2;

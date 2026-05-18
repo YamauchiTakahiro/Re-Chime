@@ -5,6 +5,8 @@ class Player;
 class Game;
 class AttackSpeedBuff;
 class PowerBuff;
+class Heal;
+class AudioManager;
 
 class FloorBoss : public Enemy
 {
@@ -80,6 +82,10 @@ private:
 	Vector3 m_scale;
 	Player* m_player = nullptr;
 	Game* m_game = nullptr;
+	PowerBuff* m_powerBuff = nullptr;
+	AttackSpeedBuff* m_attackSpeedBuff = nullptr;
+	Heal* m_heal = nullptr;
+	AudioManager* m_audioManager = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
 	SpriteRender m_enemyHP;//敵のHPを表示する。

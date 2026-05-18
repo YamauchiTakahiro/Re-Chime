@@ -116,6 +116,10 @@ public:
     {
         m_enemyHitFlag = hit;
     }
+    bool GetAttackHit() const
+    {
+        return m_enemyHitFlag;
+	}
     float GetPowerBuffTime() const
     {
         return m_powerBuffTime;

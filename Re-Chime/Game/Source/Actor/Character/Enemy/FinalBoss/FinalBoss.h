@@ -5,6 +5,7 @@ class Player;
 class Gire;
 class Game;
 class DamageText;
+class AudioManager;
 
 class FinalBoss : public Enemy
 {
@@ -79,6 +80,7 @@ private:
     Player* m_player = nullptr;
 	Gire* m_gire = nullptr;
 	Game* m_game = nullptr;
+	AudioManager* m_audioManager = nullptr;
     DamageText* m_damageText = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward;

@@ -5,6 +5,8 @@
 #include "Game.h"
 #include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"	
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
+#include "Source/Actor/Item/Potion/Heal/Heal.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 
 FloorBoss::FloorBoss()
 {
@@ -30,6 +32,7 @@ bool FloorBoss::Start()
 	m_enemyHP.Update();
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
+	m_audioManager = FindGO<AudioManager>("audioManager");
 	return true;
 }
 
@@ -144,9 +147,50 @@ void FloorBoss::Hit()
 		{
 			int damage = 0;
 			damage = m_player->GetAttackPower();
-			m_floorBossHP -= damage;
+			int randomNum = rand() % 10 + 1;
+			if (randomNum <= 2)
+			{
+				damage *= 2;
+				bool isHit = m_player->GetAttackHit();
+				if (!isHit)
+				{
+					m_player->SetAttackHit(true);
+
+					m_audioManager->PlaySE(
+						enSound_CriticalSE,
+						1.0f,
+						enSEPlay_AllowOverlap
+					);
+				}
+				m_floorBossHP -= damage;
+			}
+			else
+			{
+				damage *= 1;
+				bool isHit = m_player->GetAttackHit();
+				if (!isHit)
+				{
+					m_player->SetAttackHit(true);
+					int r = rand() % 3;
+
+					AudioID id;
+
+					switch (r)
+					{
+					case 0: id = enSound_PlayerAttackSE_01; break;
+					case 1: id = enSound_PlayerAttackSE_02; break;
+					case 2: id = enSound_PlayerAttackSE_03; break;
+					}
+
+					m_audioManager->PlaySE(
+						id,
+						1.0f,
+						enSEPlay_AllowOverlap
+					);
+				}
+				m_floorBossHP -= damage;
+			}
 			m_damageIntarvalTime = 1.5f;
-			m_player->SetAttackHit(true);
 		}
 	}
 }
@@ -176,9 +220,32 @@ void FloorBoss::DamageIntarval()
 
 void FloorBoss::Death()
 {
-	m_game->EnemyCount();
-	MakeExplosionEffect();
-	DeleteGO(this);
+	if (m_floorBossHP <= 0)
+	{
+		m_game->EnemyCount();
+		m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
+		MakeExplosionEffect();
+		int randomNum = rand() % 100 + 1;
+		if (randomNum <= 20)
+		{
+			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
+			m_attackSpeedBuff->SetPosition(m_position);
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		else if (randomNum > 20 && randomNum <= 40)
+		{
+			m_powerBuff = NewGO<PowerBuff>(0);
+			m_powerBuff->SetPosition(m_position);
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		else if (randomNum > 40 && randomNum <= 60)
+		{
+			m_heal = NewGO<Heal>(0);
+			m_heal->SetPosition(m_position);
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		DeleteGO(this);
+	}
 }
 
 void FloorBoss::MakeExplosionEffect()
