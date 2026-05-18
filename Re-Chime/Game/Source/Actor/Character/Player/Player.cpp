@@ -43,6 +43,7 @@ bool Player::Start()
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_game = FindGO<Game>("game");	
 	m_gire = FindGO<Gire>("gire");
+	m_game = FindGO<Game>("game");
 	m_smallRobot = FindGO<SmallRobot>("smallRobot");
 	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
 	m_floorBoss = FindGO<FloorBoss>("FloorBoss");
@@ -538,20 +539,22 @@ void Player::Hit()
 
 void Player::GetGires()
 {
-	if(m_gire == nullptr)
+	m_gire = FindGO<Gire>("gire");
+
+	if (m_gire == nullptr)
 	{
 		return;
 	}
-	else if (m_gire != nullptr)
+	Vector3 diff = m_gire->GetPosition() - m_position;
+
+	if (diff.LengthSq() < 250.0f * 250.0f)
 	{
-		Vector3 diff = m_gire->GetPosition() - m_position;
-		if (diff.LengthSq() < 250.0f * 250.0f)
+		isNearItem = true;
+		m_canPickItem = true;
+
+		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			isNearItem = true;
-			if (g_pad[0]->IsTrigger(enButtonA))
-			{
-				m_isGetGire = true;
-			}
+			m_isGetGire = true;
 		}
 	}
 }

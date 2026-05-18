@@ -17,7 +17,7 @@ UI::UI()
 	m_HP.Update();
 
 	m_Gear.Init("Assets/UIData/gear.DDs", 128.0f, 128.0f);
-	m_Gear.SetPosition(Vector3(-875.0f, 450.0f, 0.0f));
+	m_Gear.SetPosition(Vector3(-875.0f, -450.0f, 0.0f));
 	m_Gear.Update();
 
 	m_Abutton.Init("Assets/UIData/A.DDs", 75.0f, 75.0f);
@@ -189,9 +189,11 @@ void UI::Update()
 
 	int gireCount = m_player->GetGireCount();
 
+	int needCount = m_game->GetNeedGireCount();
+
 	wchar_t text[256];
-	swprintf_s(text, L"%d", gireCount);
-	m_GireText.SetPosition(Vector3(-800.0f, 490.0f, 0.0f));
+	swprintf_s(text, L"%d/%d", gireCount , needCount);
+	m_GireText.SetPosition(Vector3(-800.0f, -410.0f, 0.0f));
 	m_GireText.SetScale(2.0f);
 	m_GireText.SetText(text);
 	m_GireText.SetColor(g_vec4Black);
@@ -215,10 +217,10 @@ void UI::Update()
 	{
 		wchar_t coolText[256];
 
-		swprintf_s(coolText, L"CL:%.1f", coolTime);
+		swprintf_s(coolText, L"ATKCL:%.1f", coolTime);
 
-		m_CoolTimeText.SetPosition(Vector3(665.0f, -450.0f, 0.0f));
-		m_CoolTimeText.SetScale(0.9f);
+		m_CoolTimeText.SetPosition(Vector3(640.0f, -450.0f, 0.0f));
+		m_CoolTimeText.SetScale(1.4f);
 		m_CoolTimeText.SetText(coolText);
 		m_CoolTimeText.SetColor(g_vec4White);
 	}
