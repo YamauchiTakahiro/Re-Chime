@@ -207,6 +207,7 @@ void AudioManager::LoadAll()
 	Load(enSound_ItemDropSE, "Assets/Sound/SE/ItemDropSE.wav");
 	Load(enSound_GetGearSE, "Assets/Sound/SE/GetGearSE.wav");
 	Load(enSound_GetItemSE, "Assets/Sound/SE/GetItemSE.wav");
+	Load(enSound_CriticalSE, "Assets/Sound/SE/CriticalSE.wav");
 }
 
 void AudioManager::Load(AudioID id, const std::string& path)

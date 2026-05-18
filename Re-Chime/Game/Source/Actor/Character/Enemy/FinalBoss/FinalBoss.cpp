@@ -5,6 +5,7 @@
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
 #include "DamageText.h"
+#include "Source/Sound/AudioManager/AudioManager.h"
 
 FinalBoss::FinalBoss()
 {
@@ -41,6 +42,7 @@ bool FinalBoss::Start()
 
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
+	m_audioManager = FindGO<AudioManager>("audioManager");
 
 	m_finalBossState = enFinalBossState_Idle;
 	return true;
@@ -168,9 +170,50 @@ void FinalBoss::Hit()
 		{
 			int damage = 0;
 			damage = m_player->GetAttackPower();
-			m_finalBossHp -= damage;
+			int randomNum = rand() % 10 + 1;
+			if (randomNum <= 2)
+			{
+				damage *= 2;
+				bool isHit = m_player->GetAttackHit();
+				if (!isHit)
+				{
+					m_player->SetAttackHit(true);
+
+					m_audioManager->PlaySE(
+						enSound_CriticalSE,
+						1.0f,
+						enSEPlay_AllowOverlap
+					);
+				}
+				m_finalBossHp -= damage;
+			}
+			else
+			{
+				damage *= 1;
+				bool isHit = m_player->GetAttackHit();
+				if (!isHit)
+				{
+					m_player->SetAttackHit(true);
+					int r = rand() % 3;
+
+					AudioID id;
+
+					switch (r)
+					{
+					case 0: id = enSound_PlayerAttackSE_01; break;
+					case 1: id = enSound_PlayerAttackSE_02; break;
+					case 2: id = enSound_PlayerAttackSE_03; break;
+					}
+
+					m_audioManager->PlaySE(
+						id,
+						1.0f,
+						enSEPlay_AllowOverlap
+					);
+				}
+				m_finalBossHp -= damage;
+			}
 			m_damageIntarvalTime = 1.5f;
-			m_player->SetAttackHit(true);
 
 //========================
 // ダメージ表示生成
