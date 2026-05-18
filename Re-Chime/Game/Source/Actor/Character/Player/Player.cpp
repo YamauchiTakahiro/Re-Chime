@@ -180,7 +180,7 @@ void Player::Move()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		//m_moveSpeed.y -= 20.0f;
+		m_moveSpeed.y -= 20.0f;
 	}
 
 	Vector3 finalMoveSpeed = Vector3::Zero;
@@ -778,7 +778,7 @@ void Player::PlayAnimation()
 
 void Player::PowerBuff()
 {
-	int attakcPower = rand() % 5 + 15; // 攻撃力を5から15の範囲でランダムに決定
+	int attakcPower = rand() % 5 + 10; // 攻撃力を5から15の範囲でランダムに決定
 	if (m_powerBuffFlag == true)
 	{
 		m_attackPower = attakcPower * 2;
