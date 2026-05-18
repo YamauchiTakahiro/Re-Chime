@@ -67,6 +67,12 @@ public:
 	{
 		return m_isGameStop;
 	}
+
+	int GetNeedGireCount() const
+	{
+		return m_needGireCount;
+	}
+
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;
@@ -125,5 +131,7 @@ private:
 	std::vector<FadeArea> m_fadeAreas;
 	bool m_createGire = false;
 	bool m_isGameStop = false;
+	int m_floorNo = 1;
+	int m_needGireCount = 1;
 };
 

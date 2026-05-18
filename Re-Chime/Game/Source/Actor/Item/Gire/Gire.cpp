@@ -20,6 +20,9 @@ bool Gire::Start()
 	m_player = FindGO<Player>("player");
 	m_audioManager = FindGO<AudioManager>("audioManager");
 	SetScale();
+
+	SetScale();
+
 	return true;
 }
 
@@ -38,6 +41,10 @@ void Gire::Update()
 void Gire::Move()
 {
 	m_modelRender.SetPosition(m_position);
+	if (m_collisionObject != nullptr)
+	{
+		m_collisionObject->SetPosition(m_position);
+	}
 }
 
 void Gire::GetGier()

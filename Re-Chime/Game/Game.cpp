@@ -137,8 +137,26 @@ bool Game::Start()
 			{
 				m_barrier3 = NewGO<Barrier>(0, "barrier");
 				m_barrier3->SetPosition(objData.position);
+			//else if (objData.EqualObjectName(L"barrier1") == true)
+			//{
+			//	m_barrier1 = NewGO<Barrier>(0, "barrier");
+			//	m_barrier1->SetPosition(objData.position);
+			//	m_barrier1->SetRotation(objData.rotation);
+			//	m_barrier1->SetScale(objData.scale);
+			//}
+			//else if (objData.EqualObjectName(L"barrier2") == true)
+			//{
+			//	m_barrier2 = NewGO<Barrier>(0, "barrier");
+			//	m_barrier2->SetPosition(objData.position);
+			//	m_barrier2->SetRotation(objData.rotation);
+			//	m_barrier2->SetScale(objData.scale);
+			//}
+			//else if (objData.EqualObjectName(L"barrier3") == true)
+			//{
+			//	m_barrier3 = NewGO<Barrier>(0, "barrier");
+			//	m_barrier3->SetPosition(objData.position);
 
-				m_barrier3->SetRotation(objData.rotation);
+			//	m_barrier3->SetRotation(objData.rotation);
 
 				m_barrier3->SetScale(objData.scale);
 			}
@@ -163,6 +181,29 @@ bool Game::Start()
 				m_barrier6->SetRotation(objData.rotation);
 				m_barrier6->SetScale(objData.scale);
 			}
+			//	m_barrier3->SetScale(objData.scale);
+			//}
+			//else if (objData.EqualObjectName(L"barrier4") == true)
+			//{
+			//	m_barrier4 = NewGO<Barrier>(0, "barrier");
+			//	m_barrier4->SetPosition(objData.position);
+			//	m_barrier4->SetRotation(objData.rotation);
+			//	m_barrier4->SetScale(objData.scale);
+			//}
+			//else if (objData.EqualObjectName(L"barrier5") == true)
+			//{
+			//	m_barrier5 = NewGO<Barrier>(0, "barrier");
+			//	m_barrier5->SetPosition(objData.position);
+			//	m_barrier5->SetRotation(objData.rotation);
+			//	m_barrier5->SetScale(objData.scale);
+			//}
+			//else if (objData.EqualObjectName(L"barrier6") == true)
+			//{
+			//	m_barrier6 = NewGO<Barrier>(0, "barrier");
+			//	m_barrier6->SetPosition(objData.position);
+			//	m_barrier6->SetRotation(objData.rotation);
+			//	m_barrier6->SetScale(objData.scale);
+			//}
 
 			EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
 			EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
@@ -257,43 +298,40 @@ void Game::Update()
 		DeleteGO(this);
 		return;
 	}
-	//if (g_pad[0]->IsTrigger(enButtonSelect))
-	//{
-	//	NewGO<GameClear>(0, "GameClear");
-	//	if (m_audioManager)
-	//	 {
-	//		 m_audioManager->StopBGM();
-	//	}
-	//	DeleteGO(this);
-	//	return;
-	//}
 
 	CreateGire();
 
 	int gireCount = m_player->GetGireCount();
-	if (gireCount == 1)
+	if (gireCount >= m_needGireCount)
 	{
-		FirstFloor();
-		m_createGire = false;
-	}
-	if (gireCount == 2)
-	{
-		SecondFloor();
-		m_createGire = false;
-	}
-	if (gireCount == 3)
-	{
-		ThirdFloor();
-		m_createGire = false;
-	}
-	if (gireCount == 4)
-	{
-		m_gameClear = NewGO<GameClear>(0, "gameClear");
-		if (m_audioManager)
+		switch (m_floorNo)
 		{
-			m_audioManager->StopBGM();
+		case 1:
+			FirstFloor();
+			m_createGire = false;
+			break;
+
+		case 2:
+			SecondFloor();
+			m_createGire = false;
+			break;
+
+		case 3:
+			ThirdFloor();
+			m_createGire = false;
+			break;
+
+		case 4:
+			m_gameClear = NewGO<GameClear>(0, "gameClear");
+
+			if (m_audioManager)
+			{
+				m_audioManager->StopBGM();
+			}
+
+			DeleteGO(this);
+			return;
 		}
-		DeleteGO(this);
 	}
 
 	//プレイヤーの現在の座標を表示
@@ -316,6 +354,11 @@ void Game::Update()
 				playerPos.y > area.pos.y - 50.0f) {
 				m_player->SetPosition(area.targetPos);
 				m_audioManager->PlaySE(enSound_StairsSE, 0.5f, enSEPlay_AllowOverlap);
+
+				// 次フロアへ進んだ時だけ必要数増加
+				m_floorNo++;
+				m_needGireCount++;
+
 				isInAnyArea = true;
 				break;
 			}
