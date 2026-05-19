@@ -7,6 +7,7 @@
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
+#include "DamageText.h"
 
 FloorBoss::FloorBoss()
 {
@@ -191,6 +192,20 @@ void FloorBoss::Hit()
 				m_floorBossHP -= damage;
 			}
 			m_damageIntarvalTime = 1.5f;
+			m_player->SetAttackHit(true);
+
+			//========================
+            // ダメージ表示生成
+            //========================
+			DamageText* damageText = NewGO<DamageText>(0);
+
+			Vector3 textPos = m_position;
+
+			textPos.y += 250.0f;
+
+			damageText->SetPosition(textPos);
+
+			damageText->SetDamage(damage);
 		}
 	}
 }

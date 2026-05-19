@@ -53,18 +53,18 @@ bool Game::Start()
 
 				m_stage->SetPosition(objData.position);
 			}
-			else if (objData.EqualObjectName(L"smallRobot") == true)
-			{
-				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+			//else if (objData.EqualObjectName(L"smallRobot") == true)
+			//{
+			//	auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
-				smallRobot->SetPosition(objData.position);
+			//	smallRobot->SetPosition(objData.position);
 
-				smallRobot->SetScale(objData.scale);
+			//	smallRobot->SetScale(objData.scale);
 
-				m_smallRobot.push_back(smallRobot);
+			//	m_smallRobot.push_back(smallRobot);
 
-				m_enemyCount++;
-			}
+			//	m_enemyCount++;
+			//}
 			//else if (objData.EqualObjectName(L"FloorBoss") == true)
 			//{
 			//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
@@ -196,6 +196,11 @@ bool Game::Start()
 	m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f) });      // 2階
 	m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f) });      // 3階
 
+	if (m_ui)
+	{
+		m_ui->ShowGoal(L"敵を倒せ");
+	}
+
 	return true;
 }
 
@@ -318,6 +323,15 @@ void Game::Update()
 				m_floorNo++;
 				m_needGireCount++;
 
+				if (m_ui)
+				{
+					m_goalState = enGoalState_DefeatEnemy;
+
+					m_ui->ShowGoal(
+						L"敵を倒せ"
+					);
+				}
+
 				isInAnyArea = true;
 				break;
 			}
@@ -430,6 +444,14 @@ void Game::CreateGire()
 		m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
 		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
+		if (m_ui)
+		{
+			m_goalState = enGoalState_GetGear;
+
+			m_ui->ShowGoal(
+				L"歯車をとれ"
+			);
+		}
 	}
 	if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
 	{
@@ -437,6 +459,14 @@ void Game::CreateGire()
 		m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
 		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
+		if (m_ui)
+		{
+			m_goalState = enGoalState_GetGear;
+
+			m_ui->ShowGoal(
+				L"歯車をとれ"
+			);
+		}
 	}
 	if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
 	{
@@ -444,6 +474,14 @@ void Game::CreateGire()
 		m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
 		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
+		if (m_ui)
+		{
+			m_goalState = enGoalState_GetGear;
+
+			m_ui->ShowGoal(
+				L"歯車をとれ"
+			);
+		}
 	}
 }
 

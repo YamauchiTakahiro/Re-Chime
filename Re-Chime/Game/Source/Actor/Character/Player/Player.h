@@ -196,7 +196,7 @@ private:
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
 	int m_attackPower = 0;				//!<攻撃力。
     int m_heal = 20;
-    int m_healPotionCount = 0;
+    int m_healPotionCount = 1;
     int m_powerBuffPotionCount = 0;
     int m_attackSpeedPotionCount = 0;
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。

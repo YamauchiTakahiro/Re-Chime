@@ -131,6 +131,16 @@ private:
 	std::vector<FadeArea> m_fadeAreas;
 	bool m_createGire = false;
 	bool m_isGameStop = false;
+
+	enum EnGoalState
+	{
+		enGoalState_DefeatEnemy,
+		enGoalState_GetGear,
+		enGoalState_GoStairs,
+	};
+
+	EnGoalState m_goalState = enGoalState_DefeatEnemy;
+
 	int m_floorNo = 1;
 	int m_needGireCount = 1;
 };

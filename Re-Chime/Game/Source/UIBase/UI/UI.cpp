@@ -83,6 +83,9 @@ UI::UI()
 	m_selectFrame.Init("Assets/UIData/SelectFrame.DDs", 132.0f, 128.0f);
 	m_selectFrame.SetPosition(Vector3(-893.0f, 125.0f, 0.0f));
 	m_selectFrame.Update();
+
+	m_goalText.SetScale(2.0f);
+	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
 }
 
 UI::~UI()
@@ -228,6 +231,31 @@ void UI::Update()
 	{
 		m_CoolTimeText.SetText(L"");
 	}
+
+	if (m_isShowGoal)
+	{
+		m_goalTimer +=
+			g_gameTime->GetFrameDeltaTime();
+
+		// 最初の3秒は表示のみ
+		if (m_goalTimer >= 3.0f)
+		{
+			m_goalFade -=
+				g_gameTime->GetFrameDeltaTime()
+				* 0.3f;
+		}
+
+		if (m_goalFade < 0.0f)
+		{
+			m_goalFade = 0.0f;
+			m_isShowGoal = false;
+		}
+		m_goalText.SetText(
+			m_goalMessage.c_str());
+
+		m_goalText.SetColor(0.0f, 0.0f, 0.0f, m_goalFade);
+    }
+
 	if (m_isInventoryOpen)
 	{
 		Inventory();
@@ -302,6 +330,15 @@ void UI::Inventory()
 	m_PS1CountText.SetScale(1.0f);
 }
 
+void UI::ShowGoal(const wchar_t* text)
+{
+	m_goalMessage = text;
+
+	m_goalFade = 1.0f;
+	m_goalTimer = 0.0f;
+	m_isShowGoal = true;
+}
+
 void UI::Render(RenderContext& rc)
 {
 	if (!m_isVisible)
@@ -369,5 +406,10 @@ void UI::Render(RenderContext& rc)
 		m_PS2CountText.Draw(rc);
 		m_PS3CountText.Draw(rc);
 		m_selectFrame.Draw(rc);
+	}
+
+	if (m_isShowGoal)
+	{
+		m_goalText.Draw(rc);
 	}
 }
