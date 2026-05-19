@@ -31,6 +31,7 @@ public:
     bool Start() override;
     void Update() override;
     void Move() override;
+	void JumpAndGravity();
     void Rotation() override;
 	void Attack() override;
 	void OnCollision() override;

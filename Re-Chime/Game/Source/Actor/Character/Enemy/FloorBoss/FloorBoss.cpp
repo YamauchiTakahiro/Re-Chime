@@ -27,7 +27,7 @@ bool FloorBoss::Start()
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/floorBoss/floorBossDeath.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/FloorBoss.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
-	m_characterController.Init(1000.0f, 300.0f, m_position);
+	m_characterController.Init(900.0f, 300.0f, m_position);
 	m_enemyHP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
 	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
 	m_enemyHP.Update();
@@ -51,6 +51,8 @@ void FloorBoss::Update()
 
 	Rotation();
 
+	Attack();
+
 	Time();
 
 	Hit();
@@ -73,13 +75,12 @@ void FloorBoss::Move()
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 500 && m_timeCount == 0.0f)
+	if (distToPlayer <= 600 && m_timeCount == 0.0f)
 	{
-		Attack();
 		m_timeCount = 2.0f;
 		Time();
 	}
-	if (distToPlayer <= 1000)
+	if (distToPlayer <= 1200)
 	{
 		toPlayer.Normalize();
 		m_moveSpeed = toPlayer * 100.0f;
@@ -115,7 +116,15 @@ void FloorBoss::Rotation()
 
 void FloorBoss::Attack()
 {
-	OnCollision();
+	if (m_isAttack == false)
+	{
+		return;
+	}
+	else
+	{
+		OnCollision();
+		m_isAttack = false;
+	}
 }
 
 void FloorBoss::OnCollision()
@@ -128,6 +137,8 @@ void FloorBoss::OnCollision()
 	collisionPos += m_forward * 250.0f;
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("smallRobotAttack");
+
+	m_attackCollisionLife = 0.1f; // 攻撃の当たり判定の寿命を設定
 }
 
 void FloorBoss::Time()

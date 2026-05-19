@@ -57,9 +57,24 @@ void SmallRobot::Update()
 		return;
 	}
 
+	if (m_collisionObject != nullptr)
+	{
+		m_attackCollisionLife -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_attackCollisionLife <= 0.0f)
+		{
+			DeleteGO(m_collisionObject);
+			m_collisionObject = nullptr;
+		}
+	}
+
 	Move();
 
 	Rotation();
+
+	Attack();
+
+	SearchPlayer();
 
 	Time();
 
@@ -69,13 +84,11 @@ void SmallRobot::Update()
 
 	AttackHit();
 
-	Death();
-
 	EnemyHP();
 
-	/*ManageState();
+	ManageState();
 
-	PlayAnimation();*/
+	//PlayAnimation();
 	m_modelRender.Update();
 }
 
@@ -84,26 +97,20 @@ void SmallRobot::Move()
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 500 && m_timeCount == 0.0f)
+	if (distToPlayer <= 500 && m_timeCount == 0.0f && m_searchPlayer)
 	{
-		Attack();
 		m_timeCount = 2.0f;
 		Time();
 	}
-	if (distToPlayer <= 1000)
+	if (m_searchPlayer)
 	{
 		toPlayer.Normalize();
 		m_moveSpeed = toPlayer * 100.0f;
 		m_moveSpeed.y = 0.0f;
 	}
-	else if (distToPlayer > 1000)
+	else
 	{
 		m_moveSpeed = toPlayer * 0.0f;
-	}
-
-	if (m_characterController.IsOnGround() == false)
-	{
-		//m_moveSpeed.y -= 40.0f;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
@@ -113,20 +120,53 @@ void SmallRobot::Move()
 
 void SmallRobot::Rotation()
 {
-	Vector3 playerPos = m_player->GetPosition();
-	Vector3 toPlayer = playerPos - m_position;
-	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 1000)
+	if(m_searchPlayer)
 	{
-		toPlayer.Normalize();
-		m_rotation.SetRotationYFromDirectionXZ(toPlayer);
+		Vector3 playerPos = m_player->GetPosition();
+		Vector3 toPlayer = playerPos - m_position;
+		float distToPlayer = toPlayer.Length();
+		if (distToPlayer <= 1000)
+		{
+			toPlayer.Normalize();
+			m_rotation.SetRotationYFromDirectionXZ(toPlayer);
+		}
 	}
 	m_modelRender.SetRotation(m_rotation);
 }
 
+void SmallRobot::SearchPlayer()
+{
+	m_searchPlayer = false;
+
+	m_forward = Vector3::AxisZ;
+	m_rotation.Apply(m_forward);
+
+	Vector3 playerPos = m_player->GetPosition();
+	Vector3 diff = playerPos - m_position;
+
+	if(diff.Length() <= 2000.0f)
+	{
+		diff.Normalize();
+		float angle = acosf(diff.Dot(m_forward));
+		if (Math::PI * 0.15f <= fabsf(angle))
+		{
+			return;
+		}
+		m_searchPlayer = true;
+	}
+}
+
 void SmallRobot::Attack()
 {
-	OnCollision();
+	if (m_isAttack == false)
+	{
+		return;
+	}
+	else
+	{
+		OnCollision();
+		m_isAttack = false;
+	}
 }
 
 void SmallRobot::OnCollision()
@@ -139,6 +179,8 @@ void SmallRobot::OnCollision()
 	collisionPos += m_forward * 250.0f;
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("smallRobotAttack");
+
+	m_attackCollisionLife = 0.1f;
 }
 
 void SmallRobot::Time()
@@ -162,45 +204,84 @@ void SmallRobot::Hit()
 			int randomNum = rand() % 100 + 1;
 			if (randomNum <= 5)
 			{
-				damage *= 2;
-				bool isHit = m_player->GetAttackHit();
-				if (!isHit)
+				if (!m_searchPlayer)
 				{
-					m_player->SetAttackHit(true);
+					damage *= 4;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
+					{
+						m_player->SetAttackHit(true);
 
-					m_audioManager->PlaySE(
-						enSound_CriticalSE,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+						m_audioManager->PlaySE(
+							enSound_BackstabSE,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
 				}
+				else
+				{
+					damage *= 2;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
+					{
+						m_player->SetAttackHit(true);
+
+						m_audioManager->PlaySE(
+							enSound_CriticalSE,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
+				}
+				
 				m_smallRobotHp -= damage;
+				m_searchPlayer = true;
 			}
 			else
 			{
-				damage *= 1;
-				bool isHit = m_player->GetAttackHit();
-				if (!isHit)
+				if (!m_searchPlayer)
 				{
-					m_player->SetAttackHit(true);
-					int r = rand() % 3;
-
-					AudioID id;
-
-					switch (r)
+					damage *= 2;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
 					{
-					case 0: id = enSound_PlayerAttackSE_01; break;
-					case 1: id = enSound_PlayerAttackSE_02; break;
-					case 2: id = enSound_PlayerAttackSE_03; break;
-					}
+						m_player->SetAttackHit(true);
 
-					m_audioManager->PlaySE(
-						id,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+						m_audioManager->PlaySE(
+							enSound_BackstabSE,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
+				}
+				else
+				{
+					damage *= 1;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
+					{
+						m_player->SetAttackHit(true);
+						int r = rand() % 3;
+
+						AudioID id;
+
+						switch (r)
+						{
+						case 0: id = enSound_PlayerAttackSE_01; break;
+						case 1: id = enSound_PlayerAttackSE_02; break;
+						case 2: id = enSound_PlayerAttackSE_03; break;
+						}
+
+						m_audioManager->PlaySE(
+							id,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
 				}
 				m_smallRobotHp -= damage;
+				m_searchPlayer = true;
 			}
 			m_damageIntarvalTime = 1.5f;
 
@@ -245,32 +326,29 @@ void SmallRobot::DamageIntarval()
 
 void SmallRobot::Death()
 {
-	if (m_smallRobotHp <= 0)
+	m_game->EnemyCount();
+	m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
+	MakeExplosionEffect();
+	int randomNum = rand() % 100 + 1;
+	if (randomNum <= 20)
 	{
-		m_game->EnemyCount();
-		m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
-		MakeExplosionEffect();
-		int randomNum = rand() % 100 + 1;
-		if (randomNum <= 20)
-		{
-			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
-			m_attackSpeedBuff->SetPosition(m_position);
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
-		}
-		else if (randomNum > 20 && randomNum <= 40)
-		{
-			m_powerBuff = NewGO<PowerBuff>(0);
-			m_powerBuff->SetPosition(m_position);
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
-		}
-		else if (randomNum > 40 && randomNum <= 60)
-		{
-			m_heal = NewGO<Heal>(0);
-			m_heal->SetPosition(m_position);
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
-		}
-		DeleteGO(this);
+		m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
+		m_attackSpeedBuff->SetPosition(m_position);
+		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
 	}
+	else if (randomNum > 20 && randomNum <= 40)
+	{
+		m_powerBuff = NewGO<PowerBuff>(0);
+		m_powerBuff->SetPosition(m_position);
+		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+	}
+	else if (randomNum > 40 && randomNum <= 60)
+	{
+		m_heal = NewGO<Heal>(0);
+		m_heal->SetPosition(m_position);
+		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+	}
+	DeleteGO(this);
 }
 
 void SmallRobot::EnemyHP()
@@ -326,42 +404,70 @@ void SmallRobot::MakeExplosionEffect()
 	effectEmitter->Play();
 }
 
-//void SmallRobot::EnemyState()
-//{
-//	if(fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-//	{
-//		m_smallRobotState = enSmallRobotState_Walk;
-//	}
-//	else
-//	{
-//		m_smallRobotState = enSmallRobotState_Idle;
-//	}
-//}
-//
-//void SmallRobot::IdleState()
-//{
-//	EnemyState();
-//}
-//
-//void SmallRobot::WalkState()
-//{
-//	EnemyState();
-//}
-//
-//void SmallRobot::ManageState()
-//{
-//	switch (m_smallRobotState)
-//	{
-//	case enSmallRobotState_Idle:
-//		break;
-//	case enSmallRobotState_Walk:
-//		break;
-//	case enSmallRobotState_Num:
-//		break;
-//	default:
-//		break;
-//	}
-//}
+void SmallRobot::EnemyState()
+{
+	if (m_timeCount == 0 && !m_isDeath)
+	{
+		m_smallRobotState = enSmallRobotState_Attack;
+		m_isAttack = true;
+	}
+	if (m_smallRobotHp <= 0)
+	{
+		m_smallRobotState = enSmallRobotState_Death;
+		m_isDeath = true;
+	}
+	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		m_smallRobotState = enSmallRobotState_Walk;
+	}
+	else
+	{
+		m_smallRobotState = enSmallRobotState_Idle;
+	}
+}
+
+void SmallRobot::IdleState()
+{
+	EnemyState();
+}
+
+void SmallRobot::WalkState()
+{
+	EnemyState();
+}
+
+void SmallRobot::AttackState()
+{
+	EnemyState();
+}
+
+void SmallRobot::DeathState()
+{
+	Death();
+}
+
+void SmallRobot::ManageState()
+{
+	switch (m_smallRobotState)
+	{
+	case enSmallRobotState_Idle:
+		IdleState();
+		break;
+	case enSmallRobotState_Walk:
+		WalkState();
+		break;
+	case enSmallRobotState_Attack:
+		AttackState();
+		break;
+	case enSmallRobotState_Death:
+		DeathState();
+		break;
+	case enSmallRobotState_Num:
+		break;
+	default:
+		break;
+	}
+}
 //void SmallRobot::PlayAnimation()
 //{
 //	switch (m_smallRobotState)

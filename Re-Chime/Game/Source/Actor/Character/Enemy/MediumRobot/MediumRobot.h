@@ -26,6 +26,7 @@ class MediumRobot : public Enemy
     void Update() override;
     void Move() override;
     void Rotation() override;
+	void SearchPlayer();
     void Attack() override;
     void OnCollision() override;
     void Time() override;
@@ -100,5 +101,6 @@ private:
     float m_attackCollisionLife = 0.0f;
 	bool m_isAttack = false;		//!<攻撃しているかどうか。
 	bool m_isDeath = false;		//!<死亡しているかどうか。
+	bool m_searchPlayer = false;	//!<プレイヤーを索敵しているかどうか。
 };
 

@@ -53,18 +53,18 @@ bool Game::Start()
 
 				m_stage->SetPosition(objData.position);
 			}
-			//else if (objData.EqualObjectName(L"smallRobot") == true)
-			//{
-			//	auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+			/*else if (objData.EqualObjectName(L"smallRobot") == true)
+			{
+				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
-			//	smallRobot->SetPosition(objData.position);
+				smallRobot->SetPosition(objData.position);
 
-			//	smallRobot->SetScale(objData.scale);
+				smallRobot->SetScale(objData.scale);
 
-			//	m_smallRobot.push_back(smallRobot);
+				m_smallRobot.push_back(smallRobot);
 
-			//	m_enemyCount++;
-			//}
+				m_enemyCount++;
+			}*/
 			//else if (objData.EqualObjectName(L"FloorBoss") == true)
 			//{
 			//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
@@ -77,18 +77,18 @@ bool Game::Start()
 
 			//	m_enemyCount++;
 			//}
-			//else if (objData.EqualObjectName(L"mediumRobot") == true)
-			//{
-			//	auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
+			else if (objData.EqualObjectName(L"mediumRobot") == true)
+			{
+				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
 
-			//	mediumRobot->SetPosition(objData.position);
+				mediumRobot->SetPosition(objData.position);
 
-			//	mediumRobot->SetScale(objData.scale);
+				mediumRobot->SetScale(objData.scale);
 
-			//	m_mediumRobot.push_back(mediumRobot);
+				m_mediumRobot.push_back(mediumRobot);
 
-			//	m_enemyCount++;
-			//}
+				m_enemyCount++;
+			}
 			//else if (objData.EqualObjectName(L"finalBoss") == true)
 			//{
 			//	auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
