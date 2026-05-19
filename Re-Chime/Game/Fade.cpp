@@ -42,8 +42,13 @@ void Fade::Update()
 
 	case enState_FadeOut:
 		m_currentAlpha += m_fadeSpeed * delta;
-		if (m_currentAlpha >= 1.0f) {
+
+		if (m_currentAlpha >= 1.0f)
+		{
 			m_currentAlpha = 1.0f;
+
+			m_isFadeOutFinished = true;
+
 			m_state = enState_Idle;
 		}
 		break;

@@ -64,7 +64,11 @@ void MediumRobot::Update()
 			m_collisionObject = nullptr;
 		}
 	}
-	if (!m_isDeath)
+
+	bool IntroFlag = m_game->GetIntro();
+	bool bossIntroFlag = m_game->GetBossIntro();
+
+	if (!m_isDeath && !IntroFlag && !bossIntroFlag)
 	{
 		Move();
 

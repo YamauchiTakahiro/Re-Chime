@@ -21,6 +21,8 @@ public:
 	{
 		if (m_state == enState_FadeOut)return;
 		m_state = enState_FadeOut;
+
+		m_isFadeOutFinished = false;
 		m_currentAlpha = 0.0f;
 	}
 
@@ -41,6 +43,11 @@ public:
 		return m_state == enState_FadeIn;
 	}
 
+	bool IsFadeOutFinished() const
+	{
+		return m_isFadeOutFinished;
+	}
+
 private:
 	enum EnState {
 		enState_FadeIn,
@@ -53,5 +60,7 @@ private:
 
 	float m_currentAlpha = 0.0f;
 	float m_fadeSpeed = 0.5f;
+
+	bool m_isFadeOutFinished = false;
 };
 

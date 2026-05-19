@@ -40,7 +40,6 @@ class FinalBoss : public Enemy
 	void DeathState();
 	const bool IsCanAttack()const;
     void FinalBossHP();
-    Vector3 GetPosition()const override;
     int GetHP() const override
     {
         return m_finalBossHp;
@@ -49,6 +48,10 @@ class FinalBoss : public Enemy
     {
         return m_attackPower;
 	}
+    Vector3 GetPosition()const override
+    {
+        return m_position;
+    }
     void SetPosition(Vector3 position) override
     {
         m_position = position;
