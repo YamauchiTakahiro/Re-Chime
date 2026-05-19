@@ -20,6 +20,8 @@ class UI :public UIBase
     {
         return m_isInventoryOpen;
     }
+
+    void ShowGoal(const wchar_t* text);
 private:
     Player* m_player = nullptr;
     Game* m_game = nullptr;
@@ -35,11 +37,19 @@ private:
     FontRender m_PS1CountText;
     FontRender m_PS2CountText;
     FontRender m_PS3CountText;
+    FontRender m_goalText;
+
+    float m_goalShowTimer = 5.0f;
+    float m_goalAlpha = 1.0f;
     float m_blinkTimer = 0.0f;//点滅タイマー
+    float m_goalFade = 1.0f;
+    float m_goalTimer = 0.0f;
     bool m_isBlinkOn = true;
     bool m_isShowCoolTime = false;
     bool m_isVisible = true;
-    int m_selectItem = 0;
     bool m_isInventoryOpen = false;
+    bool m_isShowGoal = false;
+    int m_selectItem = 0;
+    std::wstring m_goalMessage;
 };
 

@@ -533,6 +533,15 @@ void Player::GetGires()
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_isGetGire = true;
+
+			auto ui = FindGO<UI>("ui");
+
+			if (ui)
+			{
+				ui->ShowGoal(
+					L"階段を上れ"
+				);
+			}
 		}
 	}
 }
