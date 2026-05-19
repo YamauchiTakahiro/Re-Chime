@@ -97,6 +97,8 @@ void Player::Update()
 		}
 	}
 
+	JumpAndGravity();
+
 	FadeTime();
 
 	FootStepTime();
@@ -164,24 +166,6 @@ void Player::Move()
 
 		m_moveSpeed += moveDir * m_speed;
 	}
-	
-	if (m_characterController.IsOnGround())
-	{
-		m_moveSpeed.y = 0.0f;
-		if (m_isJump)
-		{
-			JumpTime();
-			if (m_jumpTime == 0.0f)
-			{
-				m_moveSpeed.y = 500.0f;
-				m_jumpTime = 1.0f;
-			}
-		}
-	}
-	if (m_characterController.IsOnGround() == false)
-	{
-		m_moveSpeed.y -= 20.0f;
-	}
 
 	Vector3 finalMoveSpeed = Vector3::Zero;
 
@@ -207,6 +191,27 @@ void Player::Move()
 	m_position = m_characterController.Execute(finalMoveSpeed, 2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
+}
+
+void Player::JumpAndGravity()
+{
+	if (m_characterController.IsOnGround())
+	{
+		m_moveSpeed.y = 0.0f;
+		if (m_isJump)
+		{
+			JumpTime();
+			if (m_jumpTime == 0.0f)
+			{
+				m_moveSpeed.y = 500.0f;
+				m_jumpTime = 1.0f;
+			}
+		}
+	}
+	if (m_characterController.IsOnGround() == false)
+	{
+		m_moveSpeed.y -= 20.0f;
+	}
 }
 
 void Player::Rotation()

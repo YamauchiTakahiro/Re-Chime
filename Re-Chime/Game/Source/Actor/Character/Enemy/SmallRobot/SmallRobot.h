@@ -13,12 +13,14 @@ class AudioManager;
 class SmallRobot : public Enemy
 {
 public:
-	//enum enSmallRobotState
-//{
-//	enSmallRobotState_Idle,		//待機状態。
-//	enSmallRobotState_Walk,		//移動状態。
-//	enSmallRobotState_Num,
-//};
+	enum enSmallRobotState
+{
+	enSmallRobotState_Idle,		//待機状態。
+	enSmallRobotState_Walk,		//移動状態。
+	enSmallRobotState_Attack,	//攻撃状態。
+	enSmallRobotState_Death,		//死亡状態。
+	enSmallRobotState_Num,
+};
 	SmallRobot();
 	~SmallRobot();
 	bool Start() override;
@@ -26,6 +28,7 @@ public:
 	void Move() override;
 	void Rotation() override;
 	void Attack() override;
+	void SearchPlayer();
 	void OnCollision() override;
 	void Time() override;
 	void Hit() override;
@@ -34,11 +37,13 @@ public:
 	void Death() override;
 	void EnemyHP();
 	void MakeExplosionEffect();
-	/*void ManageState();
-	void PlayAnimation();
+	void ManageState();
+	//void PlayAnimation();
 	void EnemyState();
 	void WalkState();
-	void IdleState();*/
+	void IdleState();
+	void AttackState();
+	void DeathState();
 	Vector3 GetPosition()const override
 	{
 		return m_position;
@@ -91,12 +96,16 @@ private:
 	SpriteRender m_enemyHPFrame;
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
 	Vector2 m_enemyHPFramePosition = Vector2::Zero;
-	//enSmallRobotState m_smallRobotState = enSmallRobotState_Idle;	//!<小型ロボットの状態。
+	enSmallRobotState m_smallRobotState = enSmallRobotState_Idle;	//!<小型ロボットの状態。
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
 	int m_smallRobotMaxHp = 50;	//!<小型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
+	float m_attackCollisionLife = 0.0f;	//!<攻撃判定の有効時間。
 	bool m_isShowHP = false;
+	bool m_isAttack = false;
+	bool m_isDeath = false;
+	bool m_searchPlayer = false;
 };
 

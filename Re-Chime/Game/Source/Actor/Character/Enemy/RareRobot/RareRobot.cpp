@@ -320,6 +320,9 @@ void RareRobot::ManageState()
 	case enRareRobotState_Death:
 		DeathState();
 		break;
+	case enRareRobotState_Attack:
+		AttackState();
+		break;
 	default:
 		break;
 	}
@@ -375,10 +378,10 @@ void RareRobot::WalkState()
 	RareRobotState();
 }
 
-//void RareRobot::AttackState()
-//{
-//	RareRobotState();
-//}
+void RareRobot::AttackState()
+{
+	RareRobotState();
+}
 
 void RareRobot::DeathState()
 {

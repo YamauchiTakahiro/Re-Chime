@@ -71,6 +71,8 @@ void MediumRobot::Update()
 		Rotation();
 	}
 
+	SearchPlayer();
+
 	Time();
 
 	Hit();
@@ -95,25 +97,20 @@ void MediumRobot::Move()
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 500 && m_timeCount == 0.0f)
+	if (distToPlayer <= 500 && m_timeCount == 0.0f && m_searchPlayer)
 	{
 		m_timeCount = 2.0f;
 		Time();
 	}
-	if (distToPlayer <= 1000)
+	if (m_searchPlayer)
 	{
 		toPlayer.Normalize();
 		m_moveSpeed = toPlayer * 100.0f;
 		m_moveSpeed.y = 0.0f;
 	}
-	else if (distToPlayer > 1000)
+	else
 	{
 		m_moveSpeed = toPlayer * 0.0f;
-	}
-
-	if (m_characterController.IsOnGround() == false)
-	{
-		//m_moveSpeed.y -= 40.0f;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
@@ -123,15 +120,40 @@ void MediumRobot::Move()
 
 void MediumRobot::Rotation()
 {
-	Vector3 playerPos = m_player->GetPosition();
-	Vector3 toPlayer = playerPos - m_position;
-	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 1000)
+	if (m_searchPlayer)
 	{
-		toPlayer.Normalize();
-		m_rotation.SetRotationYFromDirectionXZ(toPlayer);
+		Vector3 playerPos = m_player->GetPosition();
+		Vector3 toPlayer = playerPos - m_position;
+		float distToPlayer = toPlayer.Length();
+		if (distToPlayer <= 1000)
+		{
+			toPlayer.Normalize();
+			m_rotation.SetRotationYFromDirectionXZ(toPlayer);
+		}
 	}
 	m_modelRender.SetRotation(m_rotation);
+}
+
+void MediumRobot::SearchPlayer()
+{
+	m_searchPlayer = false;
+
+	m_forward = Vector3::AxisZ;
+	m_rotation.Apply(m_forward);
+
+	Vector3 playerPos = m_player->GetPosition();
+	Vector3 diff = playerPos - m_position;
+
+	if (diff.Length() <= 2000.0f)
+	{
+		diff.Normalize();
+		float angle = acosf(diff.Dot(m_forward));
+		if (Math::PI * 0.15f <= fabsf(angle))
+		{
+			return;
+		}
+		m_searchPlayer = true;
+	}
 }
 
 void MediumRobot::Attack()
@@ -188,47 +210,87 @@ void MediumRobot::Hit()
 			int randomNum = rand() % 100 + 1;
 			if (randomNum <= 5)
 			{
-				damage *= 2;
-				bool isHit = m_player->GetAttackHit();
-				if (!isHit)
+				if (!m_searchPlayer)
 				{
-					m_player->SetAttackHit(true);
+					damage *= 3;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
+					{
+						m_player->SetAttackHit(true);
 
-					m_audioManager->PlaySE(
-						enSound_CriticalSE,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+						m_audioManager->PlaySE(
+							enSound_BackstabSE,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
 				}
+				else
+				{
+					damage *= 1.5;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
+					{
+						m_player->SetAttackHit(true);
+
+						m_audioManager->PlaySE(
+							enSound_CriticalSE,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
+				}
+
 				m_mediumRobotHp -= damage;
+				m_searchPlayer = true;
 			}
 			else
 			{
-				damage *= 1;
-				bool isHit = m_player->GetAttackHit();
-				if (!isHit)
+				if (!m_searchPlayer)
 				{
-					m_player->SetAttackHit(true);
-					int r = rand() % 3;
-
-					AudioID id;
-
-					switch (r)
+					damage *= 1.5;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
 					{
-					case 0: id = enSound_PlayerAttackSE_01; break;
-					case 1: id = enSound_PlayerAttackSE_02; break;
-					case 2: id = enSound_PlayerAttackSE_03; break;
-					}
+						m_player->SetAttackHit(true);
 
-					m_audioManager->PlaySE(
-						id,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+						m_audioManager->PlaySE(
+							enSound_BackstabSE,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
+				}
+				else
+				{
+					damage *= 1;
+					bool isHit = m_player->GetAttackHit();
+					if (!isHit)
+					{
+						m_player->SetAttackHit(true);
+						int r = rand() % 3;
+
+						AudioID id;
+
+						switch (r)
+						{
+						case 0: id = enSound_PlayerAttackSE_01; break;
+						case 1: id = enSound_PlayerAttackSE_02; break;
+						case 2: id = enSound_PlayerAttackSE_03; break;
+						}
+
+						m_audioManager->PlaySE(
+							id,
+							1.0f,
+							enSEPlay_AllowOverlap
+						);
+					}
 				}
 				m_mediumRobotHp -= damage;
+				m_searchPlayer = true;
 			}
 			m_damageIntarvalTime = 1.5f;
+
 
 //========================
 // ダメージ表示生成
@@ -312,6 +374,9 @@ void MediumRobot::ManageState()
 {
 	switch (m_mediumRobotState)
 	{
+	case enMediumRobotState_Attack:
+		AttackState();
+		break;
 	case enMediumRobotState_Idle:
 		IdleState();
 		break;
@@ -330,6 +395,8 @@ void MediumRobot::PlayAnimation()
 {
 	switch (m_mediumRobotState)
 	{
+	case enMediumRobotState_Attack:
+		break;
 	case enMediumRobotState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle);
 		break;
@@ -376,10 +443,10 @@ void MediumRobot::WalkState()
 	MediumRobotState();
 }
 
-//void MediumRobot::AttackState()
-//{
-//	MediumRobotState();
-//}
+void MediumRobot::AttackState()
+{
+	MediumRobotState();
+}
 
 void MediumRobot::DeathState()
 {

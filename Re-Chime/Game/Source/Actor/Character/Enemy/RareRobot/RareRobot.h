@@ -68,6 +68,7 @@ private:
         enAnimationClip_Idle,
         enAnimationClip_Walk,
         enAnimationClip_Death,
+		enAnimationClip_Attack,
         enAnimationClip_Num,
     };
     AnimationClip m_animationClips[enAnimationClip_Num];	//!<アニメーションクリップ。
