@@ -16,6 +16,8 @@ enum AudioID
 	enSound_EnemyWalkSE,
 	enSound_BossWalkSE,
 	enSound_FloorBossWalkSE,
+	enSound_BossShotSE_01,
+	enSound_BossShotSE_02,
 	enSound_HealSE,
 	enSound_PowerUPSE,
 	enSound_AttackSpeedUPSE,

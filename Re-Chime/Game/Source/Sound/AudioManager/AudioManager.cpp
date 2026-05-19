@@ -188,6 +188,8 @@ void AudioManager::LoadAll()
 	Load(enSound_EnemyWalkSE, "Assets/Sound/SE/EnemyWalkSE.wav");
 	Load(enSound_BossWalkSE, "Assets/Sound/SE/BossWalkSE.wav");
 	Load(enSound_FloorBossWalkSE, "Assets/Sound/SE/FloorBossWalkSE.wav");
+	Load(enSound_BossWalkSE, "Assets/Sound/SE/BossShotSE_01.wav");
+	Load(enSound_BossWalkSE, "Assets/Sound/SE/BossShotSE_02.wav");
 	Load(enSound_HealSE, "Assets/Sound/SE/HealSE.wav");
 	Load(enSound_PowerUPSE, "Assets/Sound/SE/PowerUPSE.wav");
 	Load(enSound_AttackSpeedUPSE, "Assets/Sound/SE/AttackSpeedUpSE.wav");
