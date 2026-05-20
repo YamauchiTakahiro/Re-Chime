@@ -68,9 +68,16 @@ void SmallRobot::Update()
 		}
 	}
 
-	Move();
 
-	Rotation();
+	bool IntroFlag = m_game->GetIntro();
+	bool bossIntroFlag = m_game->GetBossIntro();
+
+	if (!m_isDeath && !IntroFlag && !bossIntroFlag)
+	{
+		Move();
+
+		Rotation();
+	}
 
 	Attack();
 

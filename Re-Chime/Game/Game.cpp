@@ -164,14 +164,14 @@ bool Game::Start()
 			//	m_barrier3->SetScale(objData.scale);
 			//}
 
-			EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
-			EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
-			EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
-			EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/efk/Explosion.efk");
-			EffectEngine::GetInstance()->ResistEffect(5, u"Assets/effect/efk/BossExplosion.efk");
-
 			return true;
 	});
+
+	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
+	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
+	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
+	EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/efk/Explosion.efk");
+	EffectEngine::GetInstance()->ResistEffect(5, u"Assets/effect/efk/BossExplosion.efk");
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 	if (m_audioManager)
@@ -192,9 +192,9 @@ bool Game::Start()
 
 	m_cursorPos = Vector3(0, 0, 0);
 
-	m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f) }); // 1階
-	m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f) });      // 2階
-	m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f) });      // 3階
+	m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f), true, false }); // 1階
+	m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f), true, false });      // 2階
+	m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f), false, true });      // 3階
 
 	if (m_ui)
 	{
@@ -308,20 +308,45 @@ void Game::Update()
 	m_Pos.SetText(text);*/
 
 	// フェード判定
-	if (m_fade != nullptr)
+	if (m_fade != nullptr && !m_isMoveNextFloor)
 	{
 		bool isInAnyArea = false;
 
 		for (auto& area : m_fadeAreas) {
 			Vector3 diff = playerPos - area.pos;
 			if (diff.Length() < area.radius &&
-				playerPos.y > area.pos.y - 50.0f) {
-				m_player->SetPosition(area.targetPos);
-				m_audioManager->PlaySE(enSound_StairsSE, 0.5f, enSEPlay_AllowOverlap);
+				playerPos.y > area.pos.y - 50.0f)
+			{
+				m_nextMovePos = area.targetPos;
 
+				m_nextIntro = area.intro;
+				m_nextBossIntro = area.bossIntro;
+
+				m_isMoveNextFloor = true;
+
+				m_audioManager->PlaySE(
+					enSound_StairsSE,
+					0.5f,
+					enSEPlay_AllowOverlap
+				);
+
+				m_fade->StartFadeOut();
+	
 				// 次フロアへ進んだ時だけ必要数増加
-				m_floorNo++;
-				m_needGireCount++;
+				if (m_fade->IsFadeOutFinished())
+				{
+					m_player->SetPosition(m_nextMovePos);
+
+					m_intro = m_nextIntro;
+					m_bossIntro = m_nextBossIntro;
+
+					m_floorNo++;
+					m_needGireCount++;
+
+					m_isMoveNextFloor = false;
+
+					m_fade->StartFadeIn();
+				}
 
 				if (m_ui)
 				{
@@ -332,22 +357,28 @@ void Game::Update()
 					);
 				}
 
+				m_gameCamera->ResetCameraTimer();
+
 				isInAnyArea = true;
 				break;
 			}
-		}
+		}	
+	}
+	if (m_isMoveNextFloor)
+	{
+		if (m_fade->IsFadeOutFinished())
+		{
+			m_player->SetPosition(m_nextMovePos);
 
-		if (isInAnyArea) {
-			if (!m_isNear) {
-				m_fade->StartFadeOut();
-				m_isNear = true;
-			}
-		}
-		else {
-			if (m_isNear) {
-				m_fade->StartFadeIn();
-				m_isNear = false;
-			}
+			m_intro = m_nextIntro;
+			m_bossIntro = m_nextBossIntro;
+
+			m_floorNo++;
+			m_needGireCount++;
+
+			m_isMoveNextFloor = false;
+
+			m_fade->StartFadeIn();
 		}
 	}
 }

@@ -74,18 +74,21 @@ void Player::Update()
 	m_canPickItem = false;
 
 	bool fadeFlag = m_game->FadeFlag();
+	bool IntroFlag = m_game->GetIntro();
+	bool bossIntroFlag = m_game->GetBossIntro();
 
 	if(fadeFlag)
 	{
 		m_fadeTime = 1.0f;
 	}
 
-	if (!m_guardFlag && !m_isAttack && m_fadeTime <= 0)
+	if (!m_guardFlag && !m_isAttack && m_fadeTime <= 0 && !IntroFlag && !bossIntroFlag)
 	{
 		Move();
 
 		Rotation();
 	}
+	
 
 	if (m_collisionObject != nullptr)
 	{

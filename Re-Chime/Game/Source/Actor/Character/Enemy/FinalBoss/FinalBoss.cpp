@@ -430,11 +430,6 @@ void FinalBoss::DeathState()
 	}
 }
 
-Vector3 FinalBoss::GetPosition()const
-{
-	return m_position;
-}
-
 const bool FinalBoss::IsCanAttack() const
 {
 	Vector3 diff = m_player->GetPosition() - m_position;

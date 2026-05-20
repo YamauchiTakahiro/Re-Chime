@@ -73,6 +73,29 @@ public:
 		return m_needGireCount;
 	}
 
+	int GetFloorNo() const
+	{
+		return m_floorNo;
+	}
+	bool GetIntro() const
+	{
+		return m_intro;
+	}
+	bool SetIntro(bool intro)
+	{
+		m_intro = intro;
+		return m_intro;
+	}
+	bool GetBossIntro() const
+	{
+		return m_bossIntro;
+	}
+	bool SetBossIntro(bool bossIntro)
+	{
+		m_bossIntro = bossIntro;
+		return m_bossIntro;
+	}
+
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;
@@ -110,6 +133,7 @@ private:
 	Fade* m_fade = nullptr;
 	Vector3 m_stairMin = { 2350.0f - rangeX, 376.0f, 3300.0f };
 	Vector3 m_stairMax = { 2350.0f + rangeX, 376.8f, 3900.0f };
+	Vector3 m_nextMovePos;
 
 	int m_pauseSelect = 0; //ポーズメニュー、0:タイトルに戻る、1:ゲームに戻る、2:音量調整
 	bool m_isPause = false;
@@ -117,6 +141,11 @@ private:
 	int m_enemyCount = 0;		//!<敵の数。
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 	bool m_isSetting = false;
+	bool m_intro = true;
+	bool m_bossIntro = false;
+	bool m_isMoveNextFloor = false;
+	bool m_nextIntro = false;
+	bool m_nextBossIntro = false;
 	float m_pauseTime;
 
 	bool m_isNear = false;
@@ -126,6 +155,8 @@ private:
 		Vector3 pos;
 		float radius;
 		Vector3 targetPos;
+		bool intro;
+		bool bossIntro;
 	};
 
 	std::vector<FadeArea> m_fadeAreas;
