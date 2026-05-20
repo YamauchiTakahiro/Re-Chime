@@ -608,3 +608,8 @@ void Game::Render(RenderContext& rc)
 		m_Cursor.Draw(rc);
 	}
 }
+
+bool Game::IsFade() const
+{
+	return m_fade != nullptr && m_fade->IsFade();
+}

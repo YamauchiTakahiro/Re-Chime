@@ -73,20 +73,24 @@ void Player::Update()
 	isNearItem = false;
 	m_canPickItem = false;
 
-	bool fadeFlag = m_game->FadeFlag();
+	bool isFade = m_game->IsFade();
 	bool IntroFlag = m_game->GetIntro();
 	bool bossIntroFlag = m_game->GetBossIntro();
 
-	if(fadeFlag)
-	{
-		m_fadeTime = 1.0f;
-	}
-
-	if (!m_guardFlag && !m_isAttack && m_fadeTime <= 0 && !IntroFlag && !bossIntroFlag)
+	if (!m_guardFlag &&
+		!m_isAttack &&
+		!isFade &&
+		!IntroFlag &&
+		!bossIntroFlag)
 	{
 		Move();
-
 		Rotation();
+	}
+	else
+	{
+		// フェード中は完全停止
+		m_moveSpeed.x = 0.0f;
+		m_moveSpeed.z = 0.0f;
 	}
 	
 
