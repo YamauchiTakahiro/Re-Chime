@@ -37,6 +37,7 @@ public:
 	void SecondFloor();
 	void ThirdFloor();
 	void FourthFloor();
+	bool IsFade() const;
 	void EnemyCount()
 	{
 		m_numDefeatedEnemy++;
@@ -95,6 +96,8 @@ public:
 		m_bossIntro = bossIntro;
 		return m_bossIntro;
 	}
+
+
 
 	void Render(RenderContext& rc);
 private:
