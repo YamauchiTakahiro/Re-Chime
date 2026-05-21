@@ -18,6 +18,7 @@ float Clamp(float value, float min, float max)
 
 	return value;
 }
+#include "Source/UIBase/UI/UI.h"
 
 GameCamera::GameCamera()
 {
@@ -58,7 +59,7 @@ void GameCamera::Update()
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
-	if (isPause)
+	if (isPause || m_game->IsGameStop())
 	{
 		return;
 	}
@@ -107,10 +108,6 @@ void GameCamera::CameraTransition()
 	{
 	case EnCameraState::Intro:
 		UpdateIntroCamera();
-		break;
-
-	case EnCameraState::Blend:
-		UpdateBlendCamera();
 		break;
 
 	case EnCameraState::Normal:

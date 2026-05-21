@@ -53,18 +53,47 @@ bool Load::Start()
 
 void Load::Update()
 {
-	m_loadTimer += g_gameTime->GetFrameDeltaTime();
-
-	if (m_loadTimer >= m_loadMax)
+	//最初の1フレーム後にGame生成
+	if (m_isFirstRender && !m_isCreateGame)
 	{
-		NewGO<Game>(0, "game");
-		if (m_audioManager)
-		{
-			m_audioManager->StopBGM();
-		}
-		DeleteGO(this);
+		m_game =NewGO<Game>(0,"game");
+
+		m_game->SetLoading(true);
+
+		m_isCreateGame = true;
+
 		return;
 	}
+
+	if (m_game)
+	{
+		float target =m_game->GetLoadProgress();
+
+		m_barCurrent +=(target -m_barCurrent) * 0.1f;
+
+		Vector3 scale =m_BarFrame.GetScale();
+
+		scale.x =400.0f *m_barCurrent;
+
+		m_BarFrame.SetScale(scale);
+
+		m_BarFrame.Update();
+
+		if (m_game && m_game->IsReady())
+		{
+			m_game->SetLoading(false);
+
+			if (m_audioManager)
+			{
+				m_audioManager->StopBGM();
+			}
+
+			DeleteGO(this);
+
+			return;
+		}
+	}
+
 	//ギアの回転
 	m_GearRotation.SetRotationZ(m_loadTimer * m_GearRotSpeed);
 	m_gear.SetRotation(m_GearRotation);
@@ -78,11 +107,11 @@ void Load::Update()
 	m_gear3.SetRotation(m_GearRotation3);
 	m_gear3.Update();
 
-	//ローディングバーの拡大
-	Vector3 scale = m_BarFrame.GetScale();
-	scale.x = m_BarFrame.GetScale().x + 0.7f * g_gameTime->GetFrameDeltaTime();
-	m_BarFrame.SetScale(scale);
-	m_BarFrame.Update();
+	////ローディングバーの拡大
+	//Vector3 scale = m_BarFrame.GetScale();
+	//scale.x = m_BarFrame.GetScale().x + 0.7f * g_gameTime->GetFrameDeltaTime();
+	//m_BarFrame.SetScale(scale);
+	//m_BarFrame.Update();
 
 	//ドット更新
 	m_dotTimer += g_gameTime->GetFrameDeltaTime();
@@ -118,4 +147,5 @@ void Load::Render(RenderContext& rc)
 	m_gear2.Draw(rc);
 	m_gear3.Draw(rc);
 	m_Font.Draw(rc);
+	m_isFirstRender = true;
 }

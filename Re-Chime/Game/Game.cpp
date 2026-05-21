@@ -30,176 +30,36 @@ namespace
 	}
 }
 
+enum EnLoadStep
+{
+	enLoad_Pause,
+	enLoad_Player,
+	enLoad_Camera,
+	enLoad_Fade,
+	enLoad_Level,
+	enLoad_Effect1,
+	enLoad_Effect2,
+	enLoad_Effect3,
+	enLoad_Effect4,
+	enLoad_Effect5,
+	enLoad_UI,
+	enLoad_End
+};
+
+EnLoadStep m_loadStep = enLoad_Pause;
+
 Game::Game()
 {
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
 
 bool Game::Start()
 {
+	m_maxLoadCount = 11;
 	srand((unsigned)time(NULL));
-	m_Pause.Init("Assets/Sprite/pause.DDs", 1920.0f, 1080.0f);
-	m_player = NewGO<Player>(0, "player");
-	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
-	m_ui = NewGO<UI>(0, "ui");
-	m_fade = NewGO<Fade>(0, "fade");
-	/*m_heal = NewGO<Heal>(0, "heal");
-	m_heal->SetPosition(Vector3(1000.0f, 0.0f, 0.0f));*/
-	m_levelRender.Init("Assets/modelData/Level/ReChaim.tkl", [&](LevelObjectData& objData)
-		{
-		/*	if (objData.EqualObjectName(L"Stage") == true)
-			{
-				m_stage = NewGO<Stage>(0, "stage");
 
-				m_stage->SetPosition(objData.position);
-			}*/
-			/*else if (objData.EqualObjectName(L"smallRobot") == true)
-			{
-				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
-
-				smallRobot->SetPosition(objData.position);
-
-				smallRobot->SetScale(objData.scale);
-
-				m_smallRobot.push_back(smallRobot);
-
-				m_enemyCount++;
-			}*/
-			//else if (objData.EqualObjectName(L"FloorBoss") == true)
-			//{
-			//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
-
-			//	floorBoss->SetPosition(objData.position);
-
-			//	floorBoss->SetScale(objData.scale);
-
-			//	m_floorBoss.push_back(floorBoss);
-
-			//	m_enemyCount++;
-			//}
-			/*else if (objData.EqualObjectName(L"mediumRobot") == true)
-			{
-				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
-
-				mediumRobot->SetPosition(objData.position);
-
-				mediumRobot->SetScale(objData.scale);
-
-				m_mediumRobot.push_back(mediumRobot);
-
-				m_enemyCount++;
-			}*/
-			/*else */if (objData.EqualObjectName(L"finalBoss") == true)
-			{
-				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
-				
-				//finalBoss->SetPosition(objData.position);
-				
-				finalBoss->SetScale(objData.scale);
-
-				m_finalBoss.push_back(finalBoss);
-
-				m_enemyCount++;
-			}
-			//else if (objData.EqualObjectName(L"rareRobot") == true)
-			//{
-			//	// 0～99 の乱数
-			//	int randValue = rand() % 100;
-			//	int spawnRate = 20;
-
-			//	// 30%で生成
-			//	if (randValue < spawnRate)
-			//	{
-			//		auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
-
-			//		rareRobot->SetPosition(objData.position);
-
-			//		rareRobot->SetScale(objData.scale);
-
-			//		m_rareRobot.push_back(rareRobot);
-			//	}
-			//}
-			//else if (objData.EqualObjectName(L"barrier1") == true)
-			//{
-			//	m_barrier1 = NewGO<Barrier>(0, "barrier");
-			//	m_barrier1->SetPosition(objData.position);
-			//	m_barrier1->SetRotation(objData.rotation);
-			//	m_barrier1->SetScale(objData.scale);
-			//}
-			//else if (objData.EqualObjectName(L"barrier2") == true)
-			//{
-			//	m_barrier2 = NewGO<Barrier>(0, "barrier");
-			//	m_barrier2->SetPosition(objData.position);
-			//	m_barrier2->SetRotation(objData.rotation);
-			//	m_barrier2->SetScale(objData.scale);
-			//}
-			//else if (objData.EqualObjectName(L"barrier3") == true)
-			//{
-			//	m_barrier3 = NewGO<Barrier>(0, "barrier");
-			//	m_barrier3->SetPosition(objData.position);
-			//	m_barrier3->SetRotation(objData.rotation);
-			//	m_barrier3->SetScale(objData.scale);
-			//}
-			//else if (objData.EqualObjectName(L"barrier4") == true)
-			//{
-			//	m_barrier4 = NewGO<Barrier>(0, "barrier");
-			//	m_barrier4->SetPosition(objData.position);
-			//	m_barrier4->SetRotation(objData.rotation);
-			//	m_barrier4->SetScale(objData.scale);
-			//}
-			//else if (objData.EqualObjectName(L"barrier5") == true)
-			//{
-			//	m_barrier5 = NewGO<Barrier>(0, "barrier");
-			//	m_barrier5->SetPosition(objData.position);
-			//	m_barrier5->SetRotation(objData.rotation);
-			//	m_barrier5->SetScale(objData.scale);
-			//}
-			//else if (objData.EqualObjectName(L"barrier6") == true)
-			//{
-			//	m_barrier6 = NewGO<Barrier>(0, "barrier");
-			//	m_barrier6->SetPosition(objData.position);
-			//	m_barrier6->SetRotation(objData.rotation);
-			//	m_barrier6->SetScale(objData.scale);
-			//}
-			//	m_barrier3->SetScale(objData.scale);
-			//}
-
-			return true;
-	});
-
-	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/efk/Heal.efk");
-	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/efk/PowerBuff.efk");
-	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/efk/AttackSpeedBuff.efk");
-	EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/efk/Explosion.efk");
-	EffectEngine::GetInstance()->ResistEffect(5, u"Assets/effect/efk/BossExplosion.efk");
-
-	m_audioManager = FindGO<AudioManager>("audioManager");
-	if (m_audioManager)
-	{
-		m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
-	}
-	m_PlayerReturnText.SetText(L"ゲームに戻る");
-	m_PlayerReturnText.SetScale(1.5f);
-
-	m_SoundText.SetText(L"音量調節");
-	m_SoundText.SetScale(1.5f);
-
-	m_TitleReturnText.SetText(L"タイトル戻る");
-	m_TitleReturnText.SetScale(1.5f);
-
-	m_Cursor.SetText(L">");
-	m_Cursor.SetScale(2.5f);
-
-	m_cursorPos = Vector3(0, 0, 0);
-
-	m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f), true, false }); // 1階
-	m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f), true, false });      // 2階
-	m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f), false, true });      // 3階
-
-	if (m_ui)
-	{
-		m_ui->ShowGoal(L"敵を倒せ");
-	}
+	//m_heal = NewGO<Heal>(0, "heal");
+	//m_heal->SetPosition(Vector3(1000.0f, 0.0f, 0.0f));
 
 	return true;
 }
@@ -239,6 +99,277 @@ Game::~Game()
 
 void Game::Update()
 {	
+	//ロード中なら停止
+	if (m_isLoading)
+	{
+		switch (m_loadStep)
+		{
+		case enLoad_Pause:
+
+			m_Pause.Init("Assets/Sprite/pause.DDs",1920,1080);
+
+			m_PlayerReturnText.SetText(L"ゲームに戻る");
+			m_PlayerReturnText.SetScale(1.5f);
+
+			m_SoundText.SetText(L"音量調節");
+			m_SoundText.SetScale(1.5f);
+
+			m_TitleReturnText.SetText(L"タイトル戻る");
+			m_TitleReturnText.SetScale(1.5f);
+
+			m_Cursor.SetText(L">");
+			m_Cursor.SetScale(2.5f);
+
+			m_cursorPos = Vector3(0, 0, 0);
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Player;
+
+			break;
+
+		case enLoad_Player:
+
+			m_player =NewGO<Player>(0,"player");
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Camera;
+
+			break;
+
+		case enLoad_Camera:
+
+			m_gameCamera =NewGO<GameCamera>(0,"gameCamera");
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Fade;
+
+			break;
+
+		case enLoad_Fade:
+
+			m_fade =NewGO<Fade>(0,"fade");
+			m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f), true, false }); // 1階
+			m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f), true, false });      // 2階
+			m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f), false, true });      // 3階
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Level;
+
+			break;
+
+		case enLoad_Level:
+
+			m_levelRender.Init("Assets/modelData/Level/ReChaim.tkl",[&](LevelObjectData& objData)-> bool
+				{
+					if (objData.EqualObjectName(L"Stage"))
+					{
+						m_stage =
+							NewGO<Stage>(0,"stage");
+
+						m_stage->SetPosition(objData.position);
+					}
+					else if (objData.EqualObjectName(L"mediumRobot"))
+					{
+						auto enemy = NewGO<MediumRobot>(0, "mediumRobot");
+
+						enemy->SetPosition(objData.position);
+
+						enemy->SetScale(objData.scale);
+
+						m_mediumRobot.push_back(enemy);
+
+						m_enemyCount++;
+					}
+					else if (objData.EqualObjectName(L"smallRobot") == true)
+					{
+						auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+
+						smallRobot->SetPosition(objData.position);
+
+						smallRobot->SetScale(objData.scale);
+
+						m_smallRobot.push_back(smallRobot);
+
+						m_enemyCount++;
+					}
+					else if (objData.EqualObjectName(L"FloorBoss") == true)
+					{
+						auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
+
+						floorBoss->SetPosition(objData.position);
+
+						floorBoss->SetScale(objData.scale);
+
+						m_floorBoss.push_back(floorBoss);
+
+						m_enemyCount++;
+					}
+					else if (objData.EqualObjectName(L"finalBoss") == true)
+					{
+						auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+
+						finalBoss->SetPosition(objData.position);
+
+						finalBoss->SetScale(objData.scale);
+
+						m_finalBoss.push_back(finalBoss);
+
+						m_enemyCount++;
+					}
+					else if (objData.EqualObjectName(L"rareRobot") == true)
+					{
+						// 0～99 の乱数
+						int randValue = rand() % 100;
+						int spawnRate = 20;
+
+						// 30%で生成
+						if (randValue < spawnRate)
+						{
+							auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
+
+							rareRobot->SetPosition(objData.position);
+
+							rareRobot->SetScale(objData.scale);
+
+							m_rareRobot.push_back(rareRobot);
+						}
+					}
+					else if (objData.EqualObjectName(L"barrier1") == true)
+					{
+						m_barrier1 = NewGO<Barrier>(0, "barrier");
+						m_barrier1->SetPosition(objData.position);
+						m_barrier1->SetRotation(objData.rotation);
+						m_barrier1->SetScale(objData.scale);
+					}
+					else if (objData.EqualObjectName(L"barrier2") == true)
+					{
+						m_barrier2 = NewGO<Barrier>(0, "barrier");
+						m_barrier2->SetPosition(objData.position);
+						m_barrier2->SetRotation(objData.rotation);
+						m_barrier2->SetScale(objData.scale);
+					}
+					else if (objData.EqualObjectName(L"barrier3") == true)
+					{
+						m_barrier3 = NewGO<Barrier>(0, "barrier");
+						m_barrier3->SetPosition(objData.position);
+						m_barrier3->SetRotation(objData.rotation);
+						m_barrier3->SetScale(objData.scale);
+					}
+					else if (objData.EqualObjectName(L"barrier4") == true)
+					{
+						m_barrier4 = NewGO<Barrier>(0, "barrier");
+						m_barrier4->SetPosition(objData.position);
+						m_barrier4->SetRotation(objData.rotation);
+						m_barrier4->SetScale(objData.scale);
+					}
+					else if (objData.EqualObjectName(L"barrier5") == true)
+					{
+						m_barrier5 = NewGO<Barrier>(0, "barrier");
+						m_barrier5->SetPosition(objData.position);
+						m_barrier5->SetRotation(objData.rotation);
+						m_barrier5->SetScale(objData.scale);
+					}
+					else if (objData.EqualObjectName(L"barrier6") == true)
+					{
+						m_barrier6 = NewGO<Barrier>(0, "barrier");
+						m_barrier6->SetPosition(objData.position);
+						m_barrier6->SetRotation(objData.rotation);
+						m_barrier6->SetScale(objData.scale);
+					}
+					return true;
+				});
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Effect1;
+
+			break;
+
+		case enLoad_Effect1:
+
+			EffectEngine::GetInstance()->ResistEffect(1,u"Assets/effect/efk/Heal.efk");
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Effect2;
+
+			break;
+
+		case enLoad_Effect2:
+
+			EffectEngine::GetInstance()->ResistEffect(2,u"Assets/effect/efk/PowerBuff.efk");
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Effect3;
+
+			break;
+
+		case enLoad_Effect3:
+
+			EffectEngine::GetInstance()->ResistEffect(3,u"Assets/effect/efk/AttackSpeedBuff.efk");
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Effect4;
+
+			break;
+
+		case enLoad_Effect4:
+
+			EffectEngine::GetInstance()->ResistEffect(4,u"Assets/effect/efk/Explosion.efk");
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_Effect5;
+
+			break;
+
+		case enLoad_Effect5:
+
+			EffectEngine::GetInstance()->ResistEffect(5,u"Assets/effect/efk/BossExplosion.efk");
+
+			m_loadCount++;
+
+			m_loadStep =enLoad_UI;
+
+			break;
+
+		case enLoad_UI:
+
+			m_ui = NewGO<UI>(0, "ui");
+
+			if (m_ui)
+			{
+				m_ui->ShowGoal(L"敵を倒せ");
+			}
+
+			m_loadCount++;
+
+			m_loadStep = enLoad_End;
+
+			break;
+
+		case enLoad_End:
+
+			m_audioManager =FindGO<AudioManager>("audioManager");
+
+			if (m_audioManager)
+			{
+				m_audioManager->PlayBGM(enSound_StageBGM,0.5f);
+			}
+
+			m_isReady = true;
+
+			return;
+		}
+
+		return;
+	}
 	m_pauseTime += 0.05f;
 
 	Pause();
@@ -518,6 +649,10 @@ void Game::CreateGire()
 
 void Game::Render(RenderContext& rc)
 {
+	if (m_isLoading)
+	{
+		return;
+	}
 	m_gear.Draw(rc);
 	m_Pos.Draw(rc);
 	if (m_isPause)

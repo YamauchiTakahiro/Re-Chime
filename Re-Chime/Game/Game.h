@@ -38,6 +38,16 @@ public:
 	void ThirdFloor();
 	void FourthFloor();
 	bool IsFade() const;
+
+	float GetLoadProgress() const
+	{
+		if (m_maxLoadCount == 0)
+		{
+			return 0.0f;
+		}
+
+		return (float)m_loadCount / (float)m_maxLoadCount;
+	}
 	void EnemyCount()
 	{
 		m_numDefeatedEnemy++;
@@ -97,7 +107,15 @@ public:
 		return m_bossIntro;
 	}
 
+	bool IsReady() const
+	{
+		return m_isReady;
+	}
 
+	void SetLoading(bool flg)
+	{
+		m_isLoading = flg;
+	}
 
 	void Render(RenderContext& rc);
 private:
@@ -149,6 +167,7 @@ private:
 	bool m_isMoveNextFloor = false;
 	bool m_nextIntro = false;
 	bool m_nextBossIntro = false;
+	bool m_isReady = false;
 	float m_pauseTime;
 
 	bool m_isNear = false;
@@ -177,5 +196,8 @@ private:
 
 	int m_floorNo = 1;
 	int m_needGireCount = 1;
+	int m_loadCount = 0;
+	int m_maxLoadCount = 0;
+	bool m_isLoading = true;
 };
 
