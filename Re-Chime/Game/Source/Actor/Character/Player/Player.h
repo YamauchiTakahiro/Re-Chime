@@ -210,6 +210,7 @@ private:
 	float m_fadeTime = 0.0f;					//!<フェードの時間。
     float m_attackCollisionLife = 0.0f;
 	float m_attackStartTime = 0.0f;
+    float m_itemUseCoolTime = 0.0f;
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;

@@ -38,17 +38,23 @@ private:
     FontRender m_PS2CountText;
     FontRender m_PS3CountText;
     FontRender m_goalText;
+    FontRender m_ItemCoolTimeText;
+    FontRender m_Cursor;
+    Vector3 m_cursorPos;
 
     float m_goalShowTimer = 5.0f;
     float m_goalAlpha = 1.0f;
     float m_blinkTimer = 0.0f;//点滅タイマー
     float m_goalFade = 1.0f;
     float m_goalTimer = 0.0f;
+    float m_inventoryUseCoolTime = 0.0f;
     bool m_isBlinkOn = true;
     bool m_isShowCoolTime = false;
     bool m_isVisible = true;
     bool m_isInventoryOpen = false;
     bool m_isShowGoal = false;
+    bool m_isUseItem = false;
+    bool m_startItemCoolTime = false;
     int m_selectItem = 0;
     std::wstring m_goalMessage;
 };

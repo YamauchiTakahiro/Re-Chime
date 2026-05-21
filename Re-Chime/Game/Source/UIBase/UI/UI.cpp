@@ -86,6 +86,11 @@ UI::UI()
 
 	m_goalText.SetScale(2.0f);
 	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
+
+	m_Cursor.SetText(L">");
+	m_Cursor.SetScale(2.5f);
+
+	m_cursorPos = Vector3(0, 0, 0);
 }
 
 UI::~UI()
@@ -122,9 +127,22 @@ void UI::Update()
 
 	if (m_isInventoryOpen)
 	{
-		if (g_pad[0]->IsTrigger(enButtonX))
+		if (
+			g_pad[0]->IsTrigger(enButtonX)
+			&& m_inventoryUseCoolTime <= 0.0f
+			)
 		{
-			m_player->UseItem(m_selectItem);
+			m_isUseItem = true;
+		}
+	}
+
+	if (!m_isInventoryOpen)
+	{
+		m_inventoryUseCoolTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_inventoryUseCoolTime < 0.0f)
+		{
+			m_inventoryUseCoolTime = 0.0f;
 		}
 	}
 
@@ -232,6 +250,26 @@ void UI::Update()
 		m_CoolTimeText.SetText(L"");
 	}
 
+	float itemCool =
+		m_inventoryUseCoolTime;
+
+	if (itemCool > 0.0f)
+	{
+		wchar_t itemText[256];
+
+		swprintf_s(itemText,L"%.1f",itemCool
+		);
+
+		m_ItemCoolTimeText.SetPosition(Vector3(-960.0f,270.0f,0.0f));
+		m_ItemCoolTimeText.SetScale(1.2f);
+		m_ItemCoolTimeText.SetText(itemText);
+		m_ItemCoolTimeText.SetColor(g_vec4White);
+	}
+	else
+	{
+		m_ItemCoolTimeText.SetText(L"");
+	}
+
 	if (m_isShowGoal)
 	{
 		m_goalTimer +=
@@ -240,9 +278,7 @@ void UI::Update()
 		// 最初の3秒は表示のみ
 		if (m_goalTimer >= 3.0f)
 		{
-			m_goalFade -=
-				g_gameTime->GetFrameDeltaTime()
-				* 0.3f;
+			m_goalFade -=g_gameTime->GetFrameDeltaTime()* 0.3f;
 		}
 
 		if (m_goalFade < 0.0f)
@@ -295,19 +331,34 @@ void UI::Inventory()
 	{
 	case 0:
 		framePos = Vector3(-893.0f, 125.0f, 0.0f);
+		m_cursorPos =Vector3(-980.0f,125.0f,0.0f);
 		break;
 
 	case 1:
 		framePos = Vector3(-893.0f, 0.0f, 0.0f);
+		m_cursorPos =Vector3(-980.0f,0.0f,0.0f);
 		break;
 
 	case 2:
 		framePos = Vector3(-893.0f, -125.0f, 0.0f);
+		m_cursorPos =
+			Vector3(
+				-980.0f,
+				-125.0f,0.0f);
 		break;
 	}
 
 	m_selectFrame.SetPosition(framePos);
 	m_selectFrame.Update();
+
+	if (m_isUseItem)
+	{
+		m_player->UseItem(m_selectItem);
+
+		m_inventoryUseCoolTime = 10.0f;
+
+		m_isUseItem = false;
+	}
 
 	wchar_t text[64];
 
@@ -353,6 +404,7 @@ void UI::Render(RenderContext& rc)
 	m_Xbutton.Draw(rc);
 	m_Ybutton.Draw(rc);
 	m_GireText.Draw(rc);
+
 	// 攻撃力バフ
 	if (m_player->GetPowerBuffFlag())
 	{
@@ -388,7 +440,9 @@ void UI::Render(RenderContext& rc)
 			m_AttackSpeed.Draw(rc);
 		}
 	}
+
 	m_CoolTimeText.Draw(rc);
+
 	if (m_player->IsNearItem())
 	{
 		m_pickUpText.Draw(rc);
@@ -406,6 +460,7 @@ void UI::Render(RenderContext& rc)
 		m_PS2CountText.Draw(rc);
 		m_PS3CountText.Draw(rc);
 		m_selectFrame.Draw(rc);
+		m_ItemCoolTimeText.Draw(rc);
 	}
 
 	if (m_isShowGoal)

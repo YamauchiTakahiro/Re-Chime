@@ -139,6 +139,13 @@ void Player::Update()
 	FootStep();
 	
 	m_modelRender.Update();
+
+	m_itemUseCoolTime -= g_gameTime->GetFrameDeltaTime();
+
+	if (m_itemUseCoolTime < 0.0f)
+	{
+		m_itemUseCoolTime = 0.0f;
+	}
 }
 
 void Player::Move()
@@ -885,6 +892,8 @@ void Player::UseItem(int itemNo)
 			m_attackSpeedBuffTime = 20.0f;
 
 			MakeAttackSpeedBuffEffect();
+
+			m_itemUseCoolTime = 0.5f;
 		}
 
 		break;
@@ -896,6 +905,8 @@ void Player::UseItem(int itemNo)
 			m_powerBuffFlag = true;
 			m_powerBuffTime = 20.0f;
 			MakePowerBuffEffect();
+
+			m_itemUseCoolTime = 0.5f;
 		}
 
 		break;
@@ -906,6 +917,8 @@ void Player::UseItem(int itemNo)
 			m_healPotionCount--;
 
 			Heal();
+
+			m_itemUseCoolTime = 0.5f;
 		}
 
 		break;
