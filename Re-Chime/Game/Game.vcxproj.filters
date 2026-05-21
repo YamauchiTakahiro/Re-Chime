@@ -91,6 +91,9 @@
     <Filter Include="Source\Actor\Character\Enemy\RareRobot">
       <UniqueIdentifier>{581a22c9-713e-41cd-9e28-380249ec6b6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Actor\Bullet">
+      <UniqueIdentifier>{9468361c-ec69-4146-99b5-f49a18ed46e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -182,6 +185,9 @@
     <ClCompile Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.cpp">
       <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Actor\Bullet\Bullet.cpp">
+      <Filter>Source\Actor\Bullet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -271,6 +277,9 @@
     <ClInclude Include="DamageText.h" />
     <ClInclude Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.h">
       <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Bullet\Bullet.h">
+      <Filter>Source\Actor\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

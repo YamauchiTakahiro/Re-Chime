@@ -32,7 +32,7 @@ namespace
 
 Game::Game()
 {
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
 
 bool Game::Start()
@@ -47,12 +47,12 @@ bool Game::Start()
 	m_heal->SetPosition(Vector3(1000.0f, 0.0f, 0.0f));*/
 	m_levelRender.Init("Assets/modelData/Level/ReChaim.tkl", [&](LevelObjectData& objData)
 		{
-			if (objData.EqualObjectName(L"Stage") == true)
+		/*	if (objData.EqualObjectName(L"Stage") == true)
 			{
 				m_stage = NewGO<Stage>(0, "stage");
 
 				m_stage->SetPosition(objData.position);
-			}
+			}*/
 			/*else if (objData.EqualObjectName(L"smallRobot") == true)
 			{
 				auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
@@ -77,7 +77,7 @@ bool Game::Start()
 
 			//	m_enemyCount++;
 			//}
-			else if (objData.EqualObjectName(L"mediumRobot") == true)
+			/*else if (objData.EqualObjectName(L"mediumRobot") == true)
 			{
 				auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
 
@@ -88,19 +88,19 @@ bool Game::Start()
 				m_mediumRobot.push_back(mediumRobot);
 
 				m_enemyCount++;
+			}*/
+			/*else */if (objData.EqualObjectName(L"finalBoss") == true)
+			{
+				auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+				
+				//finalBoss->SetPosition(objData.position);
+				
+				finalBoss->SetScale(objData.scale);
+
+				m_finalBoss.push_back(finalBoss);
+
+				m_enemyCount++;
 			}
-			//else if (objData.EqualObjectName(L"finalBoss") == true)
-			//{
-			//	auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
-			//	
-			//	finalBoss->SetPosition(objData.position);
-			//	
-			//	finalBoss->SetScale(objData.scale);
-
-			//	m_finalBoss.push_back(finalBoss);
-
-			//	m_enemyCount++;
-			//}
 			//else if (objData.EqualObjectName(L"rareRobot") == true)
 			//{
 			//	// 0～99 の乱数

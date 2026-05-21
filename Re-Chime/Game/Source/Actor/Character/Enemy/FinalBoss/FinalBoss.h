@@ -5,6 +5,7 @@ class Player;
 class Gire;
 class Game;
 class DamageText;
+class Bullet;
 class AudioManager;
 
 class FinalBoss : public Enemy
@@ -13,7 +14,7 @@ class FinalBoss : public Enemy
         enum EnFinalBossState {
             enFinalBossState_Idle,		//待機状態。
             enFinalBossState_Chase,		//追跡。
-            enFinalBossState_Attack,		//攻撃。
+            enFinalBossState_Shot,		//攻撃。
             enFinalBossState_Death,		//死亡。
 			enFinalBossState_Num,
 		};
@@ -23,20 +24,20 @@ class FinalBoss : public Enemy
     void Update() override;
     void Move() override;
     void Rotation() override;
-    void Attack() override;
-    void OnCollision() override;
+    void Shot();
+    //void OnCollision() override;
     void Hit() override;
     void DamageIntarval() override;
     void Death() override;
     void MakeExplosionEffect();
-    void AttackHit() override;
+    //void AttackHit() override;
 	const bool SearchPlayer()const;
 	void ManageState();
 	void PlayAnimation();
     void FinalBossState();
 	void IdleState();
 	void WalkState();
-	void AttackState();
+	void ShotState();
 	void DeathState();
 	const bool IsCanAttack()const;
     void FinalBossHP();
@@ -68,7 +69,7 @@ private:
     enum EnAnimationClip {		//アニメーション。
         enAnimationClip_Idle,
         enAnimationClip_Walk,
-        enAnimationClip_Attack,
+        enAnimationClip_Shot,
         enAnimationClip_Death,
         enAnimationClip_Num,
 	};
@@ -83,6 +84,7 @@ private:
     Player* m_player = nullptr;
 	Gire* m_gire = nullptr;
 	Game* m_game = nullptr;
+	Bullet* m_bullet = nullptr;
 	AudioManager* m_audioManager = nullptr;
     DamageText* m_damageText = nullptr;
     CollisionObject* m_collisionObject = nullptr;
@@ -99,7 +101,8 @@ private:
     float m_chaseTimer = 0.0f;						//追跡タイマー。
     float m_idleTimer = 0.0f;						//待機タイマー。
 	float m_attackCollisionLife = 0.0f;				//攻撃判定の有効時間。
-	bool m_isAttack = false;		//!<攻撃しているかどうか。
+    float m_shotCoolTime = 0.0f;
+	bool m_isShot = false;		//!<攻撃しているかどうか。
 	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
     bool m_isShowBossHP = false;
 };

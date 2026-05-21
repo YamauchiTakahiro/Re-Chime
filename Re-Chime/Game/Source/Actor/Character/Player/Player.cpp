@@ -85,12 +85,24 @@ void Player::Update()
 	{
 		Move();
 		Rotation();
-	}
+	}	
 	else
 	{
 		// フェード中は完全停止
 		m_moveSpeed.x = 0.0f;
 		m_moveSpeed.z = 0.0f;
+	}
+	if (!isFade &&
+		!IntroFlag &&
+		!bossIntroFlag)
+	{
+		JumpAndGravity();
+
+		Attack();
+
+		PlayAnimation();
+
+		ManageState();
 	}
 	
 
@@ -103,8 +115,6 @@ void Player::Update()
 			m_collisionObject = nullptr;
 		}
 	}
-
-	JumpAndGravity();
 
 	FadeTime();
 
@@ -126,13 +136,7 @@ void Player::Update()
 
 	AttackSpeedBuffTime();
 
-	Attack();
-
-	ManageState();
-
 	FootStep();
-
-	PlayAnimation();
 	
 	m_modelRender.Update();
 }
@@ -217,7 +221,7 @@ void Player::JumpAndGravity()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		m_moveSpeed.y -= 20.0f;
+		//m_moveSpeed.y -= 20.0f;
 	}
 }
 
@@ -564,16 +568,6 @@ void Player::DamageIntarval()
 	{
 		m_damageIntarvalTime = 0.0f;
 	}
-}
-
-void Player::GuardCollision()
-{
-	m_collisionObject = NewGO<CollisionObject>(0);
-	Vector3 collisionPos = m_position;
-	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 250.0f;
-	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
-	m_collisionObject->SetName("playerGuard");
 }
 
 void Player::GuradInterval()
