@@ -229,6 +229,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Actor\Actor.cpp" />
     <ClCompile Include="Source\Actor\Barrier\Barrier.cpp" />
+    <ClCompile Include="Source\Actor\Bullet\Bullet.cpp" />
     <ClCompile Include="Source\Actor\Character\Character.cpp" />
     <ClCompile Include="Source\Actor\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Source\Actor\Character\Enemy\FinalBoss\FinalBoss.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Source\Actor\Actor.h" />
     <ClInclude Include="Source\Actor\Barrier\Barrier.h" />
+    <ClInclude Include="Source\Actor\Bullet\Bullet.h" />
     <ClInclude Include="Source\Actor\Character\Character.h" />
     <ClInclude Include="Source\Actor\Character\Enemy\Enemy.h" />
     <ClInclude Include="Source\Actor\Character\Enemy\FinalBoss\FinalBoss.h" />

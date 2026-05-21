@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "DamageText.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Actor/Bullet/Bullet.h"
 
 FinalBoss::FinalBoss()
 {
@@ -22,8 +23,8 @@ bool FinalBoss::Start()
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/finalBoss/finalBossWalk.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Enemy/finalBoss/finalBossAttack.tka");
-	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Shot].Load("Assets/animData/Enemy/finalBoss/finalBossShot.tka");
+	m_animationClips[enAnimationClip_Shot].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/finalBoss/finalBossDeath.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/finalBoss/finalBoss.tkm", m_animationClips, enAnimationClip_Num);
@@ -57,6 +58,25 @@ void FinalBoss::Update()
 	{
 		return;
 	}
+	
+	bool isFade = m_game->IsFade();
+	bool IntroFlag = m_game->GetIntro();
+	bool bossIntroFlag = m_game->GetBossIntro();
+
+	if (!isFade &&
+		!IntroFlag &&
+		!bossIntroFlag)
+	{
+		Move();
+
+		Rotation();
+
+		Shot();
+
+		PlayAnimation();
+
+		ManageState();
+	}
 
 	if(m_collisionObject != nullptr)
 	{
@@ -68,12 +88,10 @@ void FinalBoss::Update()
 		}
 	}
 
-	Move();
-
-	Rotation();
-
-	Attack();
-
+	if (m_shotCoolTime > 0.0f)
+	{
+		m_shotCoolTime -= g_gameTime->GetFrameDeltaTime();
+	}
 	Time();
 
 	Hit();
@@ -81,10 +99,6 @@ void FinalBoss::Update()
 	DamageIntarval();
 
 	AttackHit();
-
-	ManageState();
-
-	PlayAnimation();
 
 	FinalBossHP();
 
@@ -106,14 +120,25 @@ void FinalBoss::Move()
 {
 	if (m_finalBossState != enFinalBossState_Chase)
 	{
+		m_moveSpeed = Vector3::Zero;
 		return;
 	}
 
-	m_position = m_characterController.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-	if (m_characterController.IsOnGround())
+	Vector3 diff = m_player->GetPosition() - m_position;
+	diff.y = 0.0f;
+
+	if (diff.LengthSq() > 0.0001f)
 	{
-		m_moveSpeed.y = 0.0f;
+		diff.Normalize();
+		m_moveSpeed.x = diff.x * 1000.0f;
+		m_moveSpeed.z = diff.z * 1000.0f;
 	}
+
+	m_position = m_characterController.Execute(
+		m_moveSpeed,
+		g_gameTime->GetFrameDeltaTime()
+	);
+
 	m_modelRender.SetPosition(m_position);
 }
 
@@ -130,35 +155,59 @@ void FinalBoss::Rotation()
 	m_modelRender.SetRotation(m_rotation);
 }
 
-void FinalBoss::Attack()
+void FinalBoss::Shot()
 {
-	if(m_finalBossState != enFinalBossState_Attack)
+	if (m_shotCoolTime > 0.0f)
 	{
 		return;
 	}
-	if (m_isAttack == true)
+
+	if (m_finalBossState != enFinalBossState_Shot)
 	{
-		OnCollision();
+		return;
 	}
-}
 
-void FinalBoss::OnCollision()
-{
-	if(m_collisionObject != nullptr)
+	// 一回だけ発射
+	if (m_isShot)
 	{
-		DeleteGO(m_collisionObject);
-		m_collisionObject = nullptr;
+		return;
 	}
-	m_collisionObject = NewGO<CollisionObject>(0);
 
-	Vector3 collisionPos = m_position;
-	m_forward = Vector3::Front;
-	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 250.0f;
-	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
-	m_collisionObject->SetName("finalBossAttack");
+	m_isShot = true;
 
-	m_attackCollisionLife = 0.1f; // 攻撃の当たり判定の寿命を設定
+	// 弾生成
+	m_bullet = NewGO<Bullet>(0, "bossBullet");
+	int randomNum = rand() % 2 + 1;
+	AudioID id;
+	switch (randomNum)
+	{
+	case 1: id = enSound_BossShotSE_01;
+		break;
+	case 2: id = enSound_BossShotSE_02;
+		break;
+	}
+
+	m_audioManager->PlaySE(
+		id,
+		1.0f,
+		enSEPlay_AllowOverlap
+	);
+
+	// 発射位置
+	Vector3 shotPos = m_position;
+
+	Vector3 forward = Vector3::Front;
+	m_rotation.Apply(forward);
+
+	shotPos += forward * 450.0f;
+	shotPos.y += 450.0f;
+
+	m_bullet->SetPosition(shotPos);
+	m_bullet->SetStartPosition(shotPos);
+
+	// 弾速度
+	m_bullet->SetMoveSpeed(forward * 1500.0f);
+	m_shotCoolTime = 3.0f;
 }
 
 void FinalBoss::Hit()
@@ -231,25 +280,11 @@ void FinalBoss::Hit()
 	}
 }
 
-void FinalBoss::AttackHit()
-{
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("finalBossAttack");
-	for (auto collision : collisions)
-	{
-		if (collision->IsHit(m_player->GetCharacterController()) == true)
-		{
-			int finalBossAttackPower = 0;
-			finalBossAttackPower = GetAttackPower();
-			m_player->TakeDamage(finalBossAttackPower, m_position);
-		}
-	}
-}
-
 const bool FinalBoss::SearchPlayer() const
 {
 	Vector3 diff = m_player->GetPosition() - m_position;
 
-	if (diff.LengthSq() <= 500.0f * 500.0f)
+	if (diff.LengthSq() <= 3000.0f * 3000.0f)
 	{
 		diff.Normalize();
 		float cos = m_forward.Dot(diff);
@@ -304,8 +339,8 @@ void FinalBoss::ManageState()
 	case enFinalBossState_Chase:
 		WalkState();
 		break;
-	case enFinalBossState_Attack:
-		AttackState();
+	case enFinalBossState_Shot:
+		ShotState();
 		break;
 	case enFinalBossState_Death:
 		DeathState();
@@ -327,8 +362,8 @@ void FinalBoss::PlayAnimation()
 	case enFinalBossState_Chase:
 		nextAnimationClip = enAnimationClip_Walk;
 		break;
-	case enFinalBossState_Attack:
-		nextAnimationClip = enAnimationClip_Attack;
+	case enFinalBossState_Shot:
+		nextAnimationClip = enAnimationClip_Shot;
 		break;
 	case enFinalBossState_Death:
 		nextAnimationClip = enAnimationClip_Death;
@@ -351,49 +386,45 @@ void FinalBoss::FinalBossState()
 
 	Vector3 diff = m_player->GetPosition() - m_position;
 
-	if (SearchPlayer())
-	{
-		diff.y = 0.0f;
-		diff.Normalize();
-		m_moveSpeed.x = diff.x * 1000.0f;
-		m_moveSpeed.z = diff.z * 1000.0f;
-		if (IsCanAttack())
-		{
-			int ramdom = rand() % 100;
-			if (ramdom > 60)
-			{
-				m_finalBossState = enFinalBossState_Attack;
-				m_isAttack = true;
-				return;
-			}
-			else
-			{
-				m_finalBossState = enFinalBossState_Chase;
-				return;
-			}
-		}
-		else
-		{
-			m_finalBossState = enFinalBossState_Chase;
-			return;
-		}
-	}
-	else
-	{
-		m_finalBossState = enFinalBossState_Idle;
-		return;
-	}
 	if (m_finalBossHp <= 0)
 	{
 		m_finalBossState = enFinalBossState_Death;
 		return;
 	}
+
+	if (SearchPlayer())
+	{
+		float dist = (m_player->GetPosition() - m_position).Length();
+
+		if (dist <= 2000.0f)
+		{
+			if (m_shotCoolTime <= 0.0f)
+			{
+				m_finalBossState = enFinalBossState_Shot;
+			}
+			else
+			{
+				m_finalBossState = enFinalBossState_Idle;
+			}
+		}
+		else
+		{
+			m_finalBossState = enFinalBossState_Chase;
+		}
+	}
+	else
+	{
+		m_finalBossState = enFinalBossState_Idle;
+	}
 }
 
 void FinalBoss::IdleState()
 {
+	m_moveSpeed = Vector3::Zero;
+
 	m_idleTimer += g_gameTime->GetFrameDeltaTime();
-	if(m_idleTimer >= 0.9f)
+
+	if (m_idleTimer >= 0.9f)
 	{
 		FinalBossState();
 	}
@@ -401,24 +432,24 @@ void FinalBoss::IdleState()
 
 void FinalBoss::WalkState()
 {
-	if (IsCanAttack())
+	float dist = (m_player->GetPosition() - m_position).Length();
+
+	if (dist <= 2000.0f)
 	{
 		FinalBossState();
 		return;
 	}
-	m_chaseTimer += g_gameTime->GetFrameDeltaTime();
-	if(m_chaseTimer >= 0.8f)
-	{
-		FinalBossState();
-	}
 }
 
-void FinalBoss::AttackState()
+void FinalBoss::ShotState()
 {
-	if(m_modelRender.IsPlayingAnimation() == false)
+	// 攻撃アニメ終了
+	if (!m_modelRender.IsPlayingAnimation())
 	{
-		m_isAttack = false;
-		FinalBossState();
+		m_isShot = false;
+
+		// 一旦Idleへ戻す
+		m_finalBossState = enFinalBossState_Idle;
 	}
 }
 

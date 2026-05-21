@@ -40,7 +40,6 @@ public:
 	void GetGires();
 	void DamageIntarval() override;
 	void TakeDamage(int damage, const Vector3& enemyPos);
-    void GuardCollision();
 	void GuradInterval();
 	void GuradTimeLimit();
     void PlayerState();
