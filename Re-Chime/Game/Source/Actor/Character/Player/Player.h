@@ -31,7 +31,6 @@ public:
     bool Start() override;
     void Update() override;
     void Move() override;
-	void JumpAndGravity();
     void Rotation() override;
 	void Attack() override;
 	void OnCollision() override;
@@ -40,6 +39,7 @@ public:
 	void GetGires();
 	void DamageIntarval() override;
 	void TakeDamage(int damage, const Vector3& enemyPos);
+    void GuardCollision();
 	void GuradInterval();
 	void GuradTimeLimit();
     void PlayerState();
@@ -116,10 +116,6 @@ public:
     {
         m_enemyHitFlag = hit;
     }
-    bool GetAttackHit() const
-    {
-        return m_enemyHitFlag;
-	}
     float GetPowerBuffTime() const
     {
         return m_powerBuffTime;
@@ -196,7 +192,7 @@ private:
 	int m_playerMaxHp = 100;				//!<プレイヤーの最大HP。
 	int m_attackPower = 0;				//!<攻撃力。
     int m_heal = 20;
-    int m_healPotionCount = 1;
+    int m_healPotionCount = 0;
     int m_powerBuffPotionCount = 0;
     int m_attackSpeedPotionCount = 0;
 	float m_timeCount = 0.0f;				//!<タイマー用の変数。
@@ -210,7 +206,6 @@ private:
 	float m_fadeTime = 0.0f;					//!<フェードの時間。
     float m_attackCollisionLife = 0.0f;
 	float m_attackStartTime = 0.0f;
-    float m_itemUseCoolTime = 0.0f;
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;

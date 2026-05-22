@@ -2,23 +2,6 @@
 #include "GameCamera.h"
 #include "Game.h"
 #include "Source/Actor/Character/Player/Player.h"
-#include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
-
-float Clamp(float value, float min, float max)
-{
-	if (value < min)
-	{
-		return min;
-	}
-
-	if (value > max)
-	{
-		return max;
-	}
-
-	return value;
-}
-#include "Source/UIBase/UI/UI.h"
 
 GameCamera::GameCamera()
 {
@@ -36,7 +19,6 @@ bool GameCamera::Start()
 
 	//プレイヤーのインスタンスを探す。
 	m_player = FindGO<Player>("player");
-	m_finalBoss = FindGO<FinalBoss>("finalBoss");
 
 	//ばねカメラの初期化。
 	m_springCamera.Init(
@@ -58,209 +40,18 @@ void GameCamera::Update()
 {
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
-
-	if (isPause || m_game->IsGameStop())
+	if (isPause)
 	{
 		return;
 	}
 
-	if (m_player == nullptr)
-	{
+	if (m_player == nullptr) {
 		return;
 	}
 
-	// 追加
-	m_isIntroCamera = m_game->GetIntro();
-	m_isBossCamera = m_game->GetBossIntro();
-
-	//カメラの状態を更新する。
-	CameraState();
-
-	//カメラの状態に応じて、カメラを更新する。
-	CameraTransition();
-
-	//カメラの更新。
-	if (m_cameraState == EnCameraState::Normal)
-	{
-		m_springCamera.Update();
-	}
-}
-
-void GameCamera::CameraState()
-{
-	if (m_isIntroCamera)
-	{
-		m_cameraState = EnCameraState::Intro;
-	}
-	else if (m_isBossCamera)
-	{
-		m_cameraState = EnCameraState::BossStart;
-	}
-	else
-	{
-		m_cameraState = EnCameraState::Normal;
-	}
-}
-
-void GameCamera::CameraTransition()
-{
-	switch (m_cameraState)
-	{
-	case EnCameraState::Intro:
-		UpdateIntroCamera();
-		break;
-
-	case EnCameraState::Normal:
-		UpdateNormalCamera();
-		break;
-
-	case EnCameraState::BossStart:
-		UpdateBossCamera();
-		break;
-	default:
-		break;
-	}
-}
-
-void GameCamera::UpdateIntroCamera()
-{
-	m_introCameraTime += g_gameTime->GetFrameDeltaTime();
-
-	Vector3 center;
-	int floorNo = m_game->GetFloorNo();
-	if(floorNo == 1)
-	{
-		center = m_firstFloorCenter;
-	}
-	else if(floorNo == 2)
-	{
-		center = m_secondFloorCenter;
-	}
-	else if(floorNo == 3)
-	{
-		center = m_thirdFloorCenter;
-	}
-
-	Vector3 target = center;
-	target.y += 280.0f;
-
-	float angle = m_introCameraTime * 40.0f;
-
-	float rad = Math::DegToRad(angle);
-
-	float radius = 2000.0f;
-
-	Vector3 pos;
-	pos.x = center.x + sinf(rad) * radius;
-	pos.z = center.z + cosf(rad) * radius;
-	pos.y = center.y + 500.0f;
-
-	g_camera3D->SetPosition(pos);
-	g_camera3D->SetTarget(target);
-
-	if (m_introCameraTime > m_introEndTime) {
-		m_isIntroCamera = false;
-		m_game->SetIntro(false);
-
-		m_blendStartPos = g_camera3D->GetPosition();
-		m_blendStartTarget = g_camera3D->GetTarget();
-
-		m_blendTime = 0.0f;
-
-		m_cameraState = EnCameraState::Blend;
-	}
-}
-
-void GameCamera::UpdateBlendCamera()
-{
-	m_blendTime += g_gameTime->GetFrameDeltaTime();
-
-	float t = m_blendTime / m_blendEndTime;
-
-	// 0～1に制限
-	t = Clamp(t, 0.0f, 1.0f);
-
-	// イージング
-	t = t * t * (3.0f - 2.0f * t);
-
-	// 通常カメラの目標位置計算
-	Vector3 target = m_player->GetPosition();
-	target.y += 280.0f;
-	target += g_camera3D->GetForward() * 20.0f;
-
-	Vector3 pos = target + m_toCameraPos;
-
-	// 補間
-	Vector3 currentPos;
-	currentPos.Lerp(t, m_blendStartPos, pos);
-
-	Vector3 currentTarget;
-	currentTarget.Lerp(t, m_blendStartTarget, target);
-
-	// カメラ設定
-	g_camera3D->SetPosition(currentPos);
-	g_camera3D->SetTarget(currentTarget);
-
-	// 終了
-	if (t >= 1.0f)
-	{
-		m_cameraState = EnCameraState::Normal;
-	}
-}
-void GameCamera::UpdateBossCamera()
-{
-	m_bossCameraTime += g_gameTime->GetFrameDeltaTime();
-	Vector3 center;
-	int floorNo = m_game->GetFloorNo();
-	if (floorNo == 4) {
-		center = m_finalBoss->GetPosition();
-	}
-
-	Vector3 target = center;
-	target.y += 280.0f;
-	float angle = 0.0f;
-
-	float t = m_bossCameraTime / m_bossCameraEndTime;
-
-	if (t < 0.7f)
-	{
-		angle = m_bossCameraTime * 40.0f;
-	}
-	else
-	{
-		angle = 180.0f;
-	}
-
-	// ←ここで変換
-	float rad = Math::DegToRad(angle);
-
-	t = Clamp(t, 0.0f, 1.0f);
-
-	// イージング
-	t = t * t * (3.0f - 2.0f * t);
-
-	// 半径を徐々に小さく
-	float radius =
-		2000.0f - (1200.0f * t);
-	Vector3 pos;
-	pos.x = target.x + sinf(rad) * radius;
-	pos.z = target.z + cosf(rad) * radius;
-	float height =
-		1200.0f - (700.0f * t);
-
-	pos.y = target.y + height;
-	g_camera3D->SetPosition(pos);
-	g_camera3D->SetTarget(target);
-	if (m_bossCameraTime > m_bossCameraEndTime) {
-		m_isBossCamera = false;
-		m_game->SetBossIntro(false);
-	}
-}
-
-void GameCamera::UpdateNormalCamera()
-{
 	//カメラを更新。
 	//注視点を計算する。
+	Vector3 position;
 	Vector3 target = m_player->GetPosition();
 	//プレイヤの足元からちょっと上を注視点とする。
 	target.y += 280.0f;
@@ -301,4 +92,7 @@ void GameCamera::UpdateNormalCamera()
 	//バネカメラに注視点と視点を設定する。
 	m_springCamera.SetPosition(pos);
 	m_springCamera.SetTarget(target);
+
+	//カメラの更新。
+	m_springCamera.Update();
 }

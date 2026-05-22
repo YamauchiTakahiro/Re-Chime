@@ -79,12 +79,12 @@ void Title::Update()
 		switch (m_SelectNum)
 		{
 		case 0:
+			NewGO<Load>(0, "Load");
 			if (m_audioManager)
 			{
 				m_audioManager->StopBGM();
 			}
 			DeleteGO(this);
-			NewGO<Load>(0, "Load");
 			break;
 
 		case 1:

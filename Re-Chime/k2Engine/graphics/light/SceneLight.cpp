@@ -27,36 +27,36 @@ namespace nsK2Engine {
     void SceneLight::Init()
     {
         // 太陽光
-        m_light.directionalLight[0].color.x = 1.2f;
-        m_light.directionalLight[0].color.y = 1.2f;
-        m_light.directionalLight[0].color.z = 1.2f;
+        m_light.directionalLight[0].color.x = 1.0f;
+        m_light.directionalLight[0].color.y = 1.0f;
+        m_light.directionalLight[0].color.z = 1.0f;
 
-        //m_light.directionalLight[0].direction.x = 1.0f;
-        //m_light.directionalLight[0].direction.y = -1.0f;
-        //m_light.directionalLight[0].direction.z = -1.0f;
-        //m_light.directionalLight[0].direction.Normalize();
-        //m_light.directionalLight[0].castShadow = true;
+        m_light.directionalLight[0].direction.x = 1.0f;
+        m_light.directionalLight[0].direction.y = -1.0f;
+        m_light.directionalLight[0].direction.z = -1.0f;
+        m_light.directionalLight[0].direction.Normalize();
+        m_light.directionalLight[0].castShadow = true;
 
-        //
-       /* m_light.directionalLight[1].color.x = 1.0f;
+        /*
+        m_light.directionalLight[1].color.x = 1.0f;
         m_light.directionalLight[1].color.y = 1.0f;
-        m_light.directionalLight[1].color.z = 1.0f;
+        m_light.directionalLight[1].color.z = 1.0f;*/
 
-        m_light.directionalLight[1].direction.x = -1.0f;
+        /*m_light.directionalLight[1].direction.x = -1.0f;
         m_light.directionalLight[1].direction.y = -1.0f;
         m_light.directionalLight[1].direction.z = 1.0f;
         m_light.directionalLight[1].direction.Normalize();
         m_light.directionalLight[1].castShadow = false;*/
 
-        //// 地面からの照り返し
-        //m_light.directionalLight[2].color.x = 0.6f;
-        //m_light.directionalLight[2].color.y = 0.6f;
-        //m_light.directionalLight[2].color.z = 0.6f;
+        // 地面からの照り返し
+       /* m_light.directionalLight[2].color.x = 0.6f;
+        m_light.directionalLight[2].color.y = 0.6f;
+        m_light.directionalLight[2].color.z = 0.6f;
 
-        //m_light.directionalLight[2].direction.x = -1.0f;
-        //m_light.directionalLight[2].direction.y = 1.0f;
-        //m_light.directionalLight[2].direction.z = 1.0f;
-        //m_light.directionalLight[2].direction.Normalize();
+        m_light.directionalLight[2].direction.x = -1.0f;
+        m_light.directionalLight[2].direction.y = 1.0f;
+        m_light.directionalLight[2].direction.z = 1.0f;
+        m_light.directionalLight[2].direction.Normalize();*/
 
         m_light.ambinetLight.x = 0.1f;
         m_light.ambinetLight.y = 0.1f;
