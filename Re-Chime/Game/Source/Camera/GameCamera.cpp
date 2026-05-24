@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Source/Actor/Character/Player/Player.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
+#include "Fade.h"
 
 float Clamp(float value, float min, float max)
 {
@@ -36,6 +37,7 @@ bool GameCamera::Start()
 
 	//プレイヤーのインスタンスを探す。
 	m_player = FindGO<Player>("player");
+	//m_fade = FindGO<Fade>("fade");
 	m_finalBoss = FindGO<FinalBoss>("finalBoss");
 
 	//ばねカメラの初期化。
@@ -88,6 +90,11 @@ void GameCamera::Update()
 
 void GameCamera::CameraState()
 {
+	if (m_cameraState == EnCameraState::FadeOut ||m_cameraState == EnCameraState::FadeIn)
+	{
+		return;
+	}
+
 	if (m_isIntroCamera)
 	{
 		m_cameraState = EnCameraState::Intro;
@@ -110,14 +117,20 @@ void GameCamera::CameraTransition()
 		UpdateIntroCamera();
 		break;
 
+	case EnCameraState::FadeOut:
+		UpdateFadeOutCamera();
+		break;
+
+	case EnCameraState::FadeIn:
+		UpdateFadeInCamera();
+		break;
+
 	case EnCameraState::Normal:
 		UpdateNormalCamera();
 		break;
 
 	case EnCameraState::BossStart:
 		UpdateBossCamera();
-		break;
-	default:
 		break;
 	}
 }
@@ -158,55 +171,17 @@ void GameCamera::UpdateIntroCamera()
 	g_camera3D->SetPosition(pos);
 	g_camera3D->SetTarget(target);
 
-	if (m_introCameraTime > m_introEndTime) {
+	if (m_introCameraTime > m_introEndTime) 
+	{
 		m_isIntroCamera = false;
 		m_game->SetIntro(false);
 
-		m_blendStartPos = g_camera3D->GetPosition();
-		m_blendStartTarget = g_camera3D->GetTarget();
+		m_isStartFade = false;
 
-		m_blendTime = 0.0f;
-
-		m_cameraState = EnCameraState::Blend;
+		m_cameraState = EnCameraState::FadeOut;
 	}
 }
 
-void GameCamera::UpdateBlendCamera()
-{
-	m_blendTime += g_gameTime->GetFrameDeltaTime();
-
-	float t = m_blendTime / m_blendEndTime;
-
-	// 0～1に制限
-	t = Clamp(t, 0.0f, 1.0f);
-
-	// イージング
-	t = t * t * (3.0f - 2.0f * t);
-
-	// 通常カメラの目標位置計算
-	Vector3 target = m_player->GetPosition();
-	target.y += 280.0f;
-	target += g_camera3D->GetForward() * 20.0f;
-
-	Vector3 pos = target + m_toCameraPos;
-
-	// 補間
-	Vector3 currentPos;
-	currentPos.Lerp(t, m_blendStartPos, pos);
-
-	Vector3 currentTarget;
-	currentTarget.Lerp(t, m_blendStartTarget, target);
-
-	// カメラ設定
-	g_camera3D->SetPosition(currentPos);
-	g_camera3D->SetTarget(currentTarget);
-
-	// 終了
-	if (t >= 1.0f)
-	{
-		m_cameraState = EnCameraState::Normal;
-	}
-}
 void GameCamera::UpdateBossCamera()
 {
 	m_bossCameraTime += g_gameTime->GetFrameDeltaTime();
@@ -301,4 +276,50 @@ void GameCamera::UpdateNormalCamera()
 	//バネカメラに注視点と視点を設定する。
 	m_springCamera.SetPosition(pos);
 	m_springCamera.SetTarget(target);
+}
+
+void GameCamera::UpdateFadeOutCamera()
+{
+	if (m_fade == nullptr)
+	{
+		m_fade = FindGO<Fade>("fade");
+
+		if (m_fade == nullptr)
+		{
+			return;
+		}
+	}
+
+	if (!m_isStartFade)
+	{
+		m_fade->StartFadeOut();
+
+		m_isStartFade = true;
+	}
+
+	if (m_fade->IsFadeOutFinished())
+	{
+		Vector3 target = m_player->GetPosition();
+
+		target.y += 280.0f;
+
+		Vector3 pos = target + m_toCameraPos;
+
+		g_camera3D->SetPosition(pos);
+		g_camera3D->SetTarget(target);
+
+		m_fade->StartFadeIn();
+
+		m_cameraState = EnCameraState::FadeIn;
+
+		m_isStartFade = false;
+	}
+}
+
+void GameCamera::UpdateFadeInCamera()
+{
+	if (!m_fade->IsFade())
+	{
+		m_cameraState = EnCameraState::Normal;
+	}
 }

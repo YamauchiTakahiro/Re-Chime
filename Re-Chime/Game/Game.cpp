@@ -35,7 +35,6 @@ enum EnLoadStep
 	enLoad_Pause,
 	enLoad_Player,
 	enLoad_Camera,
-	enLoad_Fade,
 	enLoad_Level,
 	enLoad_Effect1,
 	enLoad_Effect2,
@@ -43,6 +42,7 @@ enum EnLoadStep
 	enLoad_Effect4,
 	enLoad_Effect5,
 	enLoad_UI,
+	enLoad_Fade,
 	enLoad_End
 };
 
@@ -141,19 +141,6 @@ void Game::Update()
 		case enLoad_Camera:
 
 			m_gameCamera =NewGO<GameCamera>(0,"gameCamera");
-
-			m_loadCount++;
-
-			m_loadStep =enLoad_Fade;
-
-			break;
-
-		case enLoad_Fade:
-
-			m_fade =NewGO<Fade>(0,"fade");
-			m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f), true, false }); // 1階
-			m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f), true, false });      // 2階
-			m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f), false, true });      // 3階
 
 			m_loadCount++;
 
@@ -347,6 +334,19 @@ void Game::Update()
 			{
 				m_ui->ShowGoal(L"敵を倒せ");
 			}
+
+			m_loadCount++;
+
+			m_loadStep = enLoad_Fade;
+
+			break;
+
+		case enLoad_Fade:
+
+			m_fade = NewGO<Fade>(0, "fade");
+			m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f), true, false }); // 1階
+			m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f), true, false });      // 2階
+			m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f), false, true });      // 3階
 
 			m_loadCount++;
 
