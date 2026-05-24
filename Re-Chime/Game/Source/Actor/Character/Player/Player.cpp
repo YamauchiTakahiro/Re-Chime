@@ -13,6 +13,7 @@
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "Source/UIBase/UI/UI.h"
+#include "Source/EffectManager/EffectManager.h"
 
 Player::Player()
 {
@@ -849,35 +850,38 @@ void Player::Heal()
 
 void Player::MakeHealEffect()
 {
-	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
-	effectEmitter->Init(1);
-	effectEmitter->SetScale(Vector3::One * 50.0f);
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
-	effectEmitter->SetPosition(effectPos);
-	effectEmitter->Play();
+
+	EffectManager::GetInstance().PlayEffect(
+		EffectManager::enEffect_Heal,
+		effectPos,
+		50.0f
+	);
 }
 
 void Player::MakePowerBuffEffect()
 {
-	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
-	effectEmitter->Init(2);
-	effectEmitter->SetScale(Vector3::One * 10.0f);
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
-	effectEmitter->SetPosition(effectPos);
-	effectEmitter->Play();
+
+	EffectManager::GetInstance().PlayEffect(
+		EffectManager::enEffect_PowerBuff,
+		effectPos,
+		10.0f
+	);
 }
 
 void Player::MakeAttackSpeedBuffEffect()
 {
-	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
-	effectEmitter->Init(3);
-	effectEmitter->SetScale(Vector3::One * 10.0f);
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
-	effectEmitter->SetPosition(effectPos);
-	effectEmitter->Play();
+
+	EffectManager::GetInstance().PlayEffect(
+		EffectManager::enEffect_AttackSpeedBuff,
+		effectPos,
+		10.0f
+	);
 }
 
 void Player::UseItem(int itemNo)

@@ -13,6 +13,7 @@ class AttackSpeedBuff;
 class PowerBuff;
 class Heal;
 class UI;
+class EffectManager;
 
 class Player : public Character
 {

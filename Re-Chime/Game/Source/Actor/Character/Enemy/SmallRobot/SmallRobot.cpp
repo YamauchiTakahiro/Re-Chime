@@ -10,6 +10,7 @@
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
+#include "Source/EffectManager/EffectManager.h"
 
 SmallRobot::SmallRobot()
 {
@@ -510,12 +511,14 @@ void SmallRobot::EnemyHP()
 void SmallRobot::MakeExplosionEffect()
 {
 	//爆発エフェクトの生成
-	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
-	effectEmitter->Init(4);
-	effectEmitter->SetScale(Vector3::One * 10.0f);
 	Vector3 effectPos = m_position;
-	effectEmitter->SetPosition(effectPos);
-	effectEmitter->Play();
+	effectPos.y += 70.0f;
+
+	EffectManager::GetInstance().PlayEffect(
+		EffectManager::enEffect_Explosion,
+		effectPos,
+		50.0f
+	);
 }
 
 void SmallRobot::EnemyState()

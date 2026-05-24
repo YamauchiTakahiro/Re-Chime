@@ -17,8 +17,8 @@
 #include "Source/UIBase/GameClear/GameClear.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
-#include "graphics/effect/EffectEmitter.h"
 #include "Fade.h"
+#include "Source/EffectManager/EffectManager.h"
 
 namespace
 {
@@ -37,11 +37,7 @@ enum EnLoadStep
 	enLoad_Camera,
 	enLoad_Fade,
 	enLoad_Level,
-	enLoad_Effect1,
-	enLoad_Effect2,
-	enLoad_Effect3,
-	enLoad_Effect4,
-	enLoad_Effect5,
+	enLoad_Effect,
 	enLoad_UI,
 	enLoad_End
 };
@@ -57,9 +53,6 @@ bool Game::Start()
 {
 	m_maxLoadCount = 11;
 	srand((unsigned)time(NULL));
-
-	//m_heal = NewGO<Heal>(0, "heal");
-	//m_heal->SetPosition(Vector3(1000.0f, 0.0f, 0.0f));
 
 	return true;
 }
@@ -285,57 +278,17 @@ void Game::Update()
 
 			m_loadCount++;
 
-			m_loadStep =enLoad_Effect1;
+			m_loadStep =enLoad_Effect;
 
 			break;
 
-		case enLoad_Effect1:
+		case enLoad_Effect:
 
-			EffectEngine::GetInstance()->ResistEffect(1,u"Assets/effect/efk/Heal.efk");
-
-			m_loadCount++;
-
-			m_loadStep =enLoad_Effect2;
-
-			break;
-
-		case enLoad_Effect2:
-
-			EffectEngine::GetInstance()->ResistEffect(2,u"Assets/effect/efk/PowerBuff.efk");
+			EffectManager::GetInstance().Load();
 
 			m_loadCount++;
 
-			m_loadStep =enLoad_Effect3;
-
-			break;
-
-		case enLoad_Effect3:
-
-			EffectEngine::GetInstance()->ResistEffect(3,u"Assets/effect/efk/AttackSpeedBuff.efk");
-
-			m_loadCount++;
-
-			m_loadStep =enLoad_Effect4;
-
-			break;
-
-		case enLoad_Effect4:
-
-			EffectEngine::GetInstance()->ResistEffect(4,u"Assets/effect/efk/Explosion.efk");
-
-			m_loadCount++;
-
-			m_loadStep =enLoad_Effect5;
-
-			break;
-
-		case enLoad_Effect5:
-
-			EffectEngine::GetInstance()->ResistEffect(5,u"Assets/effect/efk/BossExplosion.efk");
-
-			m_loadCount++;
-
-			m_loadStep =enLoad_UI;
+			m_loadStep = enLoad_UI;
 
 			break;
 

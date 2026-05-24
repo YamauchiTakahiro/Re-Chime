@@ -22,6 +22,7 @@ class GameClear;
 class AudioManager;
 class Heal;
 class Fade;
+class EffectManager;
 
 class Game : public IGameObject
 {
@@ -157,6 +158,7 @@ private:
 	Gire* m_gire = nullptr;
 	DifficultyLevel* m_difficul = nullptr;
 	Difficulty m_difficulty = NORMAL;
+	EffectManager* m_effectManager = nullptr;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
 	FontRender m_Cursor;

@@ -9,6 +9,7 @@
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
+#include "Source/EffectManager/EffectManager.h"
 
 FloorBoss::FloorBoss()
 {
@@ -312,13 +313,15 @@ void FloorBoss::Death()
 
 void FloorBoss::MakeExplosionEffect()
 {
-	// 爆発エフェクトの生成処理をここに実装
-	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
-	effectEmitter->Init(5);
-	effectEmitter->SetScale(Vector3::One * 10.0f);
+	//爆発エフェクトの生成
 	Vector3 effectPos = m_position;
-	effectEmitter->SetPosition(effectPos);
-	effectEmitter->Play();
+	effectPos.y += 70.0f;
+
+	EffectManager::GetInstance().PlayEffect(
+		EffectManager::enEffect_BossExplosion,
+		effectPos,
+		50.0f
+	);
 }
 
 void FloorBoss::ManageState()
