@@ -26,6 +26,13 @@ class Fade;
 class Game : public IGameObject
 {
 public:
+	enum Difficulty
+	{
+		EASY,
+		NORMAL,
+		HARD,
+		LUNATIC
+	};
 	Game();
 	~Game();
 	bool Start();
@@ -38,6 +45,16 @@ public:
 	void ThirdFloor();
 	void FourthFloor();
 	bool IsFade() const;
+
+	void SetDifficulty(Difficulty difficulty)
+	{
+		m_difficulty = difficulty;
+	}
+
+	Difficulty GetDifficulty() const
+	{
+		return m_difficulty;
+	}
 
 	float GetLoadProgress() const
 	{
@@ -139,6 +156,7 @@ private:
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
 	DifficultyLevel* m_difficul = nullptr;
+	Difficulty m_difficulty = NORMAL;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
 	FontRender m_Cursor;

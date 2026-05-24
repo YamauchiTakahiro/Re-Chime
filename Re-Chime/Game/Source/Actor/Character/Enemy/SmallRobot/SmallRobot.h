@@ -9,6 +9,7 @@ class PowerBuff;
 class Heal;
 class DamageText;
 class AudioManager;
+class DifficultyLevel;
 
 class SmallRobot : public Enemy
 {
@@ -25,6 +26,7 @@ public:
 	~SmallRobot();
 	bool Start() override;
 	void Update() override;
+	void KnockBack();
 	void Move() override;
 	void Rotation() override;
 	void Attack() override;
@@ -86,6 +88,7 @@ private:
 	AttackSpeedBuff* m_attackSpeedBuff = nullptr;
 	PowerBuff* m_powerBuff = nullptr;
 	Heal* m_heal = nullptr;
+	DifficultyLevel* m_difficultyLevel = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Game* m_game = nullptr;
 	DamageText* m_damageText = nullptr;
@@ -103,9 +106,14 @@ private:
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
 	float m_attackCollisionLife = 0.0f;	//!<攻撃判定の有効時間。
+	float m_knockBackPower = 0.0f; //ノックバックの強さ。
+	float m_knockBackTime = 0.0f;
+	Vector3 m_knockBackMove = Vector3::Zero;
 	bool m_isShowHP = false;
 	bool m_isAttack = false;
 	bool m_isDeath = false;
 	bool m_searchPlayer = false;
+	bool m_isKnockBack = false;
+
 };
 

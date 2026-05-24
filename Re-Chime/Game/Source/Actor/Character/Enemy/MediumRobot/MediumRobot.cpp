@@ -8,6 +8,7 @@
 #include "collision/CollisionObject.h"
 #include "Game.h"
 #include "DamageText.h"
+#include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 
 MediumRobot::MediumRobot()
 {
@@ -27,6 +28,7 @@ bool MediumRobot::Start()
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/mediumRobot/mediumRobotDeath.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/mediumRobot/mediumRobot.tkm", m_animationClips, enAnimationClip_Num);
+
 	m_characterController.Init(200.0f, 100.0f, m_position);
 
 	m_enemyHP.Init("Assets/UIData/enemyHPBar.DDs", 1024.0f, 128.0f);
@@ -42,9 +44,46 @@ bool MediumRobot::Start()
 
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
+
+	//========================
+	// 難易度設定
+	//========================
+	if (m_game != nullptr)
+	{
+		switch (m_game->GetDifficulty())
+		{
+		case Game::EASY:
+			m_mediumRobotHp = 50;
+			m_mediumRobotMaxHp = 50;
+			m_attackPower = 5;
+			m_knockBackPower = 1200.0f;
+			break;
+
+		case Game::NORMAL:
+			m_mediumRobotHp = 75;
+			m_mediumRobotMaxHp = 75;
+			m_attackPower = 10;
+			m_knockBackPower = 800.0f;
+			break;
+
+		case Game::HARD:
+			m_mediumRobotHp = 120;
+			m_mediumRobotMaxHp = 120;
+			m_attackPower = 15;
+			m_knockBackPower = 500.0f;
+			break;
+
+		case Game::LUNATIC:
+			m_mediumRobotHp = 180;
+			m_mediumRobotMaxHp = 180;
+			m_attackPower = 25;
+			m_knockBackPower = 200.0f;
+			break;
+		}
+	}
+
 	return true;
 }
-
 void MediumRobot::Update()
 {
 	bool isPause = false;
@@ -70,7 +109,12 @@ void MediumRobot::Update()
 
 	if (!m_isDeath && !IntroFlag && !bossIntroFlag)
 	{
-		Move();
+		KnockBack();
+
+		if (!m_isKnockBack)
+		{
+			Move();
+		}
 
 		Rotation();
 	}
@@ -94,6 +138,32 @@ void MediumRobot::Update()
 	MediumRobotHP();
 
 	m_modelRender.Update();
+}
+
+void MediumRobot::KnockBack()
+{
+	if (!m_isKnockBack)
+	{
+		return;
+	}
+
+	m_knockBackTime -= g_gameTime->GetFrameDeltaTime();
+
+	m_position = m_characterController.Execute(
+		m_knockBackMove,
+		2.0f / 60.0f
+	);
+
+	m_modelRender.SetPosition(m_position);
+
+	// 徐々に減速
+	m_knockBackMove *= 0.90f;
+
+	if (m_knockBackTime <= 0.0f)
+	{
+		m_isKnockBack = false;
+		m_knockBackMove = Vector3::Zero;
+	}
 }
 
 void MediumRobot::Move()
@@ -247,6 +317,24 @@ void MediumRobot::Hit()
 
 				m_mediumRobotHp -= damage;
 				m_searchPlayer = true;
+
+				//========================
+				// ノックバック
+				//========================
+				Vector3 dir = m_position - m_player->GetPosition();
+
+				dir.y = 0.0f;
+
+				if (dir.LengthSq() > 0.001f)
+				{
+					dir.Normalize();
+				}
+
+				m_knockBackMove = dir * m_knockBackPower;
+
+				m_isKnockBack = true;
+
+				m_knockBackTime = 0.2f;
 			}
 			else
 			{
@@ -292,6 +380,24 @@ void MediumRobot::Hit()
 				}
 				m_mediumRobotHp -= damage;
 				m_searchPlayer = true;
+
+				//========================
+				// ノックバック
+				//========================
+				Vector3 dir = m_position - m_player->GetPosition();
+
+				dir.y = 0.0f;
+
+				if (dir.LengthSq() > 0.001f)
+				{
+					dir.Normalize();
+				}
+
+				m_knockBackMove = dir * m_knockBackPower;
+
+				m_isKnockBack = true;
+
+				m_knockBackTime = 0.2f;
 			}
 			m_damageIntarvalTime = 1.5f;
 

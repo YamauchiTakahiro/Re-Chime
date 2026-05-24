@@ -2,8 +2,8 @@
 #include "Title.h"
 #include "Game.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
-#include "Source/UIBase/Load/Load.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
+#include "Source/UIBase/VolumeSettings/VolumeSettings.h"
 
 namespace
 {
@@ -84,7 +84,7 @@ void Title::Update()
 				m_audioManager->StopBGM();
 			}
 			DeleteGO(this);
-			NewGO<Load>(0, "Load");
+			NewGO<DifficultyLevel>(0, "DifficultyLevel");
 			break;
 
 		case 1:
@@ -92,8 +92,8 @@ void Title::Update()
 			break;
 
 		case 2:
-				m_difficultyLevel = NewGO<DifficultyLevel>(0, "DifficultyLevel");
-				m_difficultyLevel->SetTitle(this);
+				m_volumeSettings = NewGO<VolumeSettings>(0, "VolumeSettings");
+				m_volumeSettings->SetTitle(this);
 				m_isSetting = true;
 				break;
 		case 3:

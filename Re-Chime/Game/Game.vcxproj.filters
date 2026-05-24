@@ -94,6 +94,9 @@
     <Filter Include="Source\Actor\Bullet">
       <UniqueIdentifier>{9468361c-ec69-4146-99b5-f49a18ed46e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\UIBase\VolumeSettings">
+      <UniqueIdentifier>{6fb74f74-5745-43cd-b3df-3a98ba6f38d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -188,6 +191,9 @@
     <ClCompile Include="Source\Actor\Bullet\Bullet.cpp">
       <Filter>Source\Actor\Bullet</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UIBase\VolumeSettings\VolumeSettings.cpp">
+      <Filter>Source\UIBase\VolumeSettings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -280,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="Source\Actor\Bullet\Bullet.h">
       <Filter>Source\Actor\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIBase\VolumeSettings\VolumeSettings.h">
+      <Filter>Source\UIBase\VolumeSettings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

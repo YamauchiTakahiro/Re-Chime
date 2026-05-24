@@ -8,6 +8,7 @@
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "DamageText.h"
+#include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 
 FloorBoss::FloorBoss()
 {
@@ -34,6 +35,41 @@ bool FloorBoss::Start()
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	m_audioManager = FindGO<AudioManager>("audioManager");
+	m_difficultyLevel = FindGO<DifficultyLevel>("difficultyLevel");
+
+	//========================
+// 難易度設定
+//========================
+	if (m_game != nullptr)
+	{
+		switch (m_game->GetDifficulty())
+		{
+		case Game::EASY:
+			m_floorBossHP = 150;
+			m_floorBossMaxHP = 150;
+			m_attackPower = 10;
+			break;
+
+		case Game::NORMAL:
+			m_floorBossHP = 250;
+			m_floorBossMaxHP = 250;
+			m_attackPower = 20;
+			break;
+
+		case Game::HARD:
+			m_floorBossHP = 400;
+			m_floorBossMaxHP = 400;
+			m_attackPower = 35;
+			break;
+
+		case Game::LUNATIC:
+			m_floorBossHP = 700;
+			m_floorBossMaxHP = 700;
+			m_attackPower = 50;
+			break;
+		}
+	}
+
 	return true;
 }
 
@@ -136,7 +172,7 @@ void FloorBoss::OnCollision()
 	m_rotation.Apply(m_forward);
 	collisionPos += m_forward * 250.0f;
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
-	m_collisionObject->SetName("smallRobotAttack");
+	m_collisionObject->SetName("floorBossAttack");
 
 	m_attackCollisionLife = 0.1f; // 攻撃の当たり判定の寿命を設定
 }
