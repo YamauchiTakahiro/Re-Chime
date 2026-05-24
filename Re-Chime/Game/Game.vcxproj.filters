@@ -96,6 +96,8 @@
     </Filter>
     <Filter Include="Source\UIBase\VolumeSettings">
       <UniqueIdentifier>{6fb74f74-5745-43cd-b3df-3a98ba6f38d1}</UniqueIdentifier>
+    <Filter Include="Source\EffectManager">
+      <UniqueIdentifier>{f142236b-120f-4597-8865-d0b7b25c215e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +195,8 @@
     </ClCompile>
     <ClCompile Include="Source\UIBase\VolumeSettings\VolumeSettings.cpp">
       <Filter>Source\UIBase\VolumeSettings</Filter>
+    <ClCompile Include="Source\EffectManager\EffectManager.cpp">
+      <Filter>Source\EffectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +293,8 @@
     </ClInclude>
     <ClInclude Include="Source\UIBase\VolumeSettings\VolumeSettings.h">
       <Filter>Source\UIBase\VolumeSettings</Filter>
+    <ClInclude Include="Source\EffectManager\EffectManager.h">
+      <Filter>Source\EffectManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
