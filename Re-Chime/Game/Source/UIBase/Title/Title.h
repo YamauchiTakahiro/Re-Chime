@@ -4,8 +4,8 @@
 
 class AudioManager;
 
-class Load;
 class DifficultyLevel;
+class VolumeSettings;
 class Title :
     public UIBase
 {
@@ -36,8 +36,8 @@ private:
     FontRender m_Cursor;
     Vector3 m_cursorPos;//現在位置
     Vector3 m_targetPos;//目標位置
-    Load* m_load = nullptr;
     DifficultyLevel* m_difficultyLevel = nullptr;
+    VolumeSettings* m_volumeSettings = nullptr;
     int m_SelectNum = 0;
     bool m_isExplanation = false;
     bool m_isSetting = false;

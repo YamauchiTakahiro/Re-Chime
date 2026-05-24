@@ -447,7 +447,8 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 				dir.Normalize();
 			}
 
-			m_knockBack = dir * 500.0f;
+			m_knockBackPower = 500.0f; // ノックバックの強さ
+			m_knockBack = dir * m_knockBackPower;
 			m_knockBack.y = 0.0f;
 
 			m_isKnockBack = true;

@@ -13,6 +13,7 @@ protected:
 	SpriteRender m_Load;
 	SpriteRender m_GameOver;
 	SpriteRender m_GameClear;
+	SpriteRender m_VolumeSettings;
 	SpriteRender m_DifficultyLevel;
 	SpriteRender m_Gear;
 	SpriteRender m_gear;

@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "DamageText.h"
+#include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 
 SmallRobot::SmallRobot()
 {
@@ -22,14 +23,10 @@ SmallRobot::~SmallRobot()
 
 bool SmallRobot::Start()
 {
-	/*m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Enemy/smallRobot/smallRobotIdle.tka");
-	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Enemy/smallRobot/smallRobotWalk.tka");
-	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);*/
-	m_modelRender.Init("Assets/modelData/Enemy/smallRobot/smallRobot.tkm"/*, m_animationClips, enAnimationClip_Num*/);
+	m_modelRender.Init("Assets/modelData/Enemy/smallRobot/smallRobot.tkm");
 
 	m_enemyHP.Init("Assets/UIData/enemyHPBar.DDs", 1024.0f, 128.0f);
-	//m_enemyHP.SetScale(Vector3(0.41f, 3.0f, 0.5f));
+
 	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
 	m_enemyHP.Update();
 
@@ -39,14 +36,57 @@ bool SmallRobot::Start()
 	m_enemyHPFrame.Update();
 
 	m_characterController.Init(200.0f, 100.0f, m_position);
+
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
+	m_difficultyLevel = FindGO<DifficultyLevel>("difficultyLevel");
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
+	//========================
+	// 難易度取得
+	//========================
+	m_difficultyLevel = FindGO<DifficultyLevel>("difficultyLevel");
+
+	//========================
+	// 難易度設定
+	//========================
+	if (m_game != nullptr)
+	{
+		switch (m_game->GetDifficulty())
+		{
+		case Game::EASY:
+			m_smallRobotHp = 60;
+			m_smallRobotMaxHp = 60;
+			m_attackPower = 5;
+			m_knockBackPower = 1000.0f;
+			break;
+
+		case Game::NORMAL:
+			m_smallRobotHp = 100;
+			m_smallRobotMaxHp = 100;
+			m_attackPower = 10;
+			m_knockBackPower = 700.0f;
+			break;
+
+		case Game::HARD:
+			m_smallRobotHp = 150;
+			m_smallRobotMaxHp = 150;
+			m_attackPower = 15;
+			m_knockBackPower = 400.0f;
+			break;
+
+		case Game::LUNATIC:
+			m_smallRobotHp = 250;
+			m_smallRobotMaxHp = 250;
+			m_attackPower = 25;
+			m_knockBackPower = 150.0f;
+			break;
+		}
+	}
+
 	return true;
 }
-
 void SmallRobot::Update()
 {
 	bool isPause = false;
@@ -74,7 +114,12 @@ void SmallRobot::Update()
 
 	if (!m_isDeath && !IntroFlag && !bossIntroFlag)
 	{
-		Move();
+		KnockBack();
+
+		if (!m_isKnockBack)
+		{
+			Move();
+		}
 
 		Rotation();
 	}
@@ -95,8 +140,35 @@ void SmallRobot::Update()
 
 	ManageState();
 
+
 	//PlayAnimation();
 	m_modelRender.Update();
+}
+
+void SmallRobot::KnockBack()
+{
+	if (!m_isKnockBack)
+	{
+		return;
+	}
+
+	m_knockBackTime -= g_gameTime->GetFrameDeltaTime();
+
+	m_position = m_characterController.Execute(
+		m_knockBackMove,
+		2.0f / 60.0f
+	);
+
+	m_modelRender.SetPosition(m_position);
+
+	// 徐々に減速
+	m_knockBackMove *= 0.90f;
+
+	if (m_knockBackTime <= 0.0f)
+	{
+		m_isKnockBack = false;
+		m_knockBackMove = Vector3::Zero;
+	}
 }
 
 void SmallRobot::Move()
@@ -244,6 +316,24 @@ void SmallRobot::Hit()
 				
 				m_smallRobotHp -= damage;
 				m_searchPlayer = true;
+
+				//========================
+				// ノックバック
+				//========================
+				Vector3 dir = m_position - m_player->GetPosition();
+
+				dir.y = 0.0f;
+
+				if (dir.LengthSq() > 0.001f)
+				{
+					dir.Normalize();
+				}
+
+				m_knockBackMove = dir * m_knockBackPower;
+
+				m_isKnockBack = true;
+
+				m_knockBackTime = 0.2f;
 			}
 			else
 			{
@@ -289,6 +379,23 @@ void SmallRobot::Hit()
 				}
 				m_smallRobotHp -= damage;
 				m_searchPlayer = true;
+				//========================
+				// ノックバック
+				//========================
+				Vector3 dir = m_position - m_player->GetPosition();
+
+				dir.y = 0.0f;
+
+				if (dir.LengthSq() > 0.001f)
+				{
+					dir.Normalize();
+				}
+
+				m_knockBackMove = dir * m_knockBackPower;
+
+				m_isKnockBack = true;
+
+				m_knockBackTime = 0.25f;
 			}
 			m_damageIntarvalTime = 1.5f;
 

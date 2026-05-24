@@ -8,6 +8,7 @@ class Heal;
 class Game;
 class DamageText;
 class AudioManager;
+class DifficultyLevel;
 
 class MediumRobot : public Enemy
 {
@@ -24,6 +25,7 @@ class MediumRobot : public Enemy
     ~MediumRobot();
     bool Start() override;
     void Update() override;
+	void KnockBack();
     void Move() override;
     void Rotation() override;
 	void SearchPlayer();
@@ -102,5 +104,15 @@ private:
 	bool m_isAttack = false;		//!<攻撃しているかどうか。
 	bool m_isDeath = false;		//!<死亡しているかどうか。
 	bool m_searchPlayer = false;	//!<プレイヤーを索敵しているかどうか。
+
+    DifficultyLevel* m_difficultyLevel = nullptr;
+
+    //========================
+    // ノックバック用
+    //========================
+    Vector3 m_knockBackMove = Vector3::Zero;
+    float m_knockBackTime = 0.0f;
+    float m_knockBackPower = 0.0f;
+    bool m_isKnockBack = false;
 };
 

@@ -7,6 +7,7 @@ class Game;
 class DamageText;
 class Bullet;
 class AudioManager;
+class DifficultyLevel;
 
 class FinalBoss : public Enemy
 {
@@ -86,6 +87,7 @@ private:
 	Game* m_game = nullptr;
 	Bullet* m_bullet = nullptr;
 	AudioManager* m_audioManager = nullptr;
+    DifficultyLevel* m_difficultyLevel = nullptr;
     DamageText* m_damageText = nullptr;
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward;

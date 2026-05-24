@@ -7,6 +7,7 @@ class AttackSpeedBuff;
 class PowerBuff;
 class Heal;
 class AudioManager;
+class DifficultyLevel;
 
 class FloorBoss : public Enemy
 {
@@ -85,6 +86,7 @@ private:
 	PowerBuff* m_powerBuff = nullptr;
 	AttackSpeedBuff* m_attackSpeedBuff = nullptr;
 	Heal* m_heal = nullptr;
+	DifficultyLevel* m_difficultyLevel = nullptr;
 	AudioManager* m_audioManager = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
