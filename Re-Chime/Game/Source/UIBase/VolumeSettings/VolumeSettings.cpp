@@ -10,7 +10,8 @@
 
 VolumeSettings::VolumeSettings()
 {
-
+    m_audioManager = nullptr;
+    m_title = nullptr;
 }
 
 VolumeSettings::~VolumeSettings()
@@ -184,19 +185,19 @@ void VolumeSettings::Update()
             m_audioManager->SaveVolume();
         }
 
-        Title* title = FindGO<Title>("Title");
-
         if (m_title)
         {
             m_title->SetSetting(false);
         }
 
-        Game* game = FindGO<Game>("game");
-        if (game)
+        if (m_game)
         {
-            game->SetSetting(false);
+            m_game->SetSetting(false);
+            m_game->SetVolumeSetting(nullptr);
         }
+
         DeleteGO(this);
+        return;
     }
     Cursor();
 }
