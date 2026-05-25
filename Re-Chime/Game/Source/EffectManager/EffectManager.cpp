@@ -34,6 +34,11 @@ void EffectManager::Load()
 		enEffect_BossExplosion,
 		u"Assets/effect/efk/BossExplosion.efk"
 	);
+
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_NoticeCircle,
+		u"Assets/effect/efk/NoticeCircle.efk"
+	);
 }
 
 void EffectManager::PlayEffect(
