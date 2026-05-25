@@ -7,7 +7,7 @@
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
-#include "DamageText.h"
+#include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/EffectManager/EffectManager.h"
 

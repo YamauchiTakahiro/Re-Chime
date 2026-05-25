@@ -1,147 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="system">
-      <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{3424e358-d0aa-4c66-a35a-d7668c7aa6fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor">
-      <UniqueIdentifier>{3c66a2b0-1795-45c8-8544-f06259dbca4c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character">
-      <UniqueIdentifier>{f0702e52-71ec-408e-bd61-21cf62a691a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Stage">
-      <UniqueIdentifier>{afee56d8-47c7-440b-bc23-cf64b533eaeb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Camera">
-      <UniqueIdentifier>{fcf3fc62-1a1a-46b8-a99e-617b62ba1439}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Sound">
-      <UniqueIdentifier>{62f98cc4-28cd-498f-b061-078cabf76c57}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase">
-      <UniqueIdentifier>{62e220bd-efb0-433a-ac9a-9161a0d10bae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Enemy">
-      <UniqueIdentifier>{3e97d9b1-5452-48f4-8d6d-241acb227ec6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Enemy\FinalBoss">
-      <UniqueIdentifier>{a77f8321-8845-4c9a-970e-6ba9437f84e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Enemy\FloorBoss">
-      <UniqueIdentifier>{c4ed8784-61be-4a5b-aa44-441dead4a9bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Enemy\MediumRobot">
-      <UniqueIdentifier>{d554cc6d-8b86-47f3-a837-780b18bf09b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Enemy\SmallRobot">
-      <UniqueIdentifier>{3661a0b6-6869-452b-a64d-d37b4af5a945}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Player">
-      <UniqueIdentifier>{32b06fd2-1eff-4733-9a89-9e580f081abc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase\DifficultyLevel">
-      <UniqueIdentifier>{e2d6fe5b-3999-4215-8253-1c4c0050f270}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase\GameClear">
-      <UniqueIdentifier>{165d7315-c246-422a-bc58-e206f30e8434}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase\GameOver">
-      <UniqueIdentifier>{41697db0-73b9-4e28-b51f-d47c00cc37ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase\Load">
-      <UniqueIdentifier>{85a5d97a-3f96-417a-ba88-7686422d8df7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase\Title">
-      <UniqueIdentifier>{aed57a43-5dec-42f0-bc41-f41d3340ccd0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase\UI">
-      <UniqueIdentifier>{df8ef588-80d4-4be8-8599-43f3f8942883}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Item">
-      <UniqueIdentifier>{706dd892-20e7-432a-bef1-4e9670cc44e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Item\Gire">
-      <UniqueIdentifier>{fd09a47c-7a35-4363-bdda-2ed94b2129f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Item\Potion">
-      <UniqueIdentifier>{114dda7c-60f1-45e5-9329-a5f2f4fefaf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Item\Potion\Buff">
-      <UniqueIdentifier>{faec60f3-a1fc-43ab-a5b0-628b1d8cee6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Item\Potion\Buff\PowerBuff">
-      <UniqueIdentifier>{1410bbca-e8ed-473d-b02d-2e46d09f9830}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff">
-      <UniqueIdentifier>{82b5a034-e555-4876-ba7f-ce100c7335ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Barrier">
-      <UniqueIdentifier>{0bb09bf2-eeb6-4311-893b-475d0a6ef05b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Sound\AudioManager">
-      <UniqueIdentifier>{28568097-ce25-4375-8809-bd1dae992a27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Item\Potion\Heal">
-      <UniqueIdentifier>{4e1640f3-fe38-4254-865a-61191a72f4b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Enemy\RareRobot">
-      <UniqueIdentifier>{581a22c9-713e-41cd-9e28-380249ec6b6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Bullet">
-      <UniqueIdentifier>{9468361c-ec69-4146-99b5-f49a18ed46e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\UIBase\VolumeSettings">
-      <UniqueIdentifier>{6fb74f74-5745-43cd-b3df-3a98ba6f38d1}</UniqueIdentifier>
-    <Filter Include="Source\EffectManager">
-      <UniqueIdentifier>{f142236b-120f-4597-8865-d0b7b25c215e}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="system\system.cpp">
-      <Filter>system</Filter>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="system\system.cpp" />
+    <ClCompile Include="Source\Actor\Actor.cpp">
+      <Filter>Source\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.cpp">
+      <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sound\AudioManager\AudioManager.cpp">
+      <Filter>Source\Sound\AudioManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Barrier\Barrier.cpp">
+      <Filter>Source\Actor\Barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Buff\Buff.cpp">
+      <Filter>Source\Actor\Item\Potion\Buff</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Bullet\Bullet.cpp">
+      <Filter>Source\Actor\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Character\Character.cpp">
+      <Filter>Source\Actor\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UIBase\DifficultyLevel\DifficultyLevel.cpp">
+      <Filter>Source\UIBase\DifficultyLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UIBase\DamageText\DamageText.cpp">
+      <Filter>Source\UIBase\DamageText</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EffectManager\EffectManager.cpp">
+      <Filter>Source\EffectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Character\Enemy\Enemy.cpp">
+      <Filter>Source\Actor\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UIBase\Fade\Fade.cpp">
+      <Filter>Source\UIBase\Fade</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Actor\Character\Enemy\FinalBoss\FinalBoss.cpp">
       <Filter>Source\Actor\Character\Enemy\FinalBoss</Filter>
     </ClCompile>
     <ClCompile Include="Source\Actor\Character\Enemy\FloorBoss\FloorBoss.cpp">
       <Filter>Source\Actor\Character\Enemy\FloorBoss</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Actor\Character\Enemy\MediumRobot\MediumRobot.cpp">
-      <Filter>Source\Actor\Character\Enemy\MediumRobot</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.cpp">
-      <Filter>Source\Actor\Character\Enemy\SmallRobot</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Character\Enemy\Enemy.cpp">
-      <Filter>Source\Actor\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Character\Player\Player.cpp">
-      <Filter>Source\Actor\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Character\Character.cpp">
-      <Filter>Source\Actor\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Actor.cpp">
-      <Filter>Source\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Stage\Stage.cpp">
-      <Filter>Source\Actor\Stage</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Camera\GameCamera.cpp">
       <Filter>Source\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UIBase\UIBase.cpp">
-      <Filter>Source\UIBase</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UIBase\DifficultyLevel\DifficultyLevel.cpp">
-      <Filter>Source\UIBase\DifficultyLevel</Filter>
     </ClCompile>
     <ClCompile Include="Source\UIBase\GameClear\GameClear.cpp">
       <Filter>Source\UIBase\GameClear</Filter>
@@ -149,8 +55,39 @@
     <ClCompile Include="Source\UIBase\GameOver\GameOver.cpp">
       <Filter>Source\UIBase\GameOver</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Gire\Gire.cpp">
+      <Filter>Source\Actor\Item\Gire</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Heal\Heal.cpp">
+      <Filter>Source\Actor\Item\Potion\Heal</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Item.cpp">
+      <Filter>Source\Actor\Item</Filter>
+    </ClCompile>
     <ClCompile Include="Source\UIBase\Load\Load.cpp">
       <Filter>Source\UIBase\Load</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Character\Enemy\MediumRobot\MediumRobot.cpp">
+      <Filter>Source\Actor\Character\Enemy\MediumRobot</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Character\Player\Player.cpp">
+      <Filter>Source\Actor\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Item\Potion\Potion.cpp">
+      <Filter>Source\Actor\Item\Potion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.cpp">
+      <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.cpp">
+      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.cpp">
+      <Filter>Source\Actor\Character\Enemy\SmallRobot</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor\Stage\Stage.cpp">
+      <Filter>Source\Actor\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Source\UIBase\Title\Title.cpp">
       <Filter>Source\UIBase\Title</Filter>
@@ -158,97 +95,100 @@
     <ClCompile Include="Source\UIBase\UI\UI.cpp">
       <Filter>Source\UIBase\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Actor\Item\Item.cpp">
-      <Filter>Source\Actor\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Item\Gire\Gire.cpp">
-      <Filter>Source\Actor\Item\Gire</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Item\Potion\Potion.cpp">
-      <Filter>Source\Actor\Item\Potion</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Item\Potion\Buff\Buff.cpp">
-      <Filter>Source\Actor\Item\Potion\Buff</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.cpp">
-      <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Barrier\Barrier.cpp">
-      <Filter>Source\Actor\Barrier</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.cpp">
-      <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Sound\AudioManager\AudioManager.cpp">
-      <Filter>Source\Sound\AudioManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Item\Potion\Heal\Heal.cpp">
-      <Filter>Source\Actor\Item\Potion\Heal</Filter>
-    </ClCompile>
-    <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="DamageText.cpp" />
-    <ClCompile Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.cpp">
-      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Actor\Bullet\Bullet.cpp">
-      <Filter>Source\Actor\Bullet</Filter>
+    <ClCompile Include="Source\UIBase\UIBase.cpp">
+      <Filter>Source\UIBase</Filter>
     </ClCompile>
     <ClCompile Include="Source\UIBase\VolumeSettings\VolumeSettings.cpp">
       <Filter>Source\UIBase\VolumeSettings</Filter>
-    <ClCompile Include="Source\EffectManager\EffectManager.cpp">
-      <Filter>Source\EffectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="system\system.h">
-      <Filter>system</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="system\system.h" />
+    <ClInclude Include="Source\Actor\Actor.h">
+      <Filter>Source\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.h">
+      <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sound\AudioManager\AudioManager.h">
+      <Filter>Source\Sound\AudioManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Barrier\Barrier.h">
+      <Filter>Source\Actor\Barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Buff\Buff.h">
+      <Filter>Source\Actor\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Bullet\Bullet.h">
+      <Filter>Source\Actor\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Character\Character.h">
+      <Filter>Source\Actor\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIBase\DifficultyLevel\DifficultyLevel.h">
+      <Filter>Source\UIBase\DifficultyLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIBase\DamageText\DamageText.h">
+      <Filter>Source\UIBase\DamageText</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EffectManager\EffectManager.h">
+      <Filter>Source\EffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Character\Enemy\Enemy.h">
+      <Filter>Source\Actor\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIBase\Fade\Fade.h">
+      <Filter>Source\UIBase\Fade</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Actor\Character\Enemy\FinalBoss\FinalBoss.h">
       <Filter>Source\Actor\Character\Enemy\FinalBoss</Filter>
     </ClInclude>
     <ClInclude Include="Source\Actor\Character\Enemy\FloorBoss\FloorBoss.h">
       <Filter>Source\Actor\Character\Enemy\FloorBoss</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Actor\Character\Enemy\MediumRobot\MediumRobot.h">
-      <Filter>Source\Actor\Character\Enemy\MediumRobot</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.h">
-      <Filter>Source\Actor\Character\Enemy\SmallRobot</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Character\Enemy\Enemy.h">
-      <Filter>Source\Actor\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Character\Player\Player.h">
-      <Filter>Source\Actor\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Character\Character.h">
-      <Filter>Source\Actor\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Actor.h">
-      <Filter>Source\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Stage\Stage.h">
-      <Filter>Source\Actor\Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Camera\GameCamera.h">
       <Filter>Source\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\UIBase\UIBase.h">
-      <Filter>Source\UIBase</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UIBase\DifficultyLevel\DifficultyLevel.h">
-      <Filter>Source\UIBase\DifficultyLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UIBase\GameClear\GameClear.h">
-      <Filter>Source\UIBase\GameClear</Filter>
+    <ClInclude Include="Source\Actor\Item\Gire\Gire.h">
+      <Filter>Source\Actor\Item\Gire</Filter>
     </ClInclude>
     <ClInclude Include="Source\UIBase\GameOver\GameOver.h">
       <Filter>Source\UIBase\GameOver</Filter>
     </ClInclude>
+    <ClInclude Include="Source\UIBase\GameClear\GameClear.h">
+      <Filter>Source\UIBase\GameClear</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Heal\Heal.h">
+      <Filter>Source\Actor\Item\Potion\Heal</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Item.h">
+      <Filter>Source\Actor\Item</Filter>
+    </ClInclude>
     <ClInclude Include="Source\UIBase\Load\Load.h">
       <Filter>Source\UIBase\Load</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Character\Enemy\MediumRobot\MediumRobot.h">
+      <Filter>Source\Actor\Character\Enemy\MediumRobot</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Character\Player\Player.h">
+      <Filter>Source\Actor\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Potion.h">
+      <Filter>Source\Actor\Item\Potion</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.h">
+      <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.h">
+      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.h">
+      <Filter>Source\Actor\Character\Enemy\SmallRobot</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Stage\Stage.h">
+      <Filter>Source\Actor\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Source\UIBase\Title\Title.h">
       <Filter>Source\UIBase\Title</Filter>
@@ -256,45 +196,115 @@
     <ClInclude Include="Source\UIBase\UI\UI.h">
       <Filter>Source\UIBase\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Item.h">
-      <Filter>Source\Actor\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Gire\Gire.h">
-      <Filter>Source\Actor\Item\Gire</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Potion\Potion.h">
-      <Filter>Source\Actor\Item\Potion</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Potion\Buff\Buff.h">
-      <Filter>Source\Actor\Item\Potion\Buff</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.h">
-      <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Barrier\Barrier.h">
-      <Filter>Source\Actor\Barrier</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.h">
-      <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sound\AudioManager\AudioManager.h">
-      <Filter>Source\Sound\AudioManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Potion\Heal\Heal.h">
-      <Filter>Source\Actor\Item\Potion\Heal</Filter>
-    </ClInclude>
-    <ClInclude Include="Fade.h" />
-    <ClInclude Include="DamageText.h" />
-    <ClInclude Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.h">
-      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Bullet\Bullet.h">
-      <Filter>Source\Actor\Bullet</Filter>
+    <ClInclude Include="Source\UIBase\UIBase.h">
+      <Filter>Source\UIBase</Filter>
     </ClInclude>
     <ClInclude Include="Source\UIBase\VolumeSettings\VolumeSettings.h">
       <Filter>Source\UIBase\VolumeSettings</Filter>
-    <ClInclude Include="Source\EffectManager\EffectManager.h">
-      <Filter>Source\EffectManager</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{3193d63e-b502-41e9-acb6-5acab94934da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor">
+      <UniqueIdentifier>{bc640bbb-d1ab-400d-9420-6e6d2d6a37b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Camera">
+      <UniqueIdentifier>{0ef04fec-236c-4f99-a61a-4802f9803afe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\EffectManager">
+      <UniqueIdentifier>{f6b67c8a-e5a2-4ab8-80b9-e9b38cb65955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase">
+      <UniqueIdentifier>{9d902d19-f2b4-41d6-957b-4e6df8066b27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Barrier">
+      <UniqueIdentifier>{9a822832-f4f6-4de5-8a2d-c27e614c81aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Bullet">
+      <UniqueIdentifier>{562a36eb-6454-4b36-8a59-ffdcb6c91075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character">
+      <UniqueIdentifier>{a0bcc8c0-7266-4dab-9bfd-038a76d99598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item">
+      <UniqueIdentifier>{22d2616a-8a97-48e7-8ccf-92a8121a9b65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Stage">
+      <UniqueIdentifier>{2ecd99e3-9592-46d1-aa16-86ba51e2c483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character\Enemy">
+      <UniqueIdentifier>{8f682d9d-ae01-40a0-b696-e7b1ca9b70f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character\Player">
+      <UniqueIdentifier>{a19b6156-5924-4189-bca2-91cad166da33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character\Enemy\FinalBoss">
+      <UniqueIdentifier>{c684c262-5942-4c06-a631-6b2ff6d6ed29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character\Enemy\FloorBoss">
+      <UniqueIdentifier>{2e6286fa-a56d-4734-9cb7-7de994fb60ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character\Enemy\MediumRobot">
+      <UniqueIdentifier>{0cb360f6-efb8-4594-9033-f96a6d64abb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character\Enemy\SmallRobot">
+      <UniqueIdentifier>{2d8929ca-1828-4002-ac9d-cdc415c67916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Gire">
+      <UniqueIdentifier>{7dc7eddb-29e9-4a53-b7b4-2e214a25007f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion">
+      <UniqueIdentifier>{ada93465-c6aa-42da-a1c1-c38aaf96aa39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Buff">
+      <UniqueIdentifier>{2ada2528-aeca-4b2c-8c36-8888dab8f6d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Heal">
+      <UniqueIdentifier>{2c8550b6-ca4f-4523-a42a-8cd9c130b667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\DifficultyLevel">
+      <UniqueIdentifier>{d67dd63a-9d0a-4c89-8fa9-4dc6245e3fe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\GameClear">
+      <UniqueIdentifier>{d8ddb028-9c9c-4c9b-9ffd-0e7bff4a2e08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\GameOver">
+      <UniqueIdentifier>{b2e3380c-3b91-448b-a5c4-6b06a605e78a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\Load">
+      <UniqueIdentifier>{dea50f44-cc10-4920-b481-7b562b52b214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\Title">
+      <UniqueIdentifier>{ef7aff74-76cc-49ee-8934-ccb03447d15d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\UI">
+      <UniqueIdentifier>{470443f7-507e-4a81-b76d-c688da431636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\VolumeSettings">
+      <UniqueIdentifier>{b79331aa-6052-466c-b752-feaa8d05425e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff">
+      <UniqueIdentifier>{2f0fda37-96a4-4134-8040-dcf90bb8ab80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\DamageText">
+      <UniqueIdentifier>{ea950e2b-09c4-4436-9167-5fd69eb04187}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIBase\Fade">
+      <UniqueIdentifier>{68872800-3361-445d-9734-2c173f024490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Item\Potion\Buff\PowerBuff">
+      <UniqueIdentifier>{b6c7c0ea-9f6f-415c-9243-542d587feb50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Sound">
+      <UniqueIdentifier>{80143a2c-a691-4cf6-bca7-7298b27c6c75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Sound\AudioManager">
+      <UniqueIdentifier>{6e3b1279-9b44-438e-9384-b030a900dea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Actor\Character\Enemy\RareRobot">
+      <UniqueIdentifier>{4e4dda91-7765-4ff4-b311-2a8f08757a5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -23,6 +23,8 @@ class AudioManager;
 class Heal;
 class Fade;
 class EffectManager;
+class VolumeSettings;
+	;
 
 class Game : public IGameObject
 {
@@ -33,6 +35,17 @@ public:
 		NORMAL,
 		HARD,
 		LUNATIC
+	};
+	enum EnLoadStep
+	{
+		enLoad_Pause,
+		enLoad_Player,
+		enLoad_Camera,
+		enLoad_Level,
+		enLoad_Effect,
+		enLoad_UI,
+		enLoad_Fade,
+		enLoad_End
 	};
 	Game();
 	~Game();
@@ -138,6 +151,7 @@ public:
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;
+	EnLoadStep m_loadStep = enLoad_Pause;
 	Player* m_player = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	Stage* m_stage = nullptr;
@@ -156,6 +170,7 @@ private:
 	std::vector<RareRobot*> m_rareRobot;
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
+	VolumeSettings* m_volumeSetting = nullptr;
 	DifficultyLevel* m_difficul = nullptr;
 	Difficulty m_difficulty = NORMAL;
 	EffectManager* m_effectManager = nullptr;

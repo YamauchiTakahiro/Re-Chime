@@ -85,7 +85,7 @@ void Load::Update()
 
 			if (m_audioManager)
 			{
-				m_audioManager->StopBGM();
+				m_audioManager->StopBGM(enSound_LoadBGM);
 			}
 
 			DeleteGO(this);

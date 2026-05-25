@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Source/Actor/Character/Player/Player.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
-#include "Fade.h"
+#include "Source/UIBase/Fade/Fade.h"
 
 float Clamp(float value, float min, float max)
 {

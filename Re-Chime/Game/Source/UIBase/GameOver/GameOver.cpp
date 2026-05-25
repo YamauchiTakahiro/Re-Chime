@@ -30,7 +30,7 @@ void GameOver::Update()
 		NewGO<Title>(0, "title");
 		if (m_audioManager)
 		{
-			m_audioManager->StopBGM();
+			m_audioManager->StopBGM(enSound_GameOverBGM);
 		}
 		DeleteGO(this);
 	}

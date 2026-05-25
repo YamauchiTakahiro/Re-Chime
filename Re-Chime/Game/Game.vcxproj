@@ -223,8 +223,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DamageText.cpp" />
-    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Actor\Actor.cpp" />
@@ -249,7 +247,9 @@
     <ClCompile Include="Source\Camera\GameCamera.cpp" />
     <ClCompile Include="Source\EffectManager\EffectManager.cpp" />
     <ClCompile Include="Source\Sound\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="Source\UIBase\DamageText\DamageText.cpp" />
     <ClCompile Include="Source\UIBase\DifficultyLevel\DifficultyLevel.cpp" />
+    <ClCompile Include="Source\UIBase\Fade\Fade.cpp" />
     <ClCompile Include="Source\UIBase\GameClear\GameClear.cpp" />
     <ClCompile Include="Source\UIBase\GameOver\GameOver.cpp" />
     <ClCompile Include="Source\UIBase\Load\Load.cpp" />
@@ -265,8 +265,6 @@
     <ClCompile Include="system\system.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DamageText.h" />
-    <ClInclude Include="Fade.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Source\Actor\Actor.h" />
     <ClInclude Include="Source\Actor\Barrier\Barrier.h" />
@@ -290,7 +288,9 @@
     <ClInclude Include="Source\Camera\GameCamera.h" />
     <ClInclude Include="Source\EffectManager\EffectManager.h" />
     <ClInclude Include="Source\Sound\AudioManager\AudioManager.h" />
+    <ClInclude Include="Source\UIBase\DamageText\DamageText.h" />
     <ClInclude Include="Source\UIBase\DifficultyLevel\DifficultyLevel.h" />
+    <ClInclude Include="Source\UIBase\Fade\Fade.h" />
     <ClInclude Include="Source\UIBase\GameClear\GameClear.h" />
     <ClInclude Include="Source\UIBase\GameOver\GameOver.h" />
     <ClInclude Include="Source\UIBase\Load\Load.h" />

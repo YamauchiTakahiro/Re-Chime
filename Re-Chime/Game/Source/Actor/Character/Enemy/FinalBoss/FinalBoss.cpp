@@ -4,7 +4,7 @@
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
-#include "DamageText.h"
+#include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "Source/Actor/Bullet/Bullet.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
