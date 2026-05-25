@@ -229,7 +229,7 @@ void Player::JumpAndGravity()
 	}
 	if (m_characterController.IsOnGround() == false)
 	{
-		//m_moveSpeed.y -= 20.0f;
+		m_moveSpeed.y -= 20.0f;
 	}
 }
 

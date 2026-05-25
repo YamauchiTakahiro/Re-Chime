@@ -29,7 +29,7 @@ bool FloorBoss::Start()
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Enemy/floorBoss/floorBossDeath.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/FloorBoss.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
-	m_characterController.Init(900.0f, 300.0f, m_position);
+	m_characterController.Init(300.0f, 200.0f, m_position);
 	m_enemyHP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
 	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
 	m_enemyHP.Update();
@@ -88,8 +88,6 @@ void FloorBoss::Update()
 
 	Rotation();
 
-	Attack();
-
 	Time();
 
 	Hit();
@@ -98,39 +96,55 @@ void FloorBoss::Update()
 
 	AttackHit();
 
-	ManageState();
 	//EnemyHP();
 
 	ManageState();
 
 	PlayAnimation();
+
+	m_attackCollisionLife -= g_gameTime->GetFrameDeltaTime();
+
+	if (m_attackCollisionLife <= 0.0f)
+	{
+		DeleteGO(m_collisionObject);
+		m_collisionObject = nullptr;
+	}
+
 	m_modelRender.Update();
 }
 
 void FloorBoss::Move()
 {
+	if (m_floorBossState == enFloorBossState_Attack)
+	{
+		m_moveSpeed = Vector3::Zero;
+
+		m_position = m_characterController.Execute(
+			m_moveSpeed,
+			2.0f / 60.0f
+		);
+
+		m_modelRender.SetPosition(m_position);
+		return;
+	}
+
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 600 && m_timeCount == 0.0f)
-	{
-		m_timeCount = 2.0f;
-		Time();
-	}
-	if (distToPlayer <= 1200)
+	if (distToPlayer <= 1500)
 	{
 		toPlayer.Normalize();
-		m_moveSpeed = toPlayer * 100.0f;
+		m_moveSpeed = toPlayer * 250.0f;
 		m_moveSpeed.y = 0.0f;
 	}
-	else if (distToPlayer > 1000)
+	else if (distToPlayer > 2000)
 	{
 		m_moveSpeed = toPlayer * 0.0f;
 	}
 
 	if (m_characterController.IsOnGround() == false)
 	{
-		m_moveSpeed.y -= 40.0f;
+		//m_moveSpeed.y -= 40.0f;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
@@ -143,7 +157,7 @@ void FloorBoss::Rotation()
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 1000)
+	if (distToPlayer <= 1500)
 	{
 		toPlayer.Normalize();
 		m_rotation.SetRotationYFromDirectionXZ(toPlayer);
@@ -171,7 +185,7 @@ void FloorBoss::OnCollision()
 	Vector3 collisionPos = m_position;
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 250.0f;
+	collisionPos += m_forward * 450.0f;
 	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
 	m_collisionObject->SetName("floorBossAttack");
 
@@ -324,6 +338,20 @@ void FloorBoss::MakeExplosionEffect()
 	);
 }
 
+void FloorBoss::MakeNoticeCircleEffect()
+{
+	//予告円エフェクトの生成
+	Vector3 effectPos = m_position;
+	m_forward = Vector3::Front;
+	m_rotation.Apply(m_forward);
+	effectPos += m_forward * 450.0f;
+	EffectManager::GetInstance().PlayEffect(
+		EffectManager::enEffect_NoticeCircle,
+		effectPos,
+		200.0f
+	);
+}
+
 void FloorBoss::ManageState()
 {
 	switch (m_floorBossState)
@@ -331,12 +359,19 @@ void FloorBoss::ManageState()
 	case enFloorBossState_Idle:
 		IdleState();
 		break;
+
 	case enFloorBossState_Walk:
 		WalkState();
 		break;
+
+	case enFloorBossState_Attack:
+		AttackState();
+		break;
+
 	case enFloorBossState_Death:
 		DeathState();
 		break;
+
 	default:
 		break;
 	}
@@ -367,10 +402,25 @@ void FloorBoss::PlayAnimation()
 
 void FloorBoss::FloorBossState()
 {
+	Vector3 playerPos = m_player->GetPosition();
+	float dist = (playerPos - m_position).Length();
+
 	if (m_floorBossHP <= 0)
 	{
 		m_floorBossState = enFloorBossState_Death;
 	}
+	else if (dist <= 500.0f &&
+         m_timeCount <= 0.0f &&
+         m_floorBossState != enFloorBossState_Attack)
+{
+    m_floorBossState = enFloorBossState_Attack;
+
+    m_attackStateTimer = 0.8f;
+    m_attackPhase = enAttackPhase_Warn;
+
+    m_timeCount = 2.0f;
+	MakeNoticeCircleEffect();
+}
 	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		m_floorBossState = enFloorBossState_Walk;
@@ -380,7 +430,6 @@ void FloorBoss::FloorBossState()
 		m_floorBossState = enFloorBossState_Idle;
 	}
 }
-
 void FloorBoss::IdleState()
 {
 	FloorBossState();
@@ -389,6 +438,42 @@ void FloorBoss::IdleState()
 void FloorBoss::WalkState()
 {
 	FloorBossState();
+}
+
+void FloorBoss::AttackState()
+{
+	m_moveSpeed = Vector3::Zero;
+
+	m_attackStateTimer -= g_gameTime->GetFrameDeltaTime();
+
+	// ①予備動作（絶対にここで見せる）
+	if (m_attackPhase == enAttackPhase_Warn)
+	{
+		// 視覚的合図をここで作る
+
+		if (m_attackStateTimer <= 0.0f)
+		{
+			m_attackPhase = enAttackPhase_Active;
+			OnCollision(); // ←ここで初めて攻撃発生
+		}
+		return;
+	}
+
+	// ②ヒットフェーズ
+	if (m_attackPhase == enAttackPhase_Active)
+	{
+		if (m_attackStateTimer <= 0.0f)
+		{
+			m_attackPhase = enAttackPhase_End;
+		}
+		return;
+	}
+
+	// ③終了
+	if (m_attackPhase == enAttackPhase_End)
+	{
+		m_floorBossState = enFloorBossState_Idle;
+	}
 }
 
 void FloorBoss::DeathState()

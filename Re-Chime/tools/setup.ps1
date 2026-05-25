@@ -76,6 +76,7 @@ CopyAndCreateShortCut("2021")
 CopyAndCreateShortCut("2022")
 CopyAndCreateShortCut("2023")
 CopyAndCreateShortCut("2024")
+CopyAndCreateShortCut("2025")
 
 # 続いてシェーダーのショートカットをデスクトップに作成。
 $shell = New-Object -ComObject WScript.shell

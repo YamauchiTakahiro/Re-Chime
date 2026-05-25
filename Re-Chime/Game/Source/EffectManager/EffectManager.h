@@ -11,7 +11,7 @@ public:
 		enEffect_AttackSpeedBuff,
 		enEffect_Explosion,
 		enEffect_BossExplosion,
-		enEffect_PlayerAttackHit,
+		enEffect_NoticeCircle,
 	};
 
 public:

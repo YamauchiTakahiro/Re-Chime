@@ -16,9 +16,18 @@ public:
 	{
 		enFloorBossState_Idle,		//待機状態。
 		enFloorBossState_Walk,		//移動状態。
+		enFloorBossState_Attack,		//攻撃状態。
 		enFloorBossState_Death,		//死亡状態。
 		enFloorBossState_Num,
 	};
+
+	enum EnAttackPhase
+	{
+		enAttackPhase_Warn,   // 構え
+		enAttackPhase_Active, // 当たり判定
+		enAttackPhase_End     // 終了
+	};
+
 	FloorBoss();
 	~FloorBoss();
 	bool Start() override;
@@ -33,12 +42,14 @@ public:
 	void DamageIntarval() override;
 	void Death() override;
 	void MakeExplosionEffect();
+	void MakeNoticeCircleEffect();
 	void ManageState();
 	void FloorBossHP();
 	void PlayAnimation();
 	void FloorBossState();
 	void IdleState();
 	void WalkState();
+	void AttackState();
 	void DeathState();
 	Vector3 GetPosition()const override
 	{
@@ -76,6 +87,7 @@ private:
 	};
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	enFloorBossState m_floorBossState = enFloorBossState_Idle;
+	EnAttackPhase m_attackPhase;
 	CharacterController m_characterController;
 	Vector3 m_position;
 	Vector3 m_moveSpeed;
@@ -100,4 +112,9 @@ private:
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
 	float m_attackCollisionLife = 0.0f;	//!<攻撃判定の有効時間。
+	float m_attackStateTimer = 0.0f;	//!<攻撃状態のタイマー。
+	float m_attackDelayTimer = 0.0f; 
+	bool m_attackHitActive = false;
+	float m_attackWarnTimer;
+	float m_attackActiveTimer;
 };
