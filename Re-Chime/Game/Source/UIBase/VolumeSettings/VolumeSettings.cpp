@@ -21,7 +21,7 @@ VolumeSettings::~VolumeSettings()
 bool VolumeSettings::Start()
 {
 
-    m_DifficultyLevel.Init("Assets/Sprite/Pause.DDs", 1920.0f, 1080.0f);
+    m_VolumeSettings.Init("Assets/Sprite/Pause.DDs", 1920.0f, 1080.0f);
 
     // ===== レイアウト設定 =====
     float baseY = 40.0f;   // ← 全体の中心

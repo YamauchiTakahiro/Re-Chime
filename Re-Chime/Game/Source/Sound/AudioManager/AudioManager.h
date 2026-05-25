@@ -54,6 +54,12 @@ struct SEHandle
 	SoundSource* se;
 };
 
+struct BGMHandle
+{
+	AudioID id;
+	SoundSource* bgm;
+};
+
 class AudioManager : public IGameObject
 {
 public:
@@ -66,7 +72,7 @@ public:
 	void Init();
 
 	void PlayBGM(AudioID id, float volume = 1.0f);
-	void StopBGM();
+	void StopBGM(AudioID id);
 
 	void PlaySE(AudioID id, float volume = 1.0f, SEPlayType type = enSEPlay_AllowOverlap);
 	void StopSE(AudioID id);
@@ -121,6 +127,7 @@ private:
 	static const int SE_POOL_SIZE = 16;
 	std::vector<SoundSource*> m_sePool;
 	std::vector<SEHandle> m_playingSE;
+	std::vector<BGMHandle> m_playingBGM;
 
 
 	float m_bgmVolume = 1.0f;

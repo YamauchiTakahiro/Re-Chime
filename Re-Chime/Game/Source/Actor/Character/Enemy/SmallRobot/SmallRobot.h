@@ -39,6 +39,7 @@ public:
 	void Death() override;
 	void EnemyHP();
 	void MakeExplosionEffect();
+	void MakeplayerAttackHitEffect();
 	void ManageState();
 	//void PlayAnimation();
 	void EnemyState();

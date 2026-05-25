@@ -81,7 +81,7 @@ void Title::Update()
 		case 0:
 			if (m_audioManager)
 			{
-				m_audioManager->StopBGM();
+				m_audioManager->StopBGM(enSound_TitleBGM);
 			}
 			DeleteGO(this);
 			NewGO<DifficultyLevel>(0, "DifficultyLevel");

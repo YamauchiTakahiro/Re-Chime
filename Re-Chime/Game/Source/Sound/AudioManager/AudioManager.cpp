@@ -68,12 +68,23 @@ void AudioManager::PlayBGM(AudioID id, float volume)
 	m_bgm->Play(true);
 }
 
-void AudioManager::StopBGM()
+void AudioManager::StopBGM(AudioID id)
 {
-	if (m_bgm)
+	for (auto it = m_playingBGM.begin(); it != m_playingBGM.end();)
 	{
-		DeleteGO(m_bgm);
-		m_bgm = nullptr;
+		if (it->id == id)
+		{
+			if (it->bgm)
+			{
+				it->bgm->Stop();
+			}
+
+			it = m_playingBGM.erase(it);
+		}
+		else
+		{
+			++it;
+		}
 	}
 }
 

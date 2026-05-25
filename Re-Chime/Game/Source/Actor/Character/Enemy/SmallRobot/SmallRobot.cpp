@@ -8,7 +8,7 @@
 #include "collision/CollisionObject.h"
 #include "Game.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
-#include "DamageText.h"
+#include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/EffectManager/EffectManager.h"
 
@@ -306,7 +306,7 @@ void SmallRobot::Hit()
 					if (!isHit)
 					{
 						m_player->SetAttackHit(true);
-
+						MakeplayerAttackHitEffect();
 						m_audioManager->PlaySE(
 							enSound_CriticalSE,
 							1.0f,
@@ -363,7 +363,7 @@ void SmallRobot::Hit()
 						int r = rand() % 3;
 
 						AudioID id;
-
+						MakeplayerAttackHitEffect();
 						switch (r)
 						{
 						case 0: id = enSound_PlayerAttackSE_01; break;
@@ -516,6 +516,18 @@ void SmallRobot::MakeExplosionEffect()
 
 	EffectManager::GetInstance().PlayEffect(
 		EffectManager::enEffect_Explosion,
+		effectPos,
+		50.0f
+	);
+}
+
+void SmallRobot::MakeplayerAttackHitEffect()
+{
+	//プレイヤーの攻撃ヒットエフェクトの生成
+	Vector3 effectPos = m_position;
+	effectPos.y += 70.0f;
+	EffectManager::GetInstance().PlayEffect(
+		EffectManager::enEffect_PlayerAttackHit,
 		effectPos,
 		50.0f
 	);

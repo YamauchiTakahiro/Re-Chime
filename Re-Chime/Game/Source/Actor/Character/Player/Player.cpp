@@ -875,7 +875,7 @@ void Player::MakePowerBuffEffect()
 void Player::MakeAttackSpeedBuffEffect()
 {
 	Vector3 effectPos = m_position;
-	effectPos.y += 70.0f;
+	effectPos.y += 200.0f;
 
 	EffectManager::GetInstance().PlayEffect(
 		EffectManager::enEffect_AttackSpeedBuff,

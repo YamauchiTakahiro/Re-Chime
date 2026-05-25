@@ -7,7 +7,7 @@
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
-#include "DamageText.h"
+#include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/EffectManager/EffectManager.h"
 

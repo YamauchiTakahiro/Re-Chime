@@ -17,8 +17,9 @@
 #include "Source/UIBase/GameClear/GameClear.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
-#include "Fade.h"
+#include "Source/UIBase/Fade/Fade.h"
 #include "Source/EffectManager/EffectManager.h"
+#include "Source/UIBase/VolumeSettings/VolumeSettings.h"
 
 namespace
 {
@@ -30,28 +31,31 @@ namespace
 	}
 }
 
-enum EnLoadStep
-{
-	enLoad_Pause,
-	enLoad_Player,
-	enLoad_Camera,
-	enLoad_Level,
-	enLoad_Effect,
-	enLoad_UI,
-	enLoad_Fade,
-	enLoad_End
-};
 
-EnLoadStep m_loadStep = enLoad_Pause;
 
 Game::Game()
 {
+    m_isLoading = true;
+
+    m_isReady = false;
+
+    m_loadStep = enLoad_Pause;
+
+    m_loadCount = 0;
+
+    m_player = nullptr;
+
+    m_gameCamera = nullptr;
+
+    m_ui = nullptr;
+
+    m_fade = nullptr;
+
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
-
 bool Game::Start()
 {
-	m_maxLoadCount = 11;
+	m_maxLoadCount = 8;
 	srand((unsigned)time(NULL));
 
 	return true;
@@ -88,6 +92,13 @@ Game::~Game()
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_stage);
 	DeleteGO(m_ui);
+	DeleteGO(m_gameOver);
+	DeleteGO(m_gameClear);
+	DeleteGO(m_gire);
+	DeleteGO(m_volumeSetting);
+	DeleteGO(m_effectManager);
+	DeleteGO(m_fade);
+
 }
 
 void Game::Update()
@@ -318,11 +329,14 @@ void Game::Update()
 
 			m_isReady = true;
 
+			m_isLoading = false;
+
 			return;
 		}
 
 		return;
 	}
+
 	m_pauseTime += 0.05f;
 
 	Pause();
@@ -333,6 +347,16 @@ void Game::Update()
 		return;
 	}
 
+	if (m_player == nullptr)
+	{
+		m_player = FindGO<Player>("player");
+
+		if (m_player == nullptr)
+		{
+			return;
+		}
+	}
+
 	//プレイヤーのHPが0以下になったらゲームオーバー。
 	int hp = 0;
 	int playerHP = m_player->GetHP();
@@ -341,7 +365,7 @@ void Game::Update()
 		NewGO<GameOver>(0, "GameOver");
 		if (m_audioManager)
 		{
-			m_audioManager->StopBGM();
+			m_audioManager->StopBGM(enSound_StageBGM);
 		}
 		DeleteGO(this);
 		return;
@@ -374,7 +398,7 @@ void Game::Update()
 
 			if (m_audioManager)
 			{
-				m_audioManager->StopBGM();
+				m_audioManager->StopBGM(enSound_StageBGM);
 			}
 
 			DeleteGO(this);
@@ -515,9 +539,9 @@ void Game::PauseRender()
 			break;
 			m_isPause = false;
 		case 1: // 音量調節
-			if (m_difficul == nullptr)
+			if (m_volumeSetting == nullptr)
 			{
-				m_difficul = NewGO<DifficultyLevel>(0, "DifficultyLevel");
+				m_volumeSetting = NewGO<VolumeSettings>(0, "VolumeSetting");
 				m_isSetting = true;
 			}
 			break;
