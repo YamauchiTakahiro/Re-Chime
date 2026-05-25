@@ -57,25 +57,25 @@ bool FinalBoss::Start()
 		{
 		case EASY:
 			m_finalBossHp = 200;
-			m_finalBossMaxHp = 150;
+			m_finalBossMaxHp = 200;
 			m_attackPower = 10;
 			break;
 
 		case NORMAL:
-			m_finalBossHp = 250;
-			m_finalBossMaxHp = 250;
+			m_finalBossHp = 300;
+			m_finalBossMaxHp = 300;
 			m_attackPower = 20;
 			break;
 
 		case HARD:
-			m_finalBossHp = 400;
-			m_finalBossMaxHp = 400;
+			m_finalBossHp = 500;
+			m_finalBossMaxHp = 500;
 			m_attackPower = 35;
 			break;
 
 		case LUNATIC:
-			m_finalBossHp = 700;
-			m_finalBossMaxHp = 700;
+			m_finalBossHp = 750;
+			m_finalBossMaxHp = 750;
 			m_attackPower = 50;
 			break;
 		}
