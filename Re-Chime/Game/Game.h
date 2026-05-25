@@ -2,6 +2,7 @@
 
 #include "Level3DRender/LevelRender.h"
 #include "sound/SoundSource.h"
+#include "Difficulty.h" 
 
 
 class Player;
@@ -28,13 +29,6 @@ class VolumeSettings;
 class Game : public IGameObject
 {
 public:
-	enum Difficulty
-	{
-		EASY,
-		NORMAL,
-		HARD,
-		LUNATIC
-	};
 	enum EnLoadStep
 	{
 		enLoad_Pause,
@@ -58,16 +52,6 @@ public:
 	void ThirdFloor();
 	void FourthFloor();
 	bool IsFade() const;
-
-	void SetDifficulty(Difficulty difficulty)
-	{
-		m_difficulty = difficulty;
-	}
-
-	Difficulty GetDifficulty() const
-	{
-		return m_difficulty;
-	}
 
 	float GetLoadProgress() const
 	{
@@ -96,10 +80,7 @@ public:
 			m_volumeSetting = nullptr;
 		}
 	}
-	void SetDifficulty(DifficultyLevel* dl)
-	{
-		m_difficul = dl;
-	}
+
 	bool FadeFlag()
 	{
 		return m_isNear;
@@ -155,6 +136,16 @@ public:
 	void SetVolumeSetting(VolumeSettings* volume)
 	{
 		m_volumeSetting = volume;
+	}
+
+	void SetDifficulty(Difficulty difficulty)
+	{
+		m_difficulty = difficulty;
+	}
+
+	Difficulty GetDifficulty() const
+	{
+		return m_difficulty;
 	}
 
 	void Render(RenderContext& rc);

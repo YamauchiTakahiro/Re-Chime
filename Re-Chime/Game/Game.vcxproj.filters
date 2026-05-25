@@ -202,6 +202,7 @@
     <ClInclude Include="Source\UIBase\VolumeSettings\VolumeSettings.h">
       <Filter>Source\UIBase\VolumeSettings</Filter>
     </ClInclude>
+    <ClInclude Include="Difficulty.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

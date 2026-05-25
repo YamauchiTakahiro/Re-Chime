@@ -3,6 +3,7 @@
 #include "Source/UIBase/Load/Load.h"
 #include "Source/UIBase/Title/Title.h"
 #include "Game.h"
+#include "Difficulty.h"
 
 namespace
 {
@@ -98,17 +99,8 @@ void DifficultyLevel::Update()
 	
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		Game* game = FindGO<Game>("game");
-
-		if (game != nullptr)
-		{
-			game->SetDifficulty(
-				static_cast<Game::Difficulty>(m_difficulty)
-			);
-		}
-
-		NewGO<Load>(0, "Load");
-
+		auto* load = NewGO<Load>(0, "Load");
+		load->SetDifficulty(m_difficulty);
 		DeleteGO(this);
 	}
 	if(g_pad[0]->IsTrigger(enButtonB))

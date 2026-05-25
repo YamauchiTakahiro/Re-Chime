@@ -56,30 +56,30 @@ bool SmallRobot::Start()
 	{
 		switch (m_game->GetDifficulty())
 		{
-		case Game::EASY:
-			m_smallRobotHp = 60;
-			m_smallRobotMaxHp = 60;
+		case EASY:
+			m_smallRobotHp = 50;
+			m_smallRobotMaxHp = 50;
 			m_attackPower = 5;
-			m_knockBackPower = 1000.0f;
+			m_knockBackPower = 1200.0f;
 			break;
 
-		case Game::NORMAL:
-			m_smallRobotHp = 100;
-			m_smallRobotMaxHp = 100;
+		case NORMAL:
+			m_smallRobotHp = 75;
+			m_smallRobotMaxHp = 75;
 			m_attackPower = 10;
-			m_knockBackPower = 700.0f;
+			m_knockBackPower = 800.0f;
 			break;
 
-		case Game::HARD:
-			m_smallRobotHp = 150;
-			m_smallRobotMaxHp = 150;
+		case HARD:
+			m_smallRobotHp = 120;
+			m_smallRobotMaxHp = 120;
 			m_attackPower = 15;
-			m_knockBackPower = 400.0f;
+			m_knockBackPower = 500.0f;
 			break;
 
-		case Game::LUNATIC:
-			m_smallRobotHp = 250;
-			m_smallRobotMaxHp = 250;
+		case LUNATIC:
+			m_smallRobotHp = 180;
+			m_smallRobotMaxHp = 180;
 			m_attackPower = 25;
 			m_knockBackPower = 150.0f;
 			break;

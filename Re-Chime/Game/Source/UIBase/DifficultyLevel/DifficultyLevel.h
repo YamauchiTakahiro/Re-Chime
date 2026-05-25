@@ -1,16 +1,10 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
+#include "Difficulty.h"
 
 class DifficultyLevel : public UIBase
 {
 public:
-	enum Difficulty
-	{
-		EASY,
-		NORMAL,
-		HARD,
-		LUNATIC
-	};
 	DifficultyLevel();
 	~DifficultyLevel();
 	bool Start() override;
@@ -24,7 +18,7 @@ public:
 
 private:
 	int m_select = 0; //イージー 0 ,ノーマル 1 , ハード 2, ルナティック 3
-	Difficulty m_difficulty = EASY;
+	Difficulty m_difficulty;
 	SpriteRender m_DifficultyLevel;
 
 	SpriteRender m_Easy;

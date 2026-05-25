@@ -53,28 +53,28 @@ bool MediumRobot::Start()
 	{
 		switch (m_game->GetDifficulty())
 		{
-		case Game::EASY:
+		case EASY:
 			m_mediumRobotHp = 50;
 			m_mediumRobotMaxHp = 50;
 			m_attackPower = 5;
 			m_knockBackPower = 1200.0f;
 			break;
 
-		case Game::NORMAL:
+		case NORMAL:
 			m_mediumRobotHp = 75;
 			m_mediumRobotMaxHp = 75;
 			m_attackPower = 10;
 			m_knockBackPower = 800.0f;
 			break;
 
-		case Game::HARD:
+		case HARD:
 			m_mediumRobotHp = 120;
 			m_mediumRobotMaxHp = 120;
 			m_attackPower = 15;
 			m_knockBackPower = 500.0f;
 			break;
 
-		case Game::LUNATIC:
+		case LUNATIC:
 			m_mediumRobotHp = 180;
 			m_mediumRobotMaxHp = 180;
 			m_attackPower = 25;
