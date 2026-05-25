@@ -37,16 +37,21 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	g_soundEngine->Init();
 	NewGO<AudioManager>(0, "audioManager");
 	NewGO<Title>(0, "title");
+
+	// 無効
+	//g_renderingEngine->DisableTonemap();
+	g_renderingEngine->DisableRaytracing();
+	g_renderingEngine->DisableIBLTextureForAmbient();
 	//////////////////////////////////////
 	// 初期化を行うコードを書くのはここまで！！！
 	//////////////////////////////////////
-	
+
 
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage())
 	{
-		if (g_pad[0]->IsTrigger(enButtonA) ){
+		if (g_pad[0]->IsTrigger(enButtonA)) {
 			g_pad[0]->SetVibration(/*durationSec=*/0.5f, /*normalizedPower=*/1.0f);
 		}
 		K2Engine::GetInstance()->Execute();
