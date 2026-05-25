@@ -1,11 +1,14 @@
-#include "k2EnginePreCompile.h"
+ï»¿#include "k2EnginePreCompile.h"
 #include "ShadowMapRender.h"
 
 namespace nsK2Engine {
     void ShadowMapRender::Init(bool isSoftShadow)
     {
- 
-        float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+        // 1e30f ã§ã‚¯ãƒªã‚¢ = ã€Œã‚ªã‚¯ãƒ«ãƒ¼ãƒ€ãƒ¼ãªã—ï¼ˆfarç«¯ã‚ˆã‚Šé ã„ï¼‰ã€ã‚’è¡¨ã™ã€‚
+        // exp(40*depth) ã®æœ€å¤§å€¤ exp(40)â‰ˆ2.35e17 ã‚ˆã‚Šååˆ†å¤§ãã„å€¤ãªã®ã§
+        // ãƒ†ã‚¹ãƒˆãƒ”ã‚¯ã‚»ãƒ«ã® pos ãŒ clearedå€¤ã‚’è¶…ãˆã‚‹ã“ã¨ãªãã€æ­£ã—ãã€Œå½±ãªã—ã€ã¨åˆ¤å®šã•ã‚Œã‚‹ã€‚
+        float clearColor[4] = { 1e30f, 1e30f, 1.0f, 1.0f };
 
         DXGI_FORMAT colorFormat;
         DXGI_FORMAT depthFormat;
@@ -17,7 +20,7 @@ namespace nsK2Engine {
             colorFormat = g_hardShadowMapFormat.colorBufferFormat;
             depthFormat = g_hardShadowMapFormat.depthBufferFormat;
         }
-        //‹ßŒi—p‚ÌƒVƒƒƒhƒEƒ}ƒbƒv
+        //è¿‘æ™¯ç”¨ã®ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—
         m_shadowMaps[0].Create(
             2048,
             2048,
@@ -27,7 +30,7 @@ namespace nsK2Engine {
             depthFormat,
             clearColor
         );
-        //’†Œi—p‚ÌƒVƒƒƒhƒEƒ}ƒbƒv
+        //ä¸­æ™¯ç”¨ã®ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—
         m_shadowMaps[1].Create(
             1024,
             1024,
@@ -37,7 +40,7 @@ namespace nsK2Engine {
             depthFormat,
             clearColor
         );
-        //‰“Œi—p‚ÌƒVƒƒƒhƒEƒ}ƒbƒv
+        //é æ™¯ç”¨ã®ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—
         m_shadowMaps[2].Create(
             512,
             512,
@@ -49,7 +52,7 @@ namespace nsK2Engine {
         );
 
         if (isSoftShadow) {
-            // ƒ\ƒtƒgƒVƒƒƒhƒE‚ğs‚¤B
+            // ã‚½ãƒ•ãƒˆã‚·ãƒ£ãƒ‰ã‚¦ã‚’è¡Œã†ã€‚
             m_blur[0].Init(&m_shadowMaps[0].GetRenderTargetTexture());
             m_blur[1].Init(&m_shadowMaps[1].GetRenderTargetTexture());
             m_blur[2].Init(&m_shadowMaps[2].GetRenderTargetTexture());
@@ -69,7 +72,7 @@ namespace nsK2Engine {
         if (lightDirection.LengthSq() < 0.001f) {
             return;
         }
-        // ƒ‰ƒCƒg‚ÌÅ‘å‚Ì‚‚³‚ğƒŒƒ“ƒ_ƒ‰[‚ÌAABB‚©‚çŒvZ‚·‚éB
+        // ãƒ©ã‚¤ãƒˆã®æœ€å¤§ã®é«˜ã•ã‚’ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã®AABBã‹ã‚‰è¨ˆç®—ã™ã‚‹ã€‚
         m_cascadeShadowMapMatrix.CalcLightViewProjectionCropMatrix(
             lightDirection,
             m_cascadeAreaRateArray,
@@ -92,16 +95,16 @@ namespace nsK2Engine {
                 );
             }
 
-            //•`‰æ‚ªI‚í‚Á‚½‚çƒNƒŠƒA
+            //æç”»ãŒçµ‚ã‚ã£ãŸã‚‰ã‚¯ãƒªã‚¢
             m_renderers.clear();
 
-            // ‘‚«‚İŠ®—¹‘Ò‚¿
+            // æ›¸ãè¾¼ã¿å®Œäº†å¾…ã¡
             rc.WaitUntilFinishDrawingToRenderTarget(shadowMap);
             shadowMapNo++;
         }
 
         if (m_isSoftShadow) {
-            // ƒuƒ‰[‚ğÀs‚·‚éB
+            // ãƒ–ãƒ©ãƒ¼ã‚’å®Ÿè¡Œã™ã‚‹ã€‚
             for (auto& blur : m_blur) {
                 blur.ExecuteOnGPU(rc, 1.0f);
             }
