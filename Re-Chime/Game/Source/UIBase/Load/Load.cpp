@@ -54,13 +54,16 @@ bool Load::Start()
 
 void Load::Update()
 {
+	// 1フレーム待ち（初期化ズレ防止）
 	if (!m_isFirstRender)
 	{
 		m_isFirstRender = true;
 		return;
 	}
 
-	// Game生成
+	// =========================
+	// Game生成フェーズ
+	// =========================
 	if (!m_isCreateGame)
 	{
 		m_game = NewGO<Game>(0, "game");
@@ -69,10 +72,11 @@ void Load::Update()
 		m_game->SetLoading(true);
 
 		m_isCreateGame = true;
-		return;
 	}
 
-	// ロード進行
+	// =========================
+	// ロード進行フェーズ
+	// =========================
 	if (m_game)
 	{
 		float target = m_game->GetLoadProgress();
@@ -80,11 +84,9 @@ void Load::Update()
 		m_barCurrent += (target - m_barCurrent) * 0.1f;
 
 		Vector3 scale = m_BarFrame.GetScale();
-
 		scale.x = 400.0f * m_barCurrent;
 
 		m_BarFrame.SetScale(scale);
-
 		m_BarFrame.Update();
 
 		// ロード完了
@@ -101,6 +103,47 @@ void Load::Update()
 			return;
 		}
 	}
+
+	// =========================
+	// 演出系（常時更新）
+	// =========================
+
+	// ギア回転
+	m_GearRotation.SetRotationZ(m_loadTimer * m_GearRotSpeed);
+	m_gear.SetRotation(m_GearRotation);
+	m_gear.Update();
+
+	m_GearRotation2.SetRotationZ(m_loadTimer * -m_GearRotSpeed);
+	m_gear2.SetRotation(m_GearRotation2);
+	m_gear2.Update();
+
+	m_GearRotation3.SetRotationZ(m_loadTimer * m_GearRotSpeed);
+	m_gear3.SetRotation(m_GearRotation3);
+	m_gear3.Update();
+
+	// ドットアニメーション
+	m_dotTimer += g_gameTime->GetFrameDeltaTime();
+
+	if (m_dotTimer >= 0.3f)
+	{
+		m_dotTimer = 0.0f;
+		m_dotCount++;
+
+		if (m_dotCount > 3)
+		{
+			m_dotCount = 0;
+		}
+	}
+
+	// テキスト生成
+	std::wstring text = L"読み込み中";
+
+	for (int i = 0; i < m_dotCount; i++)
+	{
+		text += L"・";
+	}
+
+	m_Font.SetText(text.c_str());
 }
 void Load::Render(RenderContext& rc)
 {
