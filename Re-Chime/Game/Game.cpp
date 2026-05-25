@@ -487,6 +487,7 @@ void Game::Update()
 			m_fade->StartFadeIn();
 		}
 	}
+	CreateGire();
 }
 
 void Game::Pause()
@@ -584,9 +585,7 @@ void Game::CreateGire()
 		{
 			m_goalState = enGoalState_GetGear;
 
-			m_ui->ShowGoal(
-				L"歯車をとれ"
-			);
+			m_ui->ShowGoal(L"歯車をとれ");
 		}
 	}
 	if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
