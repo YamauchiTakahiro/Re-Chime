@@ -55,25 +55,25 @@ bool FinalBoss::Start()
 	{
 		switch (m_game->GetDifficulty())
 		{
-		case Game::EASY:
-			m_finalBossHp = 150;
+		case EASY:
+			m_finalBossHp = 200;
 			m_finalBossMaxHp = 150;
 			m_attackPower = 10;
 			break;
 
-		case Game::NORMAL:
+		case NORMAL:
 			m_finalBossHp = 250;
 			m_finalBossMaxHp = 250;
 			m_attackPower = 20;
 			break;
 
-		case Game::HARD:
+		case HARD:
 			m_finalBossHp = 400;
 			m_finalBossMaxHp = 400;
 			m_attackPower = 35;
 			break;
 
-		case Game::LUNATIC:
+		case LUNATIC:
 			m_finalBossHp = 700;
 			m_finalBossMaxHp = 700;
 			m_attackPower = 50;

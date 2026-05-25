@@ -60,28 +60,28 @@ bool RareRobot::Start()
 	{
 		switch (m_game->GetDifficulty())
 		{
-		case Game::EASY:
+		case EASY:
 			m_rareRobotHp = 50;
 			m_rareRobotMaxHp = 50;
 			m_attackPower = 5;
 			m_knockBackPower = 1200.0f;
 			break;
 
-		case Game::NORMAL:
+		case NORMAL:
 			m_rareRobotHp = 75;
 			m_rareRobotMaxHp = 75;
 			m_attackPower = 10;
 			m_knockBackPower = 800.0f;
 			break;
 
-		case Game::HARD:
+		case HARD:
 			m_rareRobotHp = 120;
 			m_rareRobotMaxHp = 120;
 			m_attackPower = 15;
 			m_knockBackPower = 500.0f;
 			break;
 
-		case Game::LUNATIC:
+		case LUNATIC:
 			m_rareRobotHp = 180;
 			m_rareRobotMaxHp = 180;
 			m_attackPower = 25;

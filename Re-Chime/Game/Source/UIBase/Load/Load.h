@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
+#include "Difficulty.h"
 
 class AudioManager;
 class Game;
@@ -12,7 +13,13 @@ public:
 	virtual void Update() override;
 	virtual void Render(RenderContext& rc)override;
 
+	void SetDifficulty(Difficulty d)
+	{
+		m_difficulty = d;
+	}
+
 private:
+	Difficulty m_difficulty = NORMAL;
 	int LoadTime;
 	Quaternion m_GearRotation;
 	Quaternion m_GearRotation2;

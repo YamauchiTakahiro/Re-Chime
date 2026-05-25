@@ -45,25 +45,25 @@ bool FloorBoss::Start()
 	{
 		switch (m_game->GetDifficulty())
 		{
-		case Game::EASY:
+		case EASY:
 			m_floorBossHP = 150;
 			m_floorBossMaxHP = 150;
 			m_attackPower = 10;
 			break;
 
-		case Game::NORMAL:
+		case NORMAL:
 			m_floorBossHP = 250;
 			m_floorBossMaxHP = 250;
 			m_attackPower = 20;
 			break;
 
-		case Game::HARD:
+		case HARD:
 			m_floorBossHP = 400;
 			m_floorBossMaxHP = 400;
 			m_attackPower = 35;
 			break;
 
-		case Game::LUNATIC:
+		case LUNATIC:
 			m_floorBossHP = 700;
 			m_floorBossMaxHP = 700;
 			m_attackPower = 50;

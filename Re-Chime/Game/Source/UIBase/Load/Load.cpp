@@ -2,6 +2,7 @@
 #include "Load.h"
 #include "Game.h"
 #include "Source/Sound/AudioManager/AudioManager.h"
+#include "Difficulty.h"
 
 Load::Load()
 {
@@ -53,33 +54,41 @@ bool Load::Start()
 
 void Load::Update()
 {
-	//最初の1フレーム後にGame生成
-	if (m_isFirstRender && !m_isCreateGame)
+	if (!m_isFirstRender)
 	{
-		m_game =NewGO<Game>(0,"game");
-
-		m_game->SetLoading(true);
-
-		m_isCreateGame = true;
-
+		m_isFirstRender = true;
 		return;
 	}
 
+	// Game生成
+	if (!m_isCreateGame)
+	{
+		m_game = NewGO<Game>(0, "game");
+
+		m_game->SetDifficulty(m_difficulty);
+		m_game->SetLoading(true);
+
+		m_isCreateGame = true;
+		return;
+	}
+
+	// ロード進行
 	if (m_game)
 	{
-		float target =m_game->GetLoadProgress();
+		float target = m_game->GetLoadProgress();
 
-		m_barCurrent +=(target -m_barCurrent) * 0.1f;
+		m_barCurrent += (target - m_barCurrent) * 0.1f;
 
-		Vector3 scale =m_BarFrame.GetScale();
+		Vector3 scale = m_BarFrame.GetScale();
 
-		scale.x =400.0f *m_barCurrent;
+		scale.x = 400.0f * m_barCurrent;
 
 		m_BarFrame.SetScale(scale);
 
 		m_BarFrame.Update();
 
-		if (m_game && m_game->IsReady())
+		// ロード完了
+		if (m_game->IsReady())
 		{
 			m_game->SetLoading(false);
 
@@ -89,56 +98,10 @@ void Load::Update()
 			}
 
 			DeleteGO(this);
-
 			return;
 		}
 	}
-
-	//ギアの回転
-	m_GearRotation.SetRotationZ(m_loadTimer * m_GearRotSpeed);
-	m_gear.SetRotation(m_GearRotation);
-	m_gear.Update();
-
-	m_GearRotation2.SetRotationZ(m_loadTimer * -m_GearRotSpeed);
-	m_gear2.SetRotation(m_GearRotation2);
-	m_gear2.Update();
-
-	m_GearRotation3.SetRotationZ(m_loadTimer * m_GearRotSpeed);
-	m_gear3.SetRotation(m_GearRotation3);
-	m_gear3.Update();
-
-	////ローディングバーの拡大
-	//Vector3 scale = m_BarFrame.GetScale();
-	//scale.x = m_BarFrame.GetScale().x + 0.7f * g_gameTime->GetFrameDeltaTime();
-	//m_BarFrame.SetScale(scale);
-	//m_BarFrame.Update();
-
-	//ドット更新
-	m_dotTimer += g_gameTime->GetFrameDeltaTime();
-
-	if (m_dotTimer >= 0.3f)
-	{
-		m_dotTimer = 0.0f;
-		m_dotCount++;
-
-		if (m_dotCount > 3)
-		{
-			m_dotCount = 0;
-		}
-	}
-
-	// 文字作成
-	std::wstring text = L"読み込み中";
-
-	// ドット追加
-	for (int i = 0; i < m_dotCount; i++)
-	{
-		text += L"・";
-	}
-
-	m_Font.SetText(text.c_str());
 }
-
 void Load::Render(RenderContext& rc)
 {
 	m_Load.Draw(rc);
@@ -147,5 +110,4 @@ void Load::Render(RenderContext& rc)
 	m_gear2.Draw(rc);
 	m_gear3.Draw(rc);
 	m_Font.Draw(rc);
-	m_isFirstRender = true;
 }
