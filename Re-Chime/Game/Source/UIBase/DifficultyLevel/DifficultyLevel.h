@@ -26,8 +26,13 @@ private:
 	int m_select = 0; //イージー 0 ,ノーマル 1 , ハード 2, ルナティック 3
 	Difficulty m_difficulty = EASY;
 	SpriteRender m_DifficultyLevel;
-	FontRender m_Easy;
-	FontRender m_Normal;
-	FontRender m_Hard;
-	FontRender m_Lunatic;
+
+	SpriteRender m_Easy;
+	SpriteRender m_Normal;
+	SpriteRender m_Hard;
+	SpriteRender m_Lunatic;
+
+	FontRender m_Cursor;
+
+	float m_animTime = 0.0f;
 };

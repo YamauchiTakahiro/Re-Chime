@@ -26,17 +26,76 @@ bool DifficultyLevel::Start()
 {
 	m_DifficultyLevel.Init("Assets/Sprite/DifficultyLevel.DDs", 1920.0f, 1080.0f);
 
-	m_Easy.SetText(L"Easy");
-	m_Normal.SetText(L"Normal");
-	m_Hard.SetText(L"Hard");
-	m_Lunatic.SetText(L"Lunatic");
+	m_Easy.Init("Assets/Sprite/EASY.DDs",720.0f,210.0f);
+	m_Easy.SetPosition(Vector3(0, 390, 0));
+	m_Easy.Update();
+
+	m_Normal.Init("Assets/Sprite/NORMAL.DDs",720.0f,210.0f);
+	m_Normal.SetPosition(Vector3(0, 130, 0));
+	m_Normal.Update();
+
+	m_Hard.Init("Assets/Sprite/HARD.DDs",720.0f,210.0f);
+	m_Hard.SetPosition(Vector3(0, -130, 0));
+	m_Hard.Update();
+
+	m_Lunatic.Init("Assets/Sprite/LUNATIC.DDs",720.0f,210.0f);
+	m_Lunatic.SetPosition(Vector3(0, -390, 0));
+	m_Lunatic.Update();
+
+	m_Cursor.SetText(L">");
+	m_Cursor.SetScale(2.0f);
+
 	return true;
 }
 
 void DifficultyLevel::Update()
 {
+	m_animTime += g_gameTime->GetFrameDeltaTime();
+
 	DifficultySelect();
 
+	float animScale = 1.0f + sinf(m_animTime * 5.0f) * 0.1f;
+
+	float scaleEasy = (m_select == 0) ? animScale : 1.0f;
+	float scaleNormal = (m_select == 1) ? animScale : 1.0f;
+	float scaleHard = (m_select == 2) ? animScale : 1.0f;
+	float scaleLunatic = (m_select == 3) ? animScale : 1.0f;
+
+	m_Easy.SetScale(Vector3(scaleEasy, scaleEasy, 1));
+	m_Normal.SetScale(Vector3(scaleNormal, scaleNormal, 1));
+	m_Hard.SetScale(Vector3(scaleHard, scaleHard, 1));
+	m_Lunatic.SetScale(Vector3(scaleLunatic, scaleLunatic, 1));
+
+	m_Easy.Update();
+	m_Normal.Update();
+	m_Hard.Update();
+	m_Lunatic.Update();
+
+	float cursorY = -180.0f;
+
+	switch (m_select)
+	{
+	case 0:
+		cursorY = 430.0f;
+		break;
+
+	case 1:
+		cursorY = 170.0f;
+		break;
+
+	case 2:
+		cursorY = -90.0f;
+		break;
+
+	case 3:
+		cursorY = -350.0f;
+		break;
+	}
+
+	float cursorX =-480.0f +sinf(m_animTime * 6.0f) * 15.0f;
+	
+	m_Cursor.SetPosition(Vector3(cursorX,cursorY,0.0f));
+	
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		Game* game = FindGO<Game>("game");
@@ -98,45 +157,9 @@ void DifficultyLevel::DifficultySelect()
 void DifficultyLevel::Render(RenderContext& rc)
 {
 	m_DifficultyLevel.Draw(rc);
-
-	float scaleEasy = (m_select == 0) ? 1.5f : 1.0f;
-	float scaleNormal = (m_select == 1) ? 1.5f : 1.0f;
-	float scaleHard = (m_select == 2) ? 1.5f : 1.0f;
-	float scaleLunatic = (m_select == 3) ? 1.5f : 1.0f;
-
-	m_Easy.SetScale(scaleEasy);
-	m_Normal.SetScale(scaleNormal);
-	m_Hard.SetScale(scaleHard);
-	m_Lunatic.SetScale(scaleLunatic);
-
-	float xEasy = CalcCenterX(L"Easy", scaleEasy);
-	float xNormal = CalcCenterX(L"Normal", scaleNormal);
-	float xHard = CalcCenterX(L"Hard", scaleHard);
-	float xLunatic = CalcCenterX(L"Lunatic", scaleLunatic);
-
-	float yEasy = -180.0f;
-	float yNormal = -270.0f;
-	float yHard = -360.0f;
-	float yLunatic = -450.0f;
-
-	m_Easy.SetPosition(Vector3(xEasy, yEasy	, 0));
-	m_Normal.SetPosition(Vector3(xNormal, yNormal, 0));
-	m_Hard.SetPosition(Vector3(xHard, yHard, 0));
-	m_Lunatic.SetPosition(Vector3(xLunatic, yLunatic, 0));
-
-	// ===== 色変更（選択中）=====
-	m_Easy.SetColor(g_vec4White);
-	m_Normal.SetColor(g_vec4White);
-	m_Hard.SetColor(g_vec4White);
-	m_Lunatic.SetColor(g_vec4White);
-
-	if (m_select == 0) m_Easy.SetColor(1, 0, 0, 1);
-	if (m_select == 1) m_Normal.SetColor(1, 0, 0, 1);
-	if (m_select == 2) m_Hard.SetColor(1, 0, 0, 1);
-	if (m_select == 3) m_Lunatic.SetColor(1, 0, 0, 1);
-
 	m_Easy.Draw(rc);
 	m_Normal.Draw(rc);
 	m_Hard.Draw(rc);
 	m_Lunatic.Draw(rc);
+	m_Cursor.Draw(rc);
 }
