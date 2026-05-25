@@ -152,6 +152,11 @@ public:
 		m_isLoading = flg;
 	}
 
+	void SetVolumeSetting(VolumeSettings* volume)
+	{
+		m_volumeSetting = volume;
+	}
+
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;

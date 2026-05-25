@@ -18,6 +18,10 @@ public:
 		m_title = title;
 	}
 	void Cursor();
+	void SetGame(Game* game)
+	{
+		m_game = game;
+	}
 private:
 	Game* m_game = nullptr;
 	float m_bgmVolume = 1.0f;
