@@ -93,7 +93,10 @@ void Title::Update()
 
 		case 2:
 				m_volumeSettings = NewGO<VolumeSettings>(0, "VolumeSettings");
-				m_volumeSettings->SetTitle(this);
+				if (m_volumeSettings)
+				{
+					m_volumeSettings->SetTitle(this);
+				}
 				m_isSetting = true;
 				break;
 		case 3:

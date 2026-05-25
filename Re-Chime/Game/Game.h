@@ -24,7 +24,6 @@ class Heal;
 class Fade;
 class EffectManager;
 class VolumeSettings;
-	;
 
 class Game : public IGameObject
 {
@@ -91,6 +90,11 @@ public:
 	void SetSetting(bool flag)
 	{
 		m_isSetting = flag;
+
+		if (!flag)
+		{
+			m_volumeSetting = nullptr;
+		}
 	}
 	void SetDifficulty(DifficultyLevel* dl)
 	{
@@ -174,6 +178,7 @@ private:
 	DifficultyLevel* m_difficul = nullptr;
 	Difficulty m_difficulty = NORMAL;
 	EffectManager* m_effectManager = nullptr;
+	VolumeSettings* m_volumeSettings = nullptr;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
 	FontRender m_Cursor;
