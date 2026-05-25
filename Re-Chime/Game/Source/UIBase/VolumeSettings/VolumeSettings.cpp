@@ -184,6 +184,8 @@ void VolumeSettings::Update()
             m_audioManager->SaveVolume();
         }
 
+        Title* title = FindGO<Title>("Title");
+
         if (m_title)
         {
             m_title->SetSetting(false);
@@ -193,7 +195,6 @@ void VolumeSettings::Update()
         if (game)
         {
             game->SetSetting(false);
-            game->SetDifficulty(nullptr);
         }
         DeleteGO(this);
     }
