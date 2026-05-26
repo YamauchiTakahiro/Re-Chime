@@ -59,24 +59,28 @@ bool FinalBoss::Start()
 			m_finalBossHp = 200;
 			m_finalBossMaxHp = 200;
 			m_attackPower = 10;
+			m_shotCoolTimeReset = 3.0f;
 			break;
 
 		case NORMAL:
 			m_finalBossHp = 300;
 			m_finalBossMaxHp = 300;
 			m_attackPower = 20;
+			m_shotCoolTimeReset = 2.0f;
 			break;
 
 		case HARD:
 			m_finalBossHp = 500;
 			m_finalBossMaxHp = 500;
 			m_attackPower = 35;
+			m_shotCoolTimeReset = 1.5f;
 			break;
 
 		case LUNATIC:
 			m_finalBossHp = 750;
 			m_finalBossMaxHp = 750;
 			m_attackPower = 50;
+			m_shotCoolTimeReset = 1.0f;
 			break;
 		}
 	}
@@ -243,7 +247,7 @@ void FinalBoss::Shot()
 
 	// 弾速度
 	m_bullet->SetMoveSpeed(forward * 1500.0f);
-	m_shotCoolTime = 3.0f;
+	m_shotCoolTime = m_shotCoolTimeReset;
 }
 
 void FinalBoss::Hit()
