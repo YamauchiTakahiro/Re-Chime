@@ -144,7 +144,7 @@ void FinalBoss::Update()
 
 	float dist = (m_player->GetPosition() - m_position).Length();
 
-	if (dist <= 1000.0f)
+	if (dist <= 1500.0f)
 	{
 		m_isShowBossHP = true;
 	}
