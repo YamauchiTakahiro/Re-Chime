@@ -325,6 +325,10 @@ void RareRobot::Hit()
 				}
 
 				m_rareRobotHp -= damage;
+				if (m_rareRobotHp < 0)
+				{
+					m_rareRobotHp = 0;
+				}
 				m_searchPlayer = true;
 
 				//========================
@@ -388,6 +392,10 @@ void RareRobot::Hit()
 					}
 				}
 				m_rareRobotHp -= damage;
+				if (m_rareRobotHp < 0)
+				{
+					m_rareRobotHp = 0;
+				}
 				m_searchPlayer = true;
 
 				//========================

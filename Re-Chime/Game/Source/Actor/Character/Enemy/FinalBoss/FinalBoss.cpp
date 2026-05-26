@@ -144,7 +144,7 @@ void FinalBoss::Update()
 
 	float dist = (m_player->GetPosition() - m_position).Length();
 
-	if (dist <= 2000.0f)
+	if (dist <= 1000.0f)
 	{
 		m_isShowBossHP = true;
 	}
@@ -350,10 +350,23 @@ void FinalBoss::Death()
 {
 	if (m_finalBossHp <= 0)
 	{
+		if (m_isDead)
+		{
+			return;
+		}
+
+		m_isDead = true;
+
 		m_game->EnemyCount();
+
 		MakeExplosionEffect();
-		m_gire = NewGO<Gire>(0);
-		m_gire->SetPosition(Vector3(m_position.x, m_position.y + 50.0f, m_position.z));
+
+		m_gire = NewGO<Gire>(0, "gire");
+
+		m_gire->SetPosition(Vector3(m_position.x,m_position.y + 50.0f,m_position.z));
+
+		m_gire->SetScale(Vector3(3.0f, 3.0f, 3.0f));
+
 		DeleteGO(this);
 	}
 }

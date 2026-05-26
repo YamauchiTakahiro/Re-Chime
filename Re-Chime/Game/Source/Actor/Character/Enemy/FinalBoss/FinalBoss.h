@@ -108,5 +108,6 @@ private:
 	bool m_isShot = false;		//!<攻撃しているかどうか。
 	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
     bool m_isShowBossHP = false;
+    bool m_isDead = false;
 };
 
