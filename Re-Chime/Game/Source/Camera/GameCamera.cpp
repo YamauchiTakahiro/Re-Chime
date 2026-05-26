@@ -237,6 +237,8 @@ void GameCamera::UpdateBossCamera()
 	if (m_bossCameraTime > m_bossCameraEndTime) {
 		m_isBossCamera = false;
 		m_game->SetBossIntro(false);
+		m_isStartFade = false;
+		m_cameraState = EnCameraState::FadeOut;
 	}
 }
 

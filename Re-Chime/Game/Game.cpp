@@ -159,7 +159,7 @@ void Game::Update()
 
 						m_stage->SetPosition(objData.position);
 					}
-					else if (objData.EqualObjectName(L"mediumRobot"))
+					/*else if (objData.EqualObjectName(L"mediumRobot"))
 					{
 						auto enemy = NewGO<MediumRobot>(0, "mediumRobot");
 
@@ -194,7 +194,7 @@ void Game::Update()
 						m_floorBoss.push_back(floorBoss);
 
 						m_enemyCount++;
-					}
+					}*/
 					else if (objData.EqualObjectName(L"finalBoss") == true)
 					{
 						m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
@@ -205,66 +205,71 @@ void Game::Update()
 
 						m_enemyCount++;
 					}
-					else if (objData.EqualObjectName(L"rareRobot") == true)
-					{
-						// 0～99 の乱数
-						int randValue = rand() % 100;
-						int spawnRate = 20;
+					//else if (objData.EqualObjectName(L"rareRobot") == true)
+					//{
+					//	// 0～99 の乱数
+					//	int randValue = rand() % 100;
+					//	int spawnRate = 20;
 
-						// 30%で生成
-						if (randValue < spawnRate)
-						{
-							auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
+					//	// 30%で生成
+					//	 //0～99 の乱数
+					//	int randValue = rand() % 100;
+					//	int spawnRate = 20;
 
-							rareRobot->SetPosition(objData.position);
+					//	 //30%で生成
+					//	if (randValue < spawnRate)
+					//	{
+					//		auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
 
-							rareRobot->SetScale(objData.scale);
+					//		rareRobot->SetPosition(objData.position);
 
-							m_rareRobot.push_back(rareRobot);
-						}
-					}
-					else if (objData.EqualObjectName(L"barrier1") == true)
-					{
-						m_barrier1 = NewGO<Barrier>(0, "barrier");
-						m_barrier1->SetPosition(objData.position);
-						m_barrier1->SetRotation(objData.rotation);
-						m_barrier1->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier2") == true)
-					{
-						m_barrier2 = NewGO<Barrier>(0, "barrier");
-						m_barrier2->SetPosition(objData.position);
-						m_barrier2->SetRotation(objData.rotation);
-						m_barrier2->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier3") == true)
-					{
-						m_barrier3 = NewGO<Barrier>(0, "barrier");
-						m_barrier3->SetPosition(objData.position);
-						m_barrier3->SetRotation(objData.rotation);
-						m_barrier3->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier4") == true)
-					{
-						m_barrier4 = NewGO<Barrier>(0, "barrier");
-						m_barrier4->SetPosition(objData.position);
-						m_barrier4->SetRotation(objData.rotation);
-						m_barrier4->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier5") == true)
-					{
-						m_barrier5 = NewGO<Barrier>(0, "barrier");
-						m_barrier5->SetPosition(objData.position);
-						m_barrier5->SetRotation(objData.rotation);
-						m_barrier5->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier6") == true)
-					{
-						m_barrier6 = NewGO<Barrier>(0, "barrier");
-						m_barrier6->SetPosition(objData.position);
-						m_barrier6->SetRotation(objData.rotation);
-						m_barrier6->SetScale(objData.scale);
-					}
+					//		rareRobot->SetScale(objData.scale);
+
+					//		m_rareRobot.push_back(rareRobot);
+					//	}
+					//}
+					//else if (objData.EqualObjectName(L"barrier1") == true)
+					//{
+					//	m_barrier1 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier1->SetPosition(objData.position);
+					//	m_barrier1->SetRotation(objData.rotation);
+					//	m_barrier1->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier2") == true)
+					//{
+					//	m_barrier2 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier2->SetPosition(objData.position);
+					//	m_barrier2->SetRotation(objData.rotation);
+					//	m_barrier2->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier3") == true)
+					//{
+					//	m_barrier3 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier3->SetPosition(objData.position);
+					//	m_barrier3->SetRotation(objData.rotation);
+					//	m_barrier3->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier4") == true)
+					//{
+					//	m_barrier4 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier4->SetPosition(objData.position);
+					//	m_barrier4->SetRotation(objData.rotation);
+					//	m_barrier4->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier5") == true)
+					//{
+					//	m_barrier5 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier5->SetPosition(objData.position);
+					//	m_barrier5->SetRotation(objData.rotation);
+					//	m_barrier5->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier6") == true)
+					//{
+					//	m_barrier6 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier6->SetPosition(objData.position);
+					//	m_barrier6->SetRotation(objData.rotation);
+					//	m_barrier6->SetScale(objData.scale);
+					//}
 					return true;
 				});
 
@@ -287,11 +292,6 @@ void Game::Update()
 		case enLoad_UI:
 
 			m_ui = NewGO<UI>(0, "ui");
-
-			if (m_ui)
-			{
-				m_ui->ShowGoal(L"敵を倒せ");
-			}
 
 			m_loadCount++;
 
@@ -475,6 +475,21 @@ void Game::Update()
 
 			m_floorNo++;
 			m_needGireCount++;
+
+			// 階到達後に表示
+			if (m_ui)
+			{
+				m_goalState = enGoalState_DefeatEnemy;
+
+				if (m_floorNo == 4)
+				{
+					m_ui->ShowGoal(L"ボスを倒せ");
+				}
+				else
+				{
+					m_ui->ShowGoal(L"敵を倒せ");
+				}
+			}
 
 			m_isMoveNextFloor = false;
 
