@@ -889,43 +889,50 @@ bool Player::UseItem(int itemNo)
 	switch (itemNo)
 	{
 	case 0: // 攻撃速度
-
-		if (m_attackSpeedPotionCount <= 0)
+		if (m_attackSpeedPotionCount > 0)
 		{
-			return false;
+			m_attackSpeedPotionCount--;
+
+			m_attackSpeedBuffFlag = true;
+			m_attackSpeedBuffTime = 20.0f;
+
+			MakeAttackSpeedBuffEffect();
+
+			return true;
 		}
-
-		m_attackSpeedPotionCount--;
-
-		AttackSpeedBuff();
-
-		return true;
+		break;
 
 	case 1: // 攻撃力
-
-		if (m_powerBuffPotionCount <= 0)
+		if (m_powerBuffPotionCount > 0)
 		{
-			return false;
+			m_powerBuffPotionCount--;
+
+			m_powerBuffFlag = true;
+			m_powerBuffTime = 20.0f;
+
+			MakePowerBuffEffect();
+
+			return true;
 		}
-
-		m_powerBuffPotionCount--;
-
-		PowerBuff();
-
-		return true;
+		break;
 
 	case 2: // 回復
-
-		if (m_healPotionCount <= 0)
+		if (m_healPotionCount > 0)
 		{
-			return false;
+			m_playerHp += m_heal;
+
+			if (m_playerHp > m_playerMaxHp)
+			{
+				m_playerHp = m_playerMaxHp;
+			}
+
+			m_healPotionCount--;
+
+			MakeHealEffect();
+
+			return true;
 		}
-
-		m_healPotionCount--;
-
-		Heal();
-
-		return true;
+		break;
 	}
 
 	return false;
