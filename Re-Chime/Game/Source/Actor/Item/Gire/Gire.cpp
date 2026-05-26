@@ -19,9 +19,6 @@ bool Gire::Start()
 	m_modelRender.Init("Assets/modelData/Item/Gear/Gear.tkm");
 	m_player = FindGO<Player>("player");
 	m_audioManager = FindGO<AudioManager>("audioManager");
-	SetScale();
-
-	SetScale();
 
 	return true;
 }
@@ -36,6 +33,7 @@ void Gire::Update()
 		GetGier();
 	}
 	m_modelRender.Update();
+	m_modelRender.SetScale(m_scale);
 }
 
 void Gire::Move()
@@ -52,11 +50,6 @@ void Gire::GetGier()
 	m_player->addGireCount();
 	m_audioManager->PlaySE(enSound_GetGearSE, 1.0f, enSEPlay_AllowOverlap);
 	DeleteGO(this);
-}
-
-void Gire::SetScale()
-{
-	m_scale.Set(3.0f, 3.0f, 3.0f);
 }
 
 void Gire::Render(RenderContext& rc)

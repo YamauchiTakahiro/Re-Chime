@@ -579,6 +579,7 @@ void Game::CreateGire()
 	{
 		m_gire = NewGO<Gire>(0, "gire");
 		m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+		m_gire->SetScale(Vector3(3.0f, 3.0f, 3.0f));
 		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
 		if (m_ui)
@@ -592,6 +593,7 @@ void Game::CreateGire()
 	{
 		m_gire = NewGO<Gire>(0, "gire");
 		m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
+		m_gire->SetScale(Vector3(3.0f, 3.0f, 3.0f));
 		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
 		if (m_ui)
@@ -607,6 +609,7 @@ void Game::CreateGire()
 	{
 		m_gire = NewGO<Gire>(0, "gire");
 		m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
+		m_gire->SetScale(Vector3(3.0f, 3.0f, 3.0f));
 		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
 		if (m_ui)

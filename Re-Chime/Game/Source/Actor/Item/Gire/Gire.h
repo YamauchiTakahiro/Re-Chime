@@ -22,7 +22,10 @@ public:
 		m_position = position;
 		return m_position;
 	}
-	void SetScale();
+	void SetScale(Vector3 scale)
+	{
+		m_scale = scale;
+	}
 	void Render(RenderContext& rc)override;
 private:
 	ModelRender m_modelRender;
