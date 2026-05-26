@@ -513,12 +513,23 @@ void FinalBoss::FinalBossHP()
 {
 	float rate = (float)m_finalBossHp / (float)m_finalBossMaxHp;
 
+	// 下限
+	if (rate < 0.0f)
+	{
+		rate = 0.0f;
+	}
+
+	// 上限
+	if (rate > 1.0f)
+	{
+		rate = 1.0f;
+	}
+
 	Vector3 scale = { 1.5f, 0.3f, 1.0f };
 	scale.x *= rate;
 
 	m_bossHPBar.SetScale(scale);
 
-	// HP少なくなったら色変更
 	if (m_finalBossHp <= m_finalBossMaxHp / 4)
 	{
 		m_bossHPBar.SetMulColor(g_vec4Red);
@@ -527,6 +538,7 @@ void FinalBoss::FinalBossHP()
 	{
 		m_bossHPBar.SetMulColor(g_vec4Green);
 	}
+
 	m_bossHPBar.Update();
 }
 

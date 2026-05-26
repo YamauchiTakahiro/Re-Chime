@@ -215,9 +215,11 @@ private:
 		Vector3 targetPos;
 		bool intro;
 		bool bossIntro;
+		bool countAdded = false;
 	};
 
 	std::vector<FadeArea> m_fadeAreas;
+	FadeArea* m_currentFadeArea = nullptr;
 	bool m_createGire = false;
 	bool m_isGameStop = false;
 

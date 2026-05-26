@@ -316,6 +316,10 @@ void SmallRobot::Hit()
 				}
 				
 				m_smallRobotHp -= damage;
+				if (m_smallRobotHp < 0)
+				{
+					m_smallRobotHp = 0;
+				}
 				m_searchPlayer = true;
 
 				//========================
@@ -379,6 +383,10 @@ void SmallRobot::Hit()
 					}
 				}
 				m_smallRobotHp -= damage;
+				if (m_smallRobotHp < 0)
+				{
+					m_smallRobotHp = 0;
+				}
 				m_searchPlayer = true;
 				//========================
 				// ノックバック
@@ -482,7 +490,7 @@ void SmallRobot::EnemyHP()
 
 	nowHP = GetHP();
 	MaxHP = m_smallRobotMaxHp;
-	float Wari = (float)nowHP / (float)MaxHP;
+	float Wari = max(0.0f, (float)nowHP / (float)MaxHP);
 	Vector3 scale = { 0.28f, 0.28f, 0.5f };
 	scale.x *= Wari;
 	m_enemyHP.SetScale(scale);

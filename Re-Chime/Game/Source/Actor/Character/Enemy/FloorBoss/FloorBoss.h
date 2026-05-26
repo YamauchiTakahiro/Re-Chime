@@ -102,13 +102,14 @@ private:
 	AudioManager* m_audioManager = nullptr;
 	CollisionObject* m_collisionObject = nullptr;
 	Vector3 m_forward;
-	SpriteRender m_enemyHP;//敵のHPを表示する。
+	SpriteRender m_bossHPFrame;
+	SpriteRender m_bossHPBar;
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
 	bool m_isShowHP = false;
 	bool m_isAttack = false;
-	int m_floorBossHP = 100;
-	int m_floorBossMaxHP = 100;
-	int m_attackPower = 20;
+	int m_floorBossHP = 80;
+	int m_floorBossMaxHP = 80;
+	int m_attackPower = 5;
 	float m_timeCount = 0.0f;		//!<タイマー用の変数。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
 	float m_attackCollisionLife = 0.0f;	//!<攻撃判定の有効時間。

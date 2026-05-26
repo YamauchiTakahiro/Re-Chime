@@ -30,9 +30,18 @@ bool FloorBoss::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_modelRender.Init("Assets/modelData/Enemy/floorBoss/FloorBoss.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
 	m_characterController.Init(300.0f, 200.0f, m_position);
-	m_enemyHP.Init("Assets/UIData/HP.DDs", 1024.0f, 128.0f);
-	m_enemyHP.SetPivot(Vector2(0.0f, 0.5f));
-	m_enemyHP.Update();
+
+	m_bossHPFrame.Init("Assets/UIData/enemyHPFrame.DDs", 1024, 128.0f);
+	m_bossHPFrame.SetPosition(Vector3(10.5f, 450.0f, 0.0f));
+	m_bossHPFrame.SetScale(Vector3(1.52f, 0.3f, 1.0f));
+	m_bossHPFrame.Update();
+
+	m_bossHPBar.Init("Assets/UIData/enemyHPBar.DDs", 1024, 128.0f);
+	m_bossHPBar.SetPosition(Vector3(-760.0f, 447.0f, 0.0f));
+	m_bossHPBar.SetScale(Vector3(1.48f, 0.3f, 1.0f));
+	m_bossHPBar.SetPivot(Vector2(0.0f, 0.5f));
+	m_bossHPBar.Update();
+
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	m_audioManager = FindGO<AudioManager>("audioManager");
@@ -96,7 +105,7 @@ void FloorBoss::Update()
 
 	AttackHit();
 
-	//EnemyHP();
+	FloorBossHP();
 
 	ManageState();
 
@@ -379,7 +388,32 @@ void FloorBoss::ManageState()
 
 void FloorBoss::FloorBossHP()
 {
+	float rate = (float)m_floorBossHP / (float)m_floorBossMaxHP;
 
+	if (rate < 0.0f)
+	{
+		rate = 0.0f;
+	}
+
+	Vector3 scale = { 1.5f, 0.3f, 1.0f };
+	scale.x *= rate;
+
+	m_bossHPBar.SetScale(scale);
+
+	if (m_floorBossHP <= m_floorBossMaxHP / 4)
+	{
+		m_bossHPBar.SetMulColor(g_vec4Red);
+	}
+	else
+	{
+		m_bossHPBar.SetMulColor(g_vec4Green);
+	}
+
+	m_bossHPBar.Update();
+
+	float dist = (m_player->GetPosition() - m_position).Length();
+
+	m_isShowHP = (dist <= 2000.0f);
 }
 
 void FloorBoss::PlayAnimation()
@@ -489,6 +523,7 @@ void FloorBoss::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 	if (m_isShowHP)
 	{
-		m_enemyHP.Draw(rc);
+		m_bossHPFrame.Draw(rc);
+		m_bossHPBar.Draw(rc);
 	}
 }

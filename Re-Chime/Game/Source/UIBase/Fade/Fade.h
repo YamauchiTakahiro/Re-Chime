@@ -11,19 +11,15 @@ public:
 	//フェードイン　（明るくなる）
 	void StartFadeIn()
 	{
-		if (m_state == enState_FadeIn)return;
 		m_state = enState_FadeIn;
-		m_currentAlpha = 1.0f;
 	}
 
 	//フェードアウト（暗くなる）
 	void StartFadeOut()
 	{
-		if (m_state == enState_FadeOut)return;
-		m_state = enState_FadeOut;
-
 		m_isFadeOutFinished = false;
-		m_currentAlpha = 0.0f;
+
+		m_state = enState_FadeOut;
 	}
 
 	//フェード中か判定する
@@ -46,6 +42,11 @@ public:
 	bool IsFadeOutFinished() const
 	{
 		return m_isFadeOutFinished;
+	}
+
+	void ResetFadeOut()
+	{
+		m_isFadeOutFinished = false;
 	}
 
 private:
