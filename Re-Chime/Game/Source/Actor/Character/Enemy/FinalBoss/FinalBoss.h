@@ -104,6 +104,7 @@ private:
     float m_idleTimer = 0.0f;						//待機タイマー。
 	float m_attackCollisionLife = 0.0f;				//攻撃判定の有効時間。
     float m_shotCoolTime = 0.0f;
+	float m_shotCoolTimeReset = 0.0f;						//攻撃のクールタイム。
 	bool m_isShot = false;		//!<攻撃しているかどうか。
 	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
     bool m_isShowBossHP = false;
