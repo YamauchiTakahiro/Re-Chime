@@ -38,7 +38,6 @@ bool GameCamera::Start()
 	//プレイヤーのインスタンスを探す。
 	m_player = FindGO<Player>("player");
 	//m_fade = FindGO<Fade>("fade");
-	m_finalBoss = FindGO<FinalBoss>("finalBoss");
 
 	//ばねカメラの初期化。
 	m_springCamera.Init(
@@ -184,6 +183,15 @@ void GameCamera::UpdateIntroCamera()
 
 void GameCamera::UpdateBossCamera()
 {
+	if (m_finalBoss == nullptr)
+	{
+		m_finalBoss = FindGO<FinalBoss>("finalBoss");
+
+		if (m_finalBoss == nullptr)
+		{
+			return;
+		}
+	}
 	m_bossCameraTime += g_gameTime->GetFrameDeltaTime();
 	Vector3 center;
 	int floorNo = m_game->GetFloorNo();
