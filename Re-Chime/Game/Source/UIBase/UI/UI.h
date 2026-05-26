@@ -2,6 +2,7 @@
 #include "Source/UIBase/UIBase.h"
 class Player;
 class Game;
+class DifficultyLevel;
 class UI :public UIBase
 {
     public:
