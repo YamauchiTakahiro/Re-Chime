@@ -31,6 +31,8 @@ namespace
 	}
 }
 
+
+
 Game::Game()
 {
     m_isLoading = true;
@@ -51,7 +53,6 @@ Game::Game()
 
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
-
 bool Game::Start()
 {
 	m_maxLoadCount = 8;
@@ -77,16 +78,12 @@ Game::~Game()
 	{
 		DeleteGO(mediumRobot);
 	}
-	const auto& finalBosses = FindGOs<FinalBoss>("finalBoss");
-	for (auto finalBoss : finalBosses)
-	{
-		DeleteGO(finalBoss);
-	}
 	const auto& rareRobots = FindGOs<RareRobot>("rareRobot");
 	for (auto rareRobot : rareRobots)
 	{
 		DeleteGO(rareRobot);
 	}
+	DeleteGO(m_finalBoss);
 	DeleteGO(m_player);
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_stage);
@@ -162,7 +159,7 @@ void Game::Update()
 
 						m_stage->SetPosition(objData.position);
 					}
-					else if (objData.EqualObjectName(L"mediumRobot"))
+					/*else if (objData.EqualObjectName(L"mediumRobot"))
 					{
 						auto enemy = NewGO<MediumRobot>(0, "mediumRobot");
 
@@ -197,38 +194,36 @@ void Game::Update()
 						m_floorBoss.push_back(floorBoss);
 
 						m_enemyCount++;
-					}
+					}*/
 					else if (objData.EqualObjectName(L"finalBoss") == true)
 					{
-						auto finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+						m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
 
-						finalBoss->SetPosition(objData.position);
+						m_finalBoss->SetPosition(objData.position);
 
-						finalBoss->SetScale(objData.scale);
-
-						m_finalBoss.push_back(finalBoss);
+						m_finalBoss->SetScale(objData.scale);
 
 						m_enemyCount++;
 					}
-					else if (objData.EqualObjectName(L"rareRobot") == true)
-					{
-						// 0～99 の乱数
-						int randValue = rand() % 100;
-						int spawnRate = 20;
+					//else if (objData.EqualObjectName(L"rareRobot") == true)
+					//{
+					//	// 0～99 の乱数
+					//	int randValue = rand() % 100;
+					//	int spawnRate = 20;
 
-						// 30%で生成
-						if (randValue < spawnRate)
-						{
-							auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
+					//	// 30%で生成
+					//	if (randValue < spawnRate)
+					//	{
+					//		auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
 
-							rareRobot->SetPosition(objData.position);
+					//		rareRobot->SetPosition(objData.position);
 
-							rareRobot->SetScale(objData.scale);
+					//		rareRobot->SetScale(objData.scale);
 
-							m_rareRobot.push_back(rareRobot);
-						}
-					}
-					else if (objData.EqualObjectName(L"barrier1") == true)
+					//		m_rareRobot.push_back(rareRobot);
+					//	}
+					//}
+					/*else if (objData.EqualObjectName(L"barrier1") == true)
 					{
 						m_barrier1 = NewGO<Barrier>(0, "barrier");
 						m_barrier1->SetPosition(objData.position);
@@ -269,7 +264,7 @@ void Game::Update()
 						m_barrier6->SetPosition(objData.position);
 						m_barrier6->SetRotation(objData.rotation);
 						m_barrier6->SetScale(objData.scale);
-					}
+					}*/
 					return true;
 				});
 
@@ -427,8 +422,6 @@ void Game::Update()
 				m_nextIntro = area.intro;
 				m_nextBossIntro = area.bossIntro;
 
-				m_currentFadeArea = &area;
-
 				m_isMoveNextFloor = true;
 
 				m_audioManager->PlaySE(
@@ -480,18 +473,8 @@ void Game::Update()
 			m_intro = m_nextIntro;
 			m_bossIntro = m_nextBossIntro;
 
-			if (m_currentFadeArea != nullptr)
-			{
-				if (!m_currentFadeArea->countAdded)
-				{
-					m_floorNo++;
-					m_needGireCount++;
-
-					m_currentFadeArea->countAdded = true;
-				}
-			}
-
-			m_fade->ResetFadeOut();
+			m_floorNo++;
+			m_needGireCount++;
 
 			m_isMoveNextFloor = false;
 

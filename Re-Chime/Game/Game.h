@@ -166,7 +166,7 @@ private:
 	std::vector<SmallRobot*> m_smallRobot;
 	std::vector<FloorBoss*> m_floorBoss;
 	std::vector<MediumRobot*> m_mediumRobot;
-	std::vector<FinalBoss*> m_finalBoss;
+	FinalBoss* m_finalBoss = nullptr;
 	std::vector<RareRobot*> m_rareRobot;
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
