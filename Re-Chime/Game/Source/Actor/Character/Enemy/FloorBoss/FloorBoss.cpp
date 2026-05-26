@@ -58,24 +58,28 @@ bool FloorBoss::Start()
 			m_floorBossHP = 150;
 			m_floorBossMaxHP = 150;
 			m_attackPower = 10;
+			m_attackIntervalTime = 3.0f;
 			break;
 
 		case NORMAL:
 			m_floorBossHP = 250;
 			m_floorBossMaxHP = 250;
 			m_attackPower = 20;
+			m_attackIntervalTime = 3.0f;
 			break;
 
 		case HARD:
 			m_floorBossHP = 400;
 			m_floorBossMaxHP = 400;
 			m_attackPower = 35;
+			m_attackIntervalTime = 2.5f;
 			break;
 
 		case LUNATIC:
 			m_floorBossHP = 700;
 			m_floorBossMaxHP = 700;
 			m_attackPower = 50;
+			m_attackIntervalTime = 2.0f;
 			break;
 		}
 	}
@@ -452,7 +456,7 @@ void FloorBoss::FloorBossState()
     m_attackStateTimer = 0.8f;
     m_attackPhase = enAttackPhase_Warn;
 
-    m_timeCount = 2.0f;
+    m_timeCount = m_attackIntervalTime;
 	MakeNoticeCircleEffect();
 }
 	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)

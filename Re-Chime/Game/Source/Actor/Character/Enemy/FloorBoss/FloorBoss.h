@@ -115,6 +115,7 @@ private:
 	float m_attackCollisionLife = 0.0f;	//!<攻撃判定の有効時間。
 	float m_attackStateTimer = 0.0f;	//!<攻撃状態のタイマー。
 	float m_attackDelayTimer = 0.0f; 
+	float m_attackIntervalTime = 0.0f;
 	bool m_attackHitActive = false;
 	float m_attackWarnTimer;
 	float m_attackActiveTimer;
