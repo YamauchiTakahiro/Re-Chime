@@ -101,8 +101,6 @@ void Player::Update()
 
 		Attack();
 
-		PlayAnimation();
-
 		ManageState();
 	}
 	
@@ -116,6 +114,8 @@ void Player::Update()
 			m_collisionObject = nullptr;
 		}
 	}
+
+	PlayAnimation();
 
 	FadeTime();
 
