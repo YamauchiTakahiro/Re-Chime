@@ -31,8 +31,6 @@ namespace
 	}
 }
 
-
-
 Game::Game()
 {
     m_isLoading = true;
@@ -53,6 +51,7 @@ Game::Game()
 
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
+
 bool Game::Start()
 {
 	m_maxLoadCount = 8;
@@ -428,6 +427,8 @@ void Game::Update()
 				m_nextIntro = area.intro;
 				m_nextBossIntro = area.bossIntro;
 
+				m_currentFadeArea = &area;
+
 				m_isMoveNextFloor = true;
 
 				m_audioManager->PlaySE(
@@ -479,8 +480,18 @@ void Game::Update()
 			m_intro = m_nextIntro;
 			m_bossIntro = m_nextBossIntro;
 
-			m_floorNo++;
-			m_needGireCount++;
+			if (m_currentFadeArea != nullptr)
+			{
+				if (!m_currentFadeArea->countAdded)
+				{
+					m_floorNo++;
+					m_needGireCount++;
+
+					m_currentFadeArea->countAdded = true;
+				}
+			}
+
+			m_fade->ResetFadeOut();
 
 			m_isMoveNextFloor = false;
 
