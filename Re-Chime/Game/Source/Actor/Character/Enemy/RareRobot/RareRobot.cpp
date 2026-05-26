@@ -453,7 +453,6 @@ void RareRobot::DamageIntarval()
 
 void RareRobot::Death()
 {
-	m_game->EnemyCount();
 	MakeExplosionEffect();
 	m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
 	int randomNum = rand() % 3 + 1;
