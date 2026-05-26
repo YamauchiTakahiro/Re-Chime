@@ -884,50 +884,51 @@ void Player::MakeAttackSpeedBuffEffect()
 	);
 }
 
-void Player::UseItem(int itemNo)
+bool Player::UseItem(int itemNo)
 {
 	switch (itemNo)
 	{
-	case 0:
-		if (m_attackSpeedPotionCount > 0)
+	case 0: // 攻撃速度
+
+		if (m_attackSpeedPotionCount <= 0)
 		{
-			m_attackSpeedPotionCount--;
-
-			m_attackSpeedBuffFlag = true;
-			m_attackSpeedBuffTime = 20.0f;
-
-			MakeAttackSpeedBuffEffect();
-
-			m_itemUseCoolTime = 0.5f;
+			return false;
 		}
 
-		break;
+		m_attackSpeedPotionCount--;
 
-	case 1:
-		if (m_powerBuffPotionCount > 0)
+		AttackSpeedBuff();
+
+		return true;
+
+	case 1: // 攻撃力
+
+		if (m_powerBuffPotionCount <= 0)
 		{
-			m_powerBuffPotionCount--;
-			m_powerBuffFlag = true;
-			m_powerBuffTime = 20.0f;
-			MakePowerBuffEffect();
-
-			m_itemUseCoolTime = 0.5f;
+			return false;
 		}
 
-		break;
+		m_powerBuffPotionCount--;
 
-	case 2:
-		if (m_healPotionCount > 0)
+		PowerBuff();
+
+		return true;
+
+	case 2: // 回復
+
+		if (m_healPotionCount <= 0)
 		{
-			m_healPotionCount--;
-
-			Heal();
-
-			m_itemUseCoolTime = 0.5f;
+			return false;
 		}
 
-		break;
+		m_healPotionCount--;
+
+		Heal();
+
+		return true;
 	}
+
+	return false;
 }
 
 const CharacterController& Player::GetCharacterController() const

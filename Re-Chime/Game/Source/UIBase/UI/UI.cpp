@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "Source/Actor/Character/Player/Player.h"
 #include "Game.h"
+#include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 
 UI::UI()
 {
@@ -127,18 +128,31 @@ void UI::Update()
 
 	if (m_isInventoryOpen)
 	{
-		if (
-			g_pad[0]->IsTrigger(enButtonX)
-			&& m_inventoryUseCoolTime <= 0.0f
-			)
+		if (g_pad[0]->IsTrigger(enButtonX)&& m_inventoryUseCoolTime <= 0.0f)
 		{
 			m_isUseItem = true;
 		}
 	}
 
-	if (!m_isInventoryOpen)
+	bool updateCoolTime = false;
+
+	Difficulty difficulty =m_game->GetDifficulty();
+
+	if (difficulty == EASY ||difficulty == NORMAL)
 	{
-		m_inventoryUseCoolTime -= g_gameTime->GetFrameDeltaTime();
+		// Easy / Normal はインベントリ開いてても進む
+		updateCoolTime = true;
+	}
+	else
+	{
+		// Hard / Lunatic は閉じてる時だけ進む
+		updateCoolTime = !m_isInventoryOpen;
+	}
+
+	if (updateCoolTime)
+	{
+		m_inventoryUseCoolTime -=
+			g_gameTime->GetFrameDeltaTime();
 
 		if (m_inventoryUseCoolTime < 0.0f)
 		{
@@ -353,9 +367,12 @@ void UI::Inventory()
 
 	if (m_isUseItem)
 	{
-		m_player->UseItem(m_selectItem);
+		bool useSuccess =m_player->UseItem(m_selectItem);
 
-		m_inventoryUseCoolTime = 10.0f;
+		if (useSuccess && m_game)
+		{
+			m_inventoryUseCoolTime =m_game->GetInventoryCoolTime();
+		}
 
 		m_isUseItem = false;
 	}

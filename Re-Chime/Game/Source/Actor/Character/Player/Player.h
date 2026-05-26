@@ -156,7 +156,7 @@ public:
         return m_attackSpeedPotionCount;
     }
 
-    void UseItem(int itemNo);
+    bool UseItem(int itemNo);
     void SetScale();
     void Render(RenderContext& rc)override;
 

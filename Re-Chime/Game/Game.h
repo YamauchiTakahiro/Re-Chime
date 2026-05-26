@@ -148,6 +148,8 @@ public:
 		return m_difficulty;
 	}
 
+	float GetInventoryCoolTime() const;
+
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;
