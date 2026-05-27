@@ -88,8 +88,8 @@ Game::~Game()
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_stage);
 	DeleteGO(m_ui);
-	DeleteGO(m_gameOver);
-	DeleteGO(m_gameClear);
+	//DeleteGO(m_gameOver);
+	//DeleteGO(m_gameClear);
 	DeleteGO(m_gire);
 	DeleteGO(m_volumeSetting);
 	DeleteGO(m_effectManager);
