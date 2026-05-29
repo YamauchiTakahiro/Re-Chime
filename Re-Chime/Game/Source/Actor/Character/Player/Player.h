@@ -3,11 +3,6 @@
 
 class Gire;
 class Game;
-class SmallRobot;
-class MediumRobot;
-class FloorBoss;
-class FinalBoss;    
-class RareRobot;
 class AudioManager;
 class AttackSpeedBuff;
 class PowerBuff;
@@ -17,7 +12,7 @@ class EffectManager;
 
 class Player : public Character
 {
-public:
+private:
     enum EnPlayerState {
 		enPlayerState_Idle,         //待機状態。
 		enPlayerState_Walk,         //歩き。
@@ -27,28 +22,32 @@ public:
 		enPlayerState_Guard,        //ガード。
 		enPlayerState_KnockBack,      //ノックバック。
 	};
+    enum EnAnimationClip {		//アニメーション。
+        enAnimationClip_Idle,
+        enAnimationClip_Walk,
+        enAnimationClip_Jump,
+        enAnimationClip_Run,
+        enAnimationClip_Attack,
+        enAnimationClip_Guard,
+        enAnimationClip_KnockBack,
+        enAnimationClip_Num,
+    };
+public:
     Player();
     ~Player();
     bool Start() override;
     void Update() override;
+	void UpdateTimer();
     void Move() override;
 	void JumpAndGravity();
     void Rotation() override;
 	void Attack() override;
 	void OnCollision() override;
-	void Time() override;
 	void Hit() override;
 	void GetGires();
-	void DamageIntarval() override;
 	void TakeDamage(int damage, const Vector3& enemyPos);
-	void GuradInterval();
-	void GuradTimeLimit();
     void PlayerState();
 	void PlayAnimation();
-	void PowerBuff();
-	void PowerBuffTime();
-    void JumpTime();
-	void AttackSpeedBuffTime();
 	void Heal();
 	void MakeHealEffect();
 	void MakePowerBuffEffect();
@@ -61,9 +60,8 @@ public:
 	void GuardState();
 	void KnockBackState();
 	void ManageState();
-    void FadeTime();
-	void FootStepTime();
 	void FootStep();
+	void ChangeAnimation(EnAnimationClip anim);
     Vector3 GetPosition()const override
     {
         return m_position;
@@ -133,7 +131,7 @@ public:
 
     float GetCoolTime() const
     {
-        return m_timeCount;
+        return m_attackCoolTime;
     }
 
     bool IsNearItem() const
@@ -162,17 +160,8 @@ public:
 
 private:
     //メンバ変数
-    enum EnAnimationClip {		//アニメーション。
-        enAnimationClip_Idle,
-        enAnimationClip_Walk,
-        enAnimationClip_Jump,
-        enAnimationClip_Run,
-		enAnimationClip_Attack,
-		enAnimationClip_Guard,
-		enAnimationClip_KnockBack,
-        enAnimationClip_Num,
-    };
 	AnimationClip m_animationClips[enAnimationClip_Num];
+    EnAnimationClip m_currentAnim = enAnimationClip_Num;
     ModelRender m_modelRender;
     CharacterController m_characterController;
 	float m_speed = 0.0f;					//!<移動速度。
@@ -185,11 +174,6 @@ private:
     Vector3 m_knockBack;
 	Gire* m_gire = nullptr;
     Game* m_game = nullptr;
-	SmallRobot* m_smallRobot = nullptr;
-	MediumRobot* m_mediumRobot = nullptr;
-	FloorBoss* m_floorBoss = nullptr;
-	FinalBoss* m_finalBoss = nullptr;
-    RareRobot* m_rareRobot = nullptr;
 	AudioManager* m_audioManager = nullptr;
     UI* m_ui = nullptr;
     EnPlayerState m_playerState = enPlayerState_Idle;
@@ -200,14 +184,14 @@ private:
     int m_healPotionCount = 1;
     int m_powerBuffPotionCount = 0;
     int m_attackSpeedPotionCount = 0;
-	float m_timeCount = 0.0f;				//!<タイマー用の変数。
+	float m_attackCoolTime = 0.0f;				//!<攻撃のクールタイム。
 	float m_damageIntarvalTime = 3.0f;		//!<ダメージを受けてからのクールタイム。
 	float m_guardIntervalTime = 0.0f;			//!<ガード後のクールタイム。
 	float m_powerBuffTime = 0.0f;				//!<攻撃力バフの時間。
 	float m_attackSpeedBuffTime = 0.0f;		//!<攻撃速度バフの時間。
 	float m_guardTimeLimit = 3.0f;				//!<ガードできる時間の上限。
 	float m_footStepTime = 0.0f;					//!<足音の時間。
-	float m_jumpTime = 1.0f;					//!<ジャンプの時間。
+	float m_jumpDelay = 0.0f;					//!<ジャンプの時間。
 	float m_fadeTime = 0.0f;					//!<フェードの時間。
     float m_attackCollisionLife = 0.0f;
 	float m_attackStartTime = 0.0f;
@@ -229,5 +213,7 @@ private:
 	bool m_hasPlayedHitSE = false;
     bool isNearItem = false; //アイテムに近いかどうか
     bool m_canPickItem = false;
+    bool m_isJumpStart = false;
+    bool m_hasJumped = false;
 };
 

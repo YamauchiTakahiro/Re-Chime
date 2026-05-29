@@ -3,17 +3,12 @@
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
-#include "Source/Actor/Character/Enemy/SmallRobot/SmallRobot.h"
-#include "Source/Actor/Character/Enemy/MediumRobot/MediumRobot.h"
-#include "Source/Actor/Character/Enemy/FloorBoss/FloorBoss.h"
-#include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
-#include "Source/Actor/Character/Enemy/RareRobot/RareRobot.h"
-#include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 #include "Source/Actor/Item/Potion/Buff/AttackSpeedBuff/AttackSpeedBuff.h"
 #include "Source/Actor/Item/Potion/Buff/PowerBuff/PowerBuff.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "Source/UIBase/UI/UI.h"
-#include "Source/EffectManager/EffectManager.h"
+#include "Source/Manager/EffectManager/EffectManager.h"
 
 Player::Player()
 {
@@ -42,14 +37,9 @@ bool Player::Start()
 	//モデルを初期化する。
 	m_modelRender.Init("Assets/modelData/Player/player.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(100.0f, 300.0f, m_position);
-	m_game = FindGO<Game>("game");	
+	m_game = FindGO<Game>("game");
 	m_gire = FindGO<Gire>("gire");
 	m_game = FindGO<Game>("game");
-	m_smallRobot = FindGO<SmallRobot>("smallRobot");
-	m_mediumRobot = FindGO<MediumRobot>("mediumRobot");
-	m_floorBoss = FindGO<FloorBoss>("FloorBoss");
-	m_finalBoss = FindGO<FinalBoss>("finalBoss");
-	m_rareRobot = FindGO<RareRobot>("rareRobot");
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
@@ -62,7 +52,6 @@ bool Player::Start()
 
 void Player::Update()
 {
-	m_gire = FindGO<Gire>("gire");
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
@@ -78,6 +67,8 @@ void Player::Update()
 	bool IntroFlag = m_game->GetIntro();
 	bool bossIntroFlag = m_game->GetBossIntro();
 
+	UpdateTimer();
+
 	if (!m_guardFlag &&
 		!m_isAttack &&
 		!isFade &&
@@ -86,7 +77,7 @@ void Player::Update()
 	{
 		Move();
 		Rotation();
-	}	
+	}
 	else
 	{
 		// フェード中は完全停止
@@ -103,25 +94,23 @@ void Player::Update()
 
 		ManageState();
 	}
-	
 
-	if (m_collisionObject != nullptr)
+	if (m_attackCollisionLife <= 0.0f)
 	{
-		m_attackCollisionLife -= g_gameTime->GetFrameDeltaTime();
-		if (m_attackCollisionLife <= 0.0f)
-		{
-			DeleteGO(m_collisionObject);
-			m_collisionObject = nullptr;
-		}
+		DeleteGO(m_collisionObject);
+		m_collisionObject = nullptr;
+	}
+
+	if (m_powerBuffTime <= 0.0f)
+	{
+		m_powerBuffFlag = false;
+	}
+	if (m_attackSpeedBuffTime <= 0.0f)
+	{
+		m_attackSpeedBuffFlag = false;
 	}
 
 	PlayAnimation();
-
-	FadeTime();
-
-	FootStepTime();
-
-	Time();
 
 	Hit();
 
@@ -129,24 +118,43 @@ void Player::Update()
 
 	DamageIntarval();
 
-	GuradInterval();
-
-	PowerBuff();
-
-	PowerBuffTime();
-
-	AttackSpeedBuffTime();
-
 	FootStep();
-	
+
 	m_modelRender.Update();
+}
 
-	m_itemUseCoolTime -= g_gameTime->GetFrameDeltaTime();
+void Player::UpdateTimer()
+{
+	// 経過時間を取得
+	float dt = g_gameTime->GetFrameDeltaTime();
 
-	if (m_itemUseCoolTime < 0.0f)
+	if (dt < 0.0f)
 	{
-		m_itemUseCoolTime = 0.0f;
+		dt = 0.0f;
 	}
+
+	if (m_collisionObject != nullptr)
+	{
+		// 攻撃の当たり判定の寿命を計測
+		m_attackCollisionLife -= dt;
+	}
+	//アイテムのクールタイムを計測
+	m_itemUseCoolTime -= dt;
+	// 攻撃開始からの時間を計測
+	m_attackStartTime += dt;
+	//攻撃のクールタイムを計測
+	m_attackCoolTime -= dt;
+	//ダメージを受けてからの無敵時間を計測
+	m_damageIntarvalTime -= dt;
+	//ガードのクールタイムを計測
+	m_guardIntervalTime -= dt;
+	//ガードの時間制限を計測
+	m_guardTimeLimit -= dt;
+	//移動の足音の時間を計測
+	m_footStepTime -= dt;
+	m_fadeTime -= dt;
+	m_powerBuffTime -= dt;
+	m_attackSpeedBuffTime -= dt;
 }
 
 void Player::Move()
@@ -168,7 +176,7 @@ void Player::Move()
 
 		Vector3 moveDir = forward * stickL.y + right * stickL.x;
 
-		if(moveDir.LengthSq() > 0.0001f)
+		if (moveDir.LengthSq() > 0.0001f)
 		{
 			moveDir.Normalize();
 		}
@@ -216,18 +224,29 @@ void Player::JumpAndGravity()
 {
 	if (m_characterController.IsOnGround())
 	{
-		m_moveSpeed.y = 0.0f;
-		if (m_isJump)
+		if (!m_hasJumped)
 		{
-			JumpTime();
-			if (m_jumpTime == 0.0f)
-			{
-				m_moveSpeed.y = 500.0f;
-				m_jumpTime = 1.0f;
-			}
+			m_moveSpeed.y = 0.0f;
 		}
 	}
-	if (m_characterController.IsOnGround() == false)
+
+	// ジャンプ準備中
+	if (m_isJumpStart)
+	{
+		m_jumpDelay -= g_gameTime->GetFrameDeltaTime();
+
+		// 遅延終了でジャンプ
+		if (m_jumpDelay <= 0.0f &&
+			!m_hasJumped)
+		{
+			m_moveSpeed.y = 500.0f;
+
+			m_hasJumped = true;
+		}
+	}
+
+	// 重力
+	if (!m_characterController.IsOnGround())
 	{
 		m_moveSpeed.y -= 20.0f;
 	}
@@ -266,8 +285,6 @@ void Player::FootStep()
 
 		if (m_footStepTime <= 0.0f)
 		{
-			printf("walk footstep\n");
-
 			// 歩き足音をランダム再生
 			int r = rand() % 3;
 
@@ -295,8 +312,6 @@ void Player::FootStep()
 
 		if (m_footStepTime <= 0.0f)
 		{
-			printf("run footstep\n");
-
 			// ダッシュ足音をランダム再生
 			int r = rand() % 3;
 
@@ -332,8 +347,19 @@ void Player::Attack()
 
 	if (m_isAttack && !m_isKnockBack)
 	{
-		// 攻撃開始からの時間を計測
-		m_attackStartTime += g_gameTime->GetFrameDeltaTime();
+		int attakcPower = rand() % 5 + 10; // 攻撃力を5から15の範囲でランダムに決定
+		if (m_powerBuffFlag == true)
+		{
+			m_attackPower = attakcPower * 2;
+			if (m_powerBuffTime <= 0)
+			{
+				m_powerBuffFlag = false;
+			}
+		}
+		else
+		{
+			m_attackPower = attakcPower;
+		}
 
 		// 0.2秒後に当たり判定生成
 		if (m_attackStartTime >= 0.2f &&
@@ -345,12 +371,12 @@ void Player::Attack()
 
 			if (m_attackSpeedBuffFlag)
 			{
-				m_timeCount = 1.0f;
+				m_attackCoolTime = 1.0f;
 			}
 			else
 			{
-				m_timeCount = 2.0f;
-			}			
+				m_attackCoolTime = 2.0f;
+			}
 		}
 		if (m_attackStartTime >= 0.45f &&
 			!m_hasPlayedHitSE)
@@ -398,24 +424,6 @@ void Player::OnCollision()
 	m_collisionObject->SetName("playerAttack");
 
 	m_attackCollisionLife = 0.1f;
-}
-
-void Player::Time()
-{
-	m_timeCount -= g_gameTime->GetFrameDeltaTime();
-	if (m_timeCount < 0.0f)
-	{
-		m_timeCount = 0.0f;
-	}
-}
-
-void Player::FadeTime()
-{
-	m_fadeTime -= g_gameTime->GetFrameDeltaTime();
-	if (m_fadeTime < 0.0f)
-	{
-		m_fadeTime = 0.0f;
-	}
 }
 
 void Player::TakeDamage(int damage, const Vector3& enemyPos)
@@ -570,54 +578,6 @@ void Player::GetGires()
 		}
 	}
 }
-void Player::DamageIntarval()
-{
-	m_damageIntarvalTime -= g_gameTime->GetFrameDeltaTime();
-	if (m_damageIntarvalTime < 0.0f)
-	{
-		m_damageIntarvalTime = 0.0f;
-	}
-}
-
-void Player::GuradInterval()
-{
-	m_guardIntervalTime -= g_gameTime->GetFrameDeltaTime();
-	if (m_guardIntervalTime < 0.0f)
-	{
-		m_guardIntervalTime = 0.0f;
-	}
-	if (m_guardIntervalTime == 0.0f)
-	{
-		m_guardTimeLimit = 3.0f;
-	}
-}
-
-void Player::GuradTimeLimit()
-{
-	m_guardTimeLimit -= g_gameTime->GetFrameDeltaTime();
-	if (m_guardTimeLimit < 0.0f)
-	{
-		m_guardTimeLimit = 0.0f;
-	}
-}
-
-void Player::JumpTime()
-{
-	m_jumpTime -= g_gameTime->GetFrameDeltaTime();
-	if (m_jumpTime < 0.0f)
-	{
-		m_jumpTime = 0.0f;
-	}
-}
-
-void Player::FootStepTime()
-{
-	m_footStepTime -= g_gameTime->GetFrameDeltaTime();
-	if (m_footStepTime < 0.0f)
-	{
-		m_footStepTime = 0.0f;
-	}
-}
 
 void Player::PlayerState()
 {
@@ -627,7 +587,7 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (!isNearItem && g_pad[0]->IsTrigger(enButtonA) && m_timeCount == 0.0f && !m_guardFlag)
+	if (!isNearItem && g_pad[0]->IsTrigger(enButtonA) && m_attackCoolTime == 0.0f && !m_guardFlag)
 	{
 		m_playerState = enPlayerState_Attack;
 
@@ -640,11 +600,10 @@ void Player::PlayerState()
 		return;
 	}
 
-	if(g_pad[0]->IsPress(enButtonX) && m_guardTimeLimit > 0)
+	if (g_pad[0]->IsPress(enButtonX) && m_guardTimeLimit > 0)
 	{
 		m_playerState = enPlayerState_Guard;
 		m_guardFlag = true;
-		GuradTimeLimit();
 		m_guardIntervalTime = 3.0f;
 		return;
 	}
@@ -653,10 +612,17 @@ void Player::PlayerState()
 		m_guardFlag = false;
 	}
 
-	if(m_isKnockBack == false && g_pad[0]->IsTrigger(enButtonB))
+	if (!m_isKnockBack &&
+		g_pad[0]->IsTrigger(enButtonB) &&
+		m_characterController.IsOnGround())
 	{
 		m_playerState = enPlayerState_Jump;
-		m_isJump = true;
+
+		m_isJumpStart = true;
+		m_hasJumped = false;
+
+		m_jumpDelay = 1.0f;
+
 		return;
 	}
 
@@ -686,7 +652,7 @@ void Player::AttackState()
 	if (m_modelRender.IsPlayingAnimation() == false || m_isKnockBack)
 	{
 		m_isAttack = false;
-		
+
 		// 追加
 		m_hasCreatedAttackCollision = false;
 		m_attackStartTime = 0.0f;
@@ -716,7 +682,8 @@ void Player::JumpState()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		m_isJump = false;
+		m_isJumpStart = false;
+
 		PlayerState();
 	}
 }
@@ -741,7 +708,7 @@ void Player::ManageState()
 	case enPlayerState_Idle:
 		IdleState();
 		break;
-	case enPlayerState_Jump:\
+	case enPlayerState_Jump:
 		JumpState();
 		break;
 	case enPlayerState_Walk:
@@ -768,72 +735,35 @@ void Player::PlayAnimation()
 {
 	if (m_fadeTime > 0.0f)
 	{
-		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		ChangeAnimation(enAnimationClip_Idle);
 		return;
 	}
 
-	switch(m_playerState)
+	switch (m_playerState)
 	{
 	case enPlayerState_Idle:
-		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		ChangeAnimation(enAnimationClip_Idle);
 		break;
 	case enPlayerState_Jump:
-		m_modelRender.PlayAnimation(enAnimationClip_Jump);
+		ChangeAnimation(enAnimationClip_Jump);
 		break;
 	case enPlayerState_Walk:
-		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+		ChangeAnimation(enAnimationClip_Walk);
 		break;
 	case enPlayerState_Run:
-		m_modelRender.PlayAnimation(enAnimationClip_Run);
+		ChangeAnimation(enAnimationClip_Run);
 		break;
 	case enPlayerState_Attack:
-		m_modelRender.PlayAnimation(enAnimationClip_Attack);
+		ChangeAnimation(enAnimationClip_Attack);
 		break;
 	case enPlayerState_Guard:
-		m_modelRender.PlayAnimation(enAnimationClip_Guard);
+		ChangeAnimation(enAnimationClip_Guard);
 		break;
 	case enPlayerState_KnockBack:
-		m_modelRender.PlayAnimation(enAnimationClip_KnockBack);
+		ChangeAnimation(enAnimationClip_KnockBack);
 		break;
 	default:
 		break;
-	}
-}
-
-void Player::PowerBuff()
-{
-	int attakcPower = rand() % 5 + 10; // 攻撃力を5から15の範囲でランダムに決定
-	if (m_powerBuffFlag == true)
-	{
-		m_attackPower = attakcPower * 2;
-		if (m_powerBuffTime <= 0)
-		{
-			m_powerBuffFlag = false;
-		}
-	}
-	else
-	{
-		m_attackPower = attakcPower;
-	}
-}
-
-void Player::PowerBuffTime()
-{
-	m_powerBuffTime -= g_gameTime->GetFrameDeltaTime();
-	if (m_powerBuffTime < 0.0f)
-	{
-		m_powerBuffTime = 0.0f;
-		m_powerBuffFlag = false;
-	}
-}
-
-void Player::AttackSpeedBuffTime()
-{
-	m_attackSpeedBuffTime -= g_gameTime->GetFrameDeltaTime();
-	if (m_attackSpeedBuffTime < 0.0f)
-	{
-		m_attackSpeedBuffTime = 0.0f;
-		m_attackSpeedBuffFlag = false;
 	}
 }
 
@@ -936,6 +866,17 @@ bool Player::UseItem(int itemNo)
 	}
 
 	return false;
+}
+
+void Player::ChangeAnimation(EnAnimationClip anim)
+{
+	if (m_currentAnim == anim)
+	{
+		return;
+	}
+
+	m_currentAnim = anim;
+	m_modelRender.PlayAnimation(anim);
 }
 
 const CharacterController& Player::GetCharacterController() const

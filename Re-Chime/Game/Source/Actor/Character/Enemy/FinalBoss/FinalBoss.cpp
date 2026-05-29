@@ -5,10 +5,10 @@
 #include "Source/Actor/Item/Gire/Gire.h"
 #include "Game.h"
 #include "Source/UIBase/DamageText/DamageText.h"
-#include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 #include "Source/Actor/Bullet/Bullet.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
-#include "Source/EffectManager/EffectManager.h"
+#include "Source/Manager/EffectManager/EffectManager.h"
 
 FinalBoss::FinalBoss()
 {

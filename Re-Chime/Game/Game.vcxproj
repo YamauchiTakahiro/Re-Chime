@@ -245,8 +245,8 @@
     <ClCompile Include="Source\Actor\Item\Potion\Potion.cpp" />
     <ClCompile Include="Source\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Source\Camera\GameCamera.cpp" />
-    <ClCompile Include="Source\EffectManager\EffectManager.cpp" />
-    <ClCompile Include="Source\Sound\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="Source\Manager\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="Source\Manager\EffectManager\EffectManager.cpp" />
     <ClCompile Include="Source\UIBase\DamageText\DamageText.cpp" />
     <ClCompile Include="Source\UIBase\DifficultyLevel\DifficultyLevel.cpp" />
     <ClCompile Include="Source\UIBase\Fade\Fade.cpp" />
@@ -287,8 +287,8 @@
     <ClInclude Include="Source\Actor\Item\Potion\Potion.h" />
     <ClInclude Include="Source\Actor\Stage\Stage.h" />
     <ClInclude Include="Source\Camera\GameCamera.h" />
-    <ClInclude Include="Source\EffectManager\EffectManager.h" />
-    <ClInclude Include="Source\Sound\AudioManager\AudioManager.h" />
+    <ClInclude Include="Source\Manager\AudioManager\AudioManager.h" />
+    <ClInclude Include="Source\Manager\EffectManager\EffectManager.h" />
     <ClInclude Include="Source\UIBase\DamageText\DamageText.h" />
     <ClInclude Include="Source\UIBase\DifficultyLevel\DifficultyLevel.h" />
     <ClInclude Include="Source\UIBase\Fade\Fade.h" />

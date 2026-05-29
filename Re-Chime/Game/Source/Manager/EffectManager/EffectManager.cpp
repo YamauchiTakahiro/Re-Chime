@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "Source/EffectManager/EffectManager.h"
+#include "Source/Manager/EffectManager/EffectManager.h"
 #include "graphics/effect/EffectEmitter.h"
 
 EffectManager& EffectManager::GetInstance()

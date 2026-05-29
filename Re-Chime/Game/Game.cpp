@@ -15,10 +15,10 @@
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 #include "Source/Actor/Character/Enemy/RareRobot/RareRobot.h"
 #include "Source/UIBase/GameClear/GameClear.h"
-#include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "Source/UIBase/Fade/Fade.h"
-#include "Source/EffectManager/EffectManager.h"
+#include "Source/Manager/EffectManager/EffectManager.h"
 #include "Source/UIBase/VolumeSettings/VolumeSettings.h"
 
 namespace
@@ -94,7 +94,12 @@ Game::~Game()
 	DeleteGO(m_volumeSetting);
 	DeleteGO(m_effectManager);
 	DeleteGO(m_fade);
-
+	DeleteGO(m_barrier1);
+	DeleteGO(m_barrier2);
+	DeleteGO(m_barrier3);
+	DeleteGO(m_barrier4);
+	DeleteGO(m_barrier5);
+	DeleteGO(m_barrier6);
 }
 
 void Game::Update()
