@@ -10,9 +10,6 @@
     <ClCompile Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.cpp">
       <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Sound\AudioManager\AudioManager.cpp">
-      <Filter>Source\Sound\AudioManager</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Actor\Barrier\Barrier.cpp">
       <Filter>Source\Actor\Barrier</Filter>
     </ClCompile>
@@ -31,9 +28,6 @@
     <ClCompile Include="Source\UIBase\DamageText\DamageText.cpp">
       <Filter>Source\UIBase\DamageText</Filter>
     </ClCompile>
-    <ClCompile Include="Source\EffectManager\EffectManager.cpp">
-      <Filter>Source\EffectManager</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Actor\Character\Enemy\Enemy.cpp">
       <Filter>Source\Actor\Character\Enemy</Filter>
     </ClCompile>
@@ -48,9 +42,6 @@
     </ClCompile>
     <ClCompile Include="Source\Camera\GameCamera.cpp">
       <Filter>Source\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UIBase\GameClear\GameClear.cpp">
-      <Filter>Source\UIBase\GameClear</Filter>
     </ClCompile>
     <ClCompile Include="Source\UIBase\GameOver\GameOver.cpp">
       <Filter>Source\UIBase\GameOver</Filter>
@@ -101,6 +92,15 @@
     <ClCompile Include="Source\UIBase\VolumeSettings\VolumeSettings.cpp">
       <Filter>Source\UIBase\VolumeSettings</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UIBase\GameClear\GameClear.cpp">
+      <Filter>Source\UIBase\GameClear</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Manager\AudioManager\AudioManager.cpp">
+      <Filter>Source\Manager\AudioManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Manager\EffectManager\EffectManager.cpp">
+      <Filter>Source\Manager\EffectManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -112,14 +112,8 @@
     <ClInclude Include="Source\Actor\Item\Potion\Buff\AttackSpeedBuff\AttackSpeedBuff.h">
       <Filter>Source\Actor\Item\Potion\Buff\AttackSpeedBuff</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Sound\AudioManager\AudioManager.h">
-      <Filter>Source\Sound\AudioManager</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Actor\Barrier\Barrier.h">
       <Filter>Source\Actor\Barrier</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Item\Potion\Buff\Buff.h">
-      <Filter>Source\Actor\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Source\Actor\Bullet\Bullet.h">
       <Filter>Source\Actor\Bullet</Filter>
@@ -132,9 +126,6 @@
     </ClInclude>
     <ClInclude Include="Source\UIBase\DamageText\DamageText.h">
       <Filter>Source\UIBase\DamageText</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\EffectManager\EffectManager.h">
-      <Filter>Source\EffectManager</Filter>
     </ClInclude>
     <ClInclude Include="Source\Actor\Character\Enemy\Enemy.h">
       <Filter>Source\Actor\Character\Enemy</Filter>
@@ -156,9 +147,6 @@
     </ClInclude>
     <ClInclude Include="Source\UIBase\GameOver\GameOver.h">
       <Filter>Source\UIBase\GameOver</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UIBase\GameClear\GameClear.h">
-      <Filter>Source\UIBase\GameClear</Filter>
     </ClInclude>
     <ClInclude Include="Source\Actor\Item\Potion\Heal\Heal.h">
       <Filter>Source\Actor\Item\Potion\Heal</Filter>
@@ -203,6 +191,18 @@
       <Filter>Source\UIBase\VolumeSettings</Filter>
     </ClInclude>
     <ClInclude Include="Difficulty.h" />
+    <ClInclude Include="Source\UIBase\GameClear\GameClear.h">
+      <Filter>Source\UIBase\GameClear</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Manager\AudioManager\AudioManager.h">
+      <Filter>Source\Manager\AudioManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Actor\Item\Potion\Buff\Buff.h">
+      <Filter>Source\Actor\Item\Potion\Buff</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Manager\EffectManager\EffectManager.h">
+      <Filter>Source\Manager\EffectManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -213,9 +213,6 @@
     </Filter>
     <Filter Include="Source\Camera">
       <UniqueIdentifier>{0ef04fec-236c-4f99-a61a-4802f9803afe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\EffectManager">
-      <UniqueIdentifier>{f6b67c8a-e5a2-4ab8-80b9-e9b38cb65955}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\UIBase">
       <UniqueIdentifier>{9d902d19-f2b4-41d6-957b-4e6df8066b27}</UniqueIdentifier>
@@ -298,14 +295,17 @@
     <Filter Include="Source\Actor\Item\Potion\Buff\PowerBuff">
       <UniqueIdentifier>{b6c7c0ea-9f6f-415c-9243-542d587feb50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Sound">
-      <UniqueIdentifier>{80143a2c-a691-4cf6-bca7-7298b27c6c75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Sound\AudioManager">
-      <UniqueIdentifier>{6e3b1279-9b44-438e-9384-b030a900dea0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Actor\Character\Enemy\RareRobot">
       <UniqueIdentifier>{4e4dda91-7765-4ff4-b311-2a8f08757a5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Manager">
+      <UniqueIdentifier>{4bf66d9c-a942-400d-bf40-1ab21a58cfa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Manager\AudioManager">
+      <UniqueIdentifier>{80931f92-2cda-458e-a38a-a1664c523aab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Manager\EffectManager">
+      <UniqueIdentifier>{f6b67c8a-e5a2-4ab8-80b9-e9b38cb65955}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

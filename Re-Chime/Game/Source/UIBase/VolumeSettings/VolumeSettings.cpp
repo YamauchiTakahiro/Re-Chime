@@ -5,7 +5,7 @@
 #include "Source/Actor/Character/Enemy/SmallRobot/SmallRobot.h"
 #include "Source/Camera/GameCamera.h"
 #include "Source/UIBase/UI/UI.h"
-#include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 #include "Source/UIBase/Title/Title.h"
 
 VolumeSettings::VolumeSettings()

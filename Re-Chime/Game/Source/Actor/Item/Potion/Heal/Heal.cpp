@@ -2,7 +2,7 @@
 #include "Heal.h"
 #include "collision/CollisionObject.h"
 #include "Source/Actor/Character/Player/Player.h"
-#include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 
 Heal::Heal()
 {

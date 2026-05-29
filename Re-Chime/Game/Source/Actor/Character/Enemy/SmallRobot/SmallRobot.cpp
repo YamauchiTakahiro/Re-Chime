@@ -7,10 +7,10 @@
 #include "Source/Actor/Item/Potion/Heal/Heal.h"
 #include "collision/CollisionObject.h"
 #include "Game.h"
-#include "Source/Sound/AudioManager/AudioManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 #include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
-#include "Source/EffectManager/EffectManager.h"
+#include "Source/Manager/EffectManager/EffectManager.h"
 
 SmallRobot::SmallRobot()
 {
