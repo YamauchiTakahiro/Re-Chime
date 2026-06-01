@@ -17,7 +17,6 @@ class FloorBoss;
 class DifficultyLevel;
 class MediumRobot;
 class FinalBoss;
-class RareRobot;
 class Title;
 class GameClear;
 class AudioManager;
@@ -169,7 +168,6 @@ private:
 	std::vector<FloorBoss*> m_floorBoss;
 	std::vector<MediumRobot*> m_mediumRobot;
 	FinalBoss* m_finalBoss = nullptr;
-	std::vector<RareRobot*> m_rareRobot;
 	GameOver* m_gameOver = nullptr;
 	Gire* m_gire = nullptr;
 	VolumeSettings* m_volumeSetting = nullptr;

@@ -20,7 +20,7 @@ SmallRobot::SmallRobot()
 
 SmallRobot::~SmallRobot()
 {
-
+	DeleteGO(m_collisionObject);
 }
 
 bool SmallRobot::Start()
