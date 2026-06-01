@@ -186,7 +186,6 @@ private:
     int m_attackSpeedPotionCount = 0;
 	float m_attackCoolTime = 0.0f;				//!<攻撃のクールタイム。
 	float m_damageIntarvalTime = 3.0f;		//!<ダメージを受けてからのクールタイム。
-	float m_guardIntervalTime = 0.0f;			//!<ガード後のクールタイム。
 	float m_powerBuffTime = 0.0f;				//!<攻撃力バフの時間。
 	float m_attackSpeedBuffTime = 0.0f;		//!<攻撃速度バフの時間。
 	float m_guardTimeLimit = 3.0f;				//!<ガードできる時間の上限。
@@ -197,6 +196,7 @@ private:
 	float m_attackStartTime = 0.0f;
     float m_itemUseCoolTime = 0.0f;
 	float m_knockBackPower = 0.0f;
+    float m_guardCoolTime = 0.0f;
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;

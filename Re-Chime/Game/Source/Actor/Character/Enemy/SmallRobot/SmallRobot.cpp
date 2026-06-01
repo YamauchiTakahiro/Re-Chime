@@ -11,6 +11,7 @@
 #include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 
 SmallRobot::SmallRobot()
 {
@@ -43,6 +44,8 @@ bool SmallRobot::Start()
 	m_difficultyLevel = FindGO<DifficultyLevel>("difficultyLevel");
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
+
+	OnCollision();
 
 	//========================
 	// 難易度取得
@@ -104,8 +107,7 @@ void SmallRobot::Update()
 
 		if (m_attackCollisionLife <= 0.0f)
 		{
-			DeleteGO(m_collisionObject);
-			m_collisionObject = nullptr;
+			m_collisionObject->SetIsEnable(false);
 		}
 	}
 
@@ -144,6 +146,16 @@ void SmallRobot::Update()
 
 	//PlayAnimation();
 	m_modelRender.Update();
+}
+
+void SmallRobot::UpdateTimer()
+{
+	// 経過時間を取得
+	float dt = g_gameTime->GetFrameDeltaTime();
+	if (dt < 0.0f)
+	{
+		dt = 0.0f;
+	}
 }
 
 void SmallRobot::KnockBack()
@@ -238,29 +250,39 @@ void SmallRobot::SearchPlayer()
 
 void SmallRobot::Attack()
 {
-	if (m_isAttack == false)
-	{
-		return;
-	}
-	else
-	{
-		OnCollision();
-		m_isAttack = false;
-	}
+    if (!m_isAttack)
+    {
+        return;
+    }
+
+    m_forward = Vector3::Front;
+    m_rotation.Apply(m_forward);
+
+    Vector3 pos = m_position + m_forward * 250.0f;
+
+    m_collisionObject->SetPosition(pos);
+
+    // ←追加
+    m_collisionObject->SetIsEnable(true);
+
+    m_attackCollisionLife = 0.1f;
+    m_isAttack = false;
 }
 
 void SmallRobot::OnCollision()
 {
 	m_collisionObject = NewGO<CollisionObject>(0);
 
-	Vector3 collisionPos = m_position;
-	m_forward = Vector3::Front;
-	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 250.0f;
-	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
-	m_collisionObject->SetName("smallRobotAttack");
+	m_collisionObject->CreateSphere(
+		Vector3::Zero,
+		Quaternion::Identity,
+		200.0f
+	);
 
-	m_attackCollisionLife = 0.1f;
+	m_collisionObject->SetName("smallRobotAttack");
+	m_collisionObject->SetIsEnableAutoDelete(false);
+
+	m_attackCollisionLife = 0.0f;
 }
 
 void SmallRobot::Time()
@@ -274,154 +296,97 @@ void SmallRobot::Time()
 
 void SmallRobot::Hit()
 {
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("playerAttack");
+	const auto& collisions =
+		g_collisionObjectManager->FindCollisionObjects("playerAttack");
+
 	for (auto collision : collisions)
 	{
-		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
+		if (!collision->IsHit(m_characterController) ||
+			m_damageIntarvalTime > 0.0f)
 		{
-			int damage = 0;
-			damage = m_player->GetAttackPower();
-			int randomNum = rand() % 100 + 1;
-			if (randomNum <= 5)
-			{
-				if (!m_searchPlayer)
-				{
-					damage *= 4;
-					bool isHit = m_player->GetAttackHit();
-					if (!isHit)
-					{
-						m_player->SetAttackHit(true);
-
-						m_audioManager->PlaySE(
-							enSound_BackstabSE,
-							1.0f,
-							enSEPlay_AllowOverlap
-						);
-					}
-				}
-				else
-				{
-					damage *= 2;
-					bool isHit = m_player->GetAttackHit();
-					if (!isHit)
-					{
-						m_player->SetAttackHit(true);
-
-						m_audioManager->PlaySE(
-							enSound_CriticalSE,
-							1.0f,
-							enSEPlay_AllowOverlap
-						);
-					}
-				}
-				
-				m_smallRobotHp -= damage;
-				if (m_smallRobotHp < 0)
-				{
-					m_smallRobotHp = 0;
-				}
-				m_searchPlayer = true;
-
-				//========================
-				// ノックバック
-				//========================
-				Vector3 dir = m_position - m_player->GetPosition();
-
-				dir.y = 0.0f;
-
-				if (dir.LengthSq() > 0.001f)
-				{
-					dir.Normalize();
-				}
-
-				m_knockBackMove = dir * m_knockBackPower;
-
-				m_isKnockBack = true;
-
-				m_knockBackTime = 0.2f;
-			}
-			else
-			{
-				if (!m_searchPlayer)
-				{
-					damage *= 2;
-					bool isHit = m_player->GetAttackHit();
-					if (!isHit)
-					{
-						m_player->SetAttackHit(true);
-
-						m_audioManager->PlaySE(
-							enSound_BackstabSE,
-							1.0f,
-							enSEPlay_AllowOverlap
-						);
-					}
-				}
-				else
-				{
-					damage *= 1;
-					bool isHit = m_player->GetAttackHit();
-					if (!isHit)
-					{
-						m_player->SetAttackHit(true);
-						int r = rand() % 3;
-
-						AudioID id;
-
-						switch (r)
-						{
-						case 0: id = enSound_PlayerAttackSE_01; break;
-						case 1: id = enSound_PlayerAttackSE_02; break;
-						case 2: id = enSound_PlayerAttackSE_03; break;
-						}
-
-						m_audioManager->PlaySE(
-							id,
-							1.0f,
-							enSEPlay_AllowOverlap
-						);
-					}
-				}
-				m_smallRobotHp -= damage;
-				if (m_smallRobotHp < 0)
-				{
-					m_smallRobotHp = 0;
-				}
-				m_searchPlayer = true;
-				//========================
-				// ノックバック
-				//========================
-				Vector3 dir = m_position - m_player->GetPosition();
-
-				dir.y = 0.0f;
-
-				if (dir.LengthSq() > 0.001f)
-				{
-					dir.Normalize();
-				}
-
-				m_knockBackMove = dir * m_knockBackPower;
-
-				m_isKnockBack = true;
-
-				m_knockBackTime = 0.25f;
-			}
-			m_damageIntarvalTime = 1.5f;
-
-//========================
-// ダメージ表示生成
-//========================
-			DamageText* damageText = NewGO<DamageText>(0);
-
-			Vector3 textPos = m_position;
-
-			textPos.y += 250.0f;
-
-			damageText->SetPosition(textPos);
-
-			damageText->SetDamage(damage);
+			continue;
 		}
+
+		int damage = m_player->GetAttackPower();
+
+		bool isBackstab = !m_searchPlayer;
+		bool isCritical = (rand() % 100 + 1) <= 5;
+
+		float knockBackTime = isCritical ? 0.2f : 0.25f;
+
+		damage *= isCritical
+			? (isBackstab ? 4 : 2)
+			: (isBackstab ? 2 : 1);
+
+		AudioID se;
+
+		if (isBackstab)
+		{
+			se = enSound_BackstabSE;
+		}
+		else if (isCritical)
+		{
+			se = enSound_CriticalSE;
+		}
+		else
+		{
+			static AudioID attackSE[] =
+			{
+				enSound_PlayerAttackSE_01,
+				enSound_PlayerAttackSE_02,
+				enSound_PlayerAttackSE_03
+			};
+
+			se = attackSE[rand() % 3];
+		}
+
+		if (!m_player->GetAttackHit())
+		{
+			m_player->SetAttackHit(true);
+			m_audioManager->PlaySE(se, 0.5f, enSEPlay_AllowOverlap);
+		}
+
+		TakeDamage(damage, knockBackTime);
+
+		m_damageIntarvalTime = 1.5f;
+
+		//========================
+		// ダメージ表示生成
+		//========================
+		DamageText* damageText = NewGO<DamageText>(0);
+
+		Vector3 textPos = m_position;
+
+		textPos.y += 250.0f;
+
+		damageText->SetPosition(textPos);
+
+		damageText->SetDamage(damage);
 	}
+}
+
+void SmallRobot::TakeDamage(int damage, float knockBackTime)
+{
+	m_smallRobotHp -= damage;
+
+	if (m_smallRobotHp < 0)
+	{
+		m_smallRobotHp = 0;
+	}
+
+	m_searchPlayer = true;
+
+	Vector3 dir = m_position - m_player->GetPosition();
+	dir.y = 0.0f;
+
+	if (dir.LengthSq() > 0.001f)
+	{
+		dir.Normalize();
+	}
+
+	m_knockBackMove = dir * m_knockBackPower;
+	m_isKnockBack = true;
+	m_knockBackTime = knockBackTime;
 }
 
 void SmallRobot::AttackHit()

@@ -145,15 +145,42 @@ void Player::UpdateTimer()
 	m_attackCoolTime -= dt;
 	//ダメージを受けてからの無敵時間を計測
 	m_damageIntarvalTime -= dt;
-	//ガードのクールタイムを計測
-	m_guardIntervalTime -= dt;
-	//ガードの時間制限を計測
-	m_guardTimeLimit -= dt;
 	//移動の足音の時間を計測
 	m_footStepTime -= dt;
 	m_fadeTime -= dt;
 	m_powerBuffTime -= dt;
 	m_attackSpeedBuffTime -= dt;
+	if (m_guardFlag)
+	{
+		m_guardTimeLimit -= dt;
+
+		if (m_guardTimeLimit <= 0.0f)
+		{
+			m_guardTimeLimit = 0.0f;
+
+			if (m_guardFlag)
+			{
+				m_guardFlag = false;
+				m_guardCoolTime = 3.0f;
+			}
+		}
+	}
+	else
+	{
+		m_guardCoolTime -= dt;
+
+		if (m_guardCoolTime <= 0.0f)
+		{
+			m_guardCoolTime = 0.0f;
+
+			m_guardTimeLimit += dt;
+
+			if (m_guardTimeLimit > 3.0f)
+			{
+				m_guardTimeLimit = 3.0f;
+			}
+		}
+	}
 }
 
 void Player::Move()
@@ -558,7 +585,7 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (!isNearItem && g_pad[0]->IsTrigger(enButtonA) && m_attackCoolTime == 0.0f && !m_guardFlag)
+	if (!isNearItem && g_pad[0]->IsTrigger(enButtonA) && m_attackCoolTime <= 0.0f && !m_guardFlag)
 	{
 		m_playerState = enPlayerState_Attack;
 
@@ -571,14 +598,16 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (g_pad[0]->IsPress(enButtonX) && m_guardTimeLimit > 0)
+	if (g_pad[0]->IsPress(enButtonX) &&
+		m_guardTimeLimit >= 3.0f &&
+		m_guardCoolTime <= 0.0f)
 	{
 		m_playerState = enPlayerState_Guard;
 		m_guardFlag = true;
-		m_guardIntervalTime = 3.0f;
 		return;
 	}
-	else
+
+	if (m_playerState == enPlayerState_Guard)
 	{
 		m_guardFlag = false;
 	}
@@ -660,7 +689,10 @@ void Player::JumpState()
 
 void Player::GuardState()
 {
-	PlayerState();
+	if (!m_guardFlag)
+	{
+		PlayerState();
+	}
 }
 
 void Player::KnockBackState()
