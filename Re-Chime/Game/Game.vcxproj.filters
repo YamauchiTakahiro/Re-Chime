@@ -71,9 +71,6 @@
     <ClCompile Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.cpp">
       <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.cpp">
-      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.cpp">
       <Filter>Source\Actor\Character\Enemy\SmallRobot</Filter>
     </ClCompile>
@@ -168,9 +165,6 @@
     </ClInclude>
     <ClInclude Include="Source\Actor\Item\Potion\Buff\PowerBuff\PowerBuff.h">
       <Filter>Source\Actor\Item\Potion\Buff\PowerBuff</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Actor\Character\Enemy\RareRobot\RareRobot.h">
-      <Filter>Source\Actor\Character\Enemy\RareRobot</Filter>
     </ClInclude>
     <ClInclude Include="Source\Actor\Character\Enemy\SmallRobot\SmallRobot.h">
       <Filter>Source\Actor\Character\Enemy\SmallRobot</Filter>
@@ -294,9 +288,6 @@
     </Filter>
     <Filter Include="Source\Actor\Item\Potion\Buff\PowerBuff">
       <UniqueIdentifier>{b6c7c0ea-9f6f-415c-9243-542d587feb50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Actor\Character\Enemy\RareRobot">
-      <UniqueIdentifier>{4e4dda91-7765-4ff4-b311-2a8f08757a5d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Manager">
       <UniqueIdentifier>{4bf66d9c-a942-400d-bf40-1ab21a58cfa0}</UniqueIdentifier>
