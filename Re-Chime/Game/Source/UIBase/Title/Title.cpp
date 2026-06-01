@@ -65,17 +65,30 @@ void Title::Update()
 	{
 		m_SelectNum++;
 		if (m_SelectNum > 3) m_SelectNum = 0;
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_ChoiceSE);
+		}
 	}
 
 	if (g_pad[0]->IsTrigger(enButtonUp))
 	{
 		m_SelectNum--;
 		if (m_SelectNum < 0) m_SelectNum = 3;
+
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_ChoiceSE);
+		}
 	}
 
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		//DeleteGO(this);
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_DecisionSE);
+		}
+
 		switch (m_SelectNum)
 		{
 		case 0:

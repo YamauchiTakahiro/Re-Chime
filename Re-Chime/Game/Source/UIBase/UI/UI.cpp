@@ -3,6 +3,7 @@
 #include "Source/Actor/Character/Player/Player.h"
 #include "Game.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 
 UI::UI()
 {
@@ -88,9 +89,11 @@ UI::UI()
 	m_goalText.SetScale(2.0f);
 	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
 
-	m_Cursor.SetText(L">");
-	m_Cursor.SetScale(2.5f);
+	/*m_Cursor.SetText(L">");
+	m_Cursor.SetScale(2.5f);*/
 
+	m_player = FindGO<Player>("player");
+	m_audioManager = FindGO<AudioManager>("audioManager");
 	m_cursorPos = Vector3(0, 0, 0);
 }
 
@@ -113,7 +116,7 @@ void UI::Update()
 		return;
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonSelect))
+	if (!isPause && g_pad[0]->IsTrigger(enButtonSelect))
 	{
 		m_isInventoryOpen = !m_isInventoryOpen;
 
@@ -130,6 +133,10 @@ void UI::Update()
 	{
 		if (g_pad[0]->IsTrigger(enButtonX)&& m_inventoryUseCoolTime <= 0.0f)
 		{
+			if (m_audioManager)
+			{
+				m_audioManager->PlaySE(enSound_DecisionSE);
+			}
 			m_isUseItem = true;
 		}
 	}
@@ -327,6 +334,10 @@ void UI::Inventory()
 		{
 			m_selectItem = 2;
 		}
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_ChoiceSE);
+		}
 	}
 
 	if (g_pad[0]->IsTrigger(enButtonDown))
@@ -336,6 +347,10 @@ void UI::Inventory()
 		if (m_selectItem > 2)
 		{
 			m_selectItem = 0;
+		}
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_ChoiceSE);
 		}
 	}
 
@@ -369,9 +384,18 @@ void UI::Inventory()
 	{
 		bool useSuccess =m_player->UseItem(m_selectItem);
 
-		if (useSuccess && m_game)
+		if (useSuccess)
 		{
-			m_inventoryUseCoolTime =m_game->GetInventoryCoolTime();
+			if (m_audioManager)
+			{
+				m_audioManager->PlaySE(enSound_DecisionSE);
+			}
+
+			if (m_game)
+			{
+				m_inventoryUseCoolTime =
+					m_game->GetInventoryCoolTime();
+			}
 		}
 
 		m_isUseItem = false;

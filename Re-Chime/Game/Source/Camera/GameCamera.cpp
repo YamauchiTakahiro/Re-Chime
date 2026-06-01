@@ -37,7 +37,7 @@ bool GameCamera::Start()
 
 	//プレイヤーのインスタンスを探す。
 	m_player = FindGO<Player>("player");
-	//m_fade = FindGO<Fade>("fade");
+	m_fade = FindGO<Fade>("fade");
 
 	//ばねカメラの初期化。
 	m_springCamera.Init(
@@ -174,9 +174,6 @@ void GameCamera::UpdateIntroCamera()
 	{
 		m_isIntroCamera = false;
 		m_game->SetIntro(false);
-
-		m_isStartFade = false;
-
 		m_cameraState = EnCameraState::FadeOut;
 	}
 }
@@ -193,7 +190,7 @@ void GameCamera::UpdateBossCamera()
 		}
 	}
 	m_bossCameraTime += g_gameTime->GetFrameDeltaTime();
-	Vector3 center;
+	Vector3 center = m_finalBoss->GetPosition();
 	int floorNo = m_game->GetFloorNo();
 	if (floorNo == 4) {
 		center = m_finalBoss->GetPosition();
@@ -237,7 +234,6 @@ void GameCamera::UpdateBossCamera()
 	if (m_bossCameraTime > m_bossCameraEndTime) {
 		m_isBossCamera = false;
 		m_game->SetBossIntro(false);
-		m_isStartFade = false;
 		m_cameraState = EnCameraState::FadeOut;
 	}
 }
@@ -300,6 +296,7 @@ void GameCamera::UpdateFadeOutCamera()
 		}
 	}
 
+	// フェード開始
 	if (!m_isStartFade)
 	{
 		m_fade->StartFadeOut();
@@ -307,8 +304,10 @@ void GameCamera::UpdateFadeOutCamera()
 		m_isStartFade = true;
 	}
 
+	// フェードアウト完了
 	if (m_fade->IsFadeOutFinished())
 	{
+		// 通常カメラ位置へ戻す
 		Vector3 target = m_player->GetPosition();
 
 		target.y += 280.0f;
@@ -318,8 +317,10 @@ void GameCamera::UpdateFadeOutCamera()
 		g_camera3D->SetPosition(pos);
 		g_camera3D->SetTarget(target);
 
+		// フェードイン開始
 		m_fade->StartFadeIn();
 
+		// 通常状態へ
 		m_cameraState = EnCameraState::FadeIn;
 
 		m_isStartFade = false;
@@ -332,4 +333,14 @@ void GameCamera::UpdateFadeInCamera()
 	{
 		m_cameraState = EnCameraState::Normal;
 	}
+}
+
+void GameCamera::StartIntroCamera()
+{
+	m_cameraState = EnCameraState::Intro;
+}
+
+void GameCamera::StartBossCamera()
+{
+	m_cameraState = EnCameraState::BossStart;
 }

@@ -79,6 +79,8 @@ bool VolumeSettings::Start()
     m_cursorPos = Vector3(0, 0, 0);
     m_targetPos = m_cursorPos;
 
+    m_game = FindGO<Game>("game");
+    m_title = FindGO<Title>("Title");
     m_audioManager = FindGO<AudioManager>("audioManager");
 
     if (m_audioManager)
@@ -103,11 +105,19 @@ void VolumeSettings::Update()
     {
         m_select--;
         if (m_select < 0) m_select = 2;
+        if (m_audioManager)
+        {
+            m_audioManager->PlaySE(enSound_ChoiceSE);
+        }
     }
     if (g_pad[0]->IsTrigger(enButtonDown))
     {
         m_select++;
         if (m_select > 2) m_select = 0;
+        if (m_audioManager)
+        {
+            m_audioManager->PlaySE(enSound_ChoiceSE);
+        }
     }
 
     // ===== 音量変更 =====

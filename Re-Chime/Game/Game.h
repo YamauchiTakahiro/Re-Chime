@@ -218,6 +218,8 @@ private:
 		bool intro;
 		bool bossIntro;
 		bool countAdded = false;
+		bool playedIntro;
+		bool movedFloor;
 	};
 
 	std::vector<FadeArea> m_fadeAreas;
@@ -238,6 +240,13 @@ private:
 	int m_needGireCount = 1;
 	int m_loadCount = 0;
 	int m_maxLoadCount = 0;
+	int m_currentFadeAreaIndex = -1;
 	bool m_isLoading = true;
+	float m_goalDelayTimer = 0.0f;
+	bool m_isGoalDelay = false;
+	bool m_isPlayedFloor1Intro = false;
+	bool m_isPlayedFloor2Intro = false;
+	bool m_isPlayedFloor3Intro = false;
+	bool m_isPlayedBossIntro = false;
 };
 

@@ -3,6 +3,7 @@
 class Player;
 class Game;
 class DifficultyLevel;
+class AudioManager;
 class UI :public UIBase
 {
     public:
@@ -26,6 +27,7 @@ class UI :public UIBase
 private:
     Player* m_player = nullptr;
     Game* m_game = nullptr;
+    AudioManager* m_audioManager = nullptr;
     SpriteRender m_inventory;
     SpriteRender m_PS1;
     SpriteRender m_PS2;
