@@ -39,6 +39,8 @@ enum AudioID
 	enSound_GetItemSE,
 	enSound_CriticalSE,
 	enSound_BackstabSE,
+	enSound_DecisionSE,
+	enSound_ChoiceSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
 };
 
@@ -95,13 +97,13 @@ public:
 		}
 
 		// SE更新
-		for (auto& se : m_playingSE)
-		{
-			if (se.se)
-			{
-				se.se->SetVolume(m_seVolume * m_masterVolume);
-			}
-		}
+		//for (auto& se : m_playingSE)
+		//{
+		//	if (se.se)
+		//	{
+		//		se.se->SetVolume(m_seVolume * m_masterVolume);
+		//	}
+		//}
 	}
 	void SaveVolume();
 	void LoadVolume();

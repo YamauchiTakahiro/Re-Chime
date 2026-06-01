@@ -31,8 +31,6 @@ namespace
 	}
 }
 
-
-
 Game::Game()
 {
     m_isLoading = true;
@@ -164,113 +162,113 @@ void Game::Update()
 
 						m_stage->SetPosition(objData.position);
 					}
-					else if (objData.EqualObjectName(L"mediumRobot"))
-					{
-						auto enemy = NewGO<MediumRobot>(0, "mediumRobot");
+					//else if (objData.EqualObjectName(L"mediumRobot"))
+					//{
+					//	auto enemy = NewGO<MediumRobot>(0, "mediumRobot");
 
-						enemy->SetPosition(objData.position);
+					//	enemy->SetPosition(objData.position);
 
-						enemy->SetScale(objData.scale);
+					//	enemy->SetScale(objData.scale);
 
-						m_mediumRobot.push_back(enemy);
+					//	m_mediumRobot.push_back(enemy);
 
-						m_enemyCount++;
-					}
-					else if (objData.EqualObjectName(L"smallRobot") == true)
-					{
-						auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+					//	m_enemyCount++;
+					//}
+					//else if (objData.EqualObjectName(L"smallRobot") == true)
+					//{
+					//	auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
 
-						smallRobot->SetPosition(objData.position);
+					//	smallRobot->SetPosition(objData.position);
 
-						smallRobot->SetScale(objData.scale);
+					//	smallRobot->SetScale(objData.scale);
 
-						m_smallRobot.push_back(smallRobot);
+					//	m_smallRobot.push_back(smallRobot);
 
-						m_enemyCount++;
-					}
-					else if (objData.EqualObjectName(L"FloorBoss") == true)
-					{
-						auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
+					//	m_enemyCount++;
+					//}
+					//else if (objData.EqualObjectName(L"FloorBoss") == true)
+					//{
+					//	auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
 
-						floorBoss->SetPosition(objData.position);
+					//	floorBoss->SetPosition(objData.position);
 
-						floorBoss->SetScale(objData.scale);
+					//	floorBoss->SetScale(objData.scale);
 
-						m_floorBoss.push_back(floorBoss);
+					//	m_floorBoss.push_back(floorBoss);
 
-						m_enemyCount++;
-					}
-					else if (objData.EqualObjectName(L"finalBoss") == true)
-					{
-						m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+					//	m_enemyCount++;
+					//}
+					//else if (objData.EqualObjectName(L"finalBoss") == true)
+					//{
+					//	m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
 
-						m_finalBoss->SetPosition(objData.position);
+					//	m_finalBoss->SetPosition(objData.position);
 
-						m_finalBoss->SetScale(objData.scale);
+					//	m_finalBoss->SetScale(objData.scale);
 
-						m_enemyCount++;
-					}
-					else if (objData.EqualObjectName(L"rareRobot") == true)
-					{
-						// 30%で生成
-						 //0～99 の乱数
-						int randValue = rand() % 100;
-						int spawnRate = 20;
+					//	m_enemyCount++;
+					//}
+					//else if (objData.EqualObjectName(L"rareRobot") == true)
+					//{
+					//	// 30%で生成
+					//	 //0～99 の乱数
+					//	int randValue = rand() % 100;
+					//	int spawnRate = 20;
 
-						 //30%で生成
-						if (randValue < spawnRate)
-						{
-							auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
+					//	 //30%で生成
+					//	if (randValue < spawnRate)
+					//	{
+					//		auto rareRobot = NewGO<RareRobot>(0, "rareRobot");
 
-							rareRobot->SetPosition(objData.position);
+					//		rareRobot->SetPosition(objData.position);
 
-							rareRobot->SetScale(objData.scale);
+					//		rareRobot->SetScale(objData.scale);
 
-							m_rareRobot.push_back(rareRobot);
-						}
-					}
-					else if (objData.EqualObjectName(L"barrier1") == true)
-					{
-						m_barrier1 = NewGO<Barrier>(0, "barrier");
-						m_barrier1->SetPosition(objData.position);
-						m_barrier1->SetRotation(objData.rotation);
-						m_barrier1->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier2") == true)
-					{
-						m_barrier2 = NewGO<Barrier>(0, "barrier");
-						m_barrier2->SetPosition(objData.position);
-						m_barrier2->SetRotation(objData.rotation);
-						m_barrier2->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier3") == true)
-					{
-						m_barrier3 = NewGO<Barrier>(0, "barrier");
-						m_barrier3->SetPosition(objData.position);
-						m_barrier3->SetRotation(objData.rotation);
-						m_barrier3->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier4") == true)
-					{
-						m_barrier4 = NewGO<Barrier>(0, "barrier");
-						m_barrier4->SetPosition(objData.position);
-						m_barrier4->SetRotation(objData.rotation);
-						m_barrier4->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier5") == true)
-					{
-						m_barrier5 = NewGO<Barrier>(0, "barrier");
-						m_barrier5->SetPosition(objData.position);
-						m_barrier5->SetRotation(objData.rotation);
-						m_barrier5->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier6") == true)
-					{
-						m_barrier6 = NewGO<Barrier>(0, "barrier");
-						m_barrier6->SetPosition(objData.position);
-						m_barrier6->SetRotation(objData.rotation);
-						m_barrier6->SetScale(objData.scale);
-					}
+					//		m_rareRobot.push_back(rareRobot);
+					//	}
+					//}
+					//else if (objData.EqualObjectName(L"barrier1") == true)
+					//{
+					//	m_barrier1 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier1->SetPosition(objData.position);
+					//	m_barrier1->SetRotation(objData.rotation);
+					//	m_barrier1->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier2") == true)
+					//{
+					//	m_barrier2 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier2->SetPosition(objData.position);
+					//	m_barrier2->SetRotation(objData.rotation);
+					//	m_barrier2->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier3") == true)
+					//{
+					//	m_barrier3 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier3->SetPosition(objData.position);
+					//	m_barrier3->SetRotation(objData.rotation);
+					//	m_barrier3->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier4") == true)
+					//{
+					//	m_barrier4 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier4->SetPosition(objData.position);
+					//	m_barrier4->SetRotation(objData.rotation);
+					//	m_barrier4->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier5") == true)
+					//{
+					//	m_barrier5 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier5->SetPosition(objData.position);
+					//	m_barrier5->SetRotation(objData.rotation);
+					//	m_barrier5->SetScale(objData.scale);
+					//}
+					//else if (objData.EqualObjectName(L"barrier6") == true)
+					//{
+					//	m_barrier6 = NewGO<Barrier>(0, "barrier");
+					//	m_barrier6->SetPosition(objData.position);
+					//	m_barrier6->SetRotation(objData.rotation);
+					//	m_barrier6->SetScale(objData.scale);
+					//}
 					return true;
 				});
 
@@ -303,9 +301,9 @@ void Game::Update()
 		case enLoad_Fade:
 
 			m_fade = NewGO<Fade>(0, "fade");
-			m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f), true, false }); // 1階
-			m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f), true, false });      // 2階
-			m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f), false, true });      // 3階
+			m_fadeAreas.push_back({ Vector3(2350.0f, 350.0f, 3600.0f), 300.0f, Vector3(-1276.3, 2137.0f, 3600.0f), true, false, false, false }); // 1階
+			m_fadeAreas.push_back({ Vector3(-1680.0f, 2600.0f, -4010.0f), 300.0f, Vector3(1900.0f, 4285.0f, -4050.0f), true, false, false, false });      // 2階
+			m_fadeAreas.push_back({ Vector3(2200.0f, 4700.0f, 3600.0f), 300.0f, Vector3(-1324.0f, 6442.2f, 3639.6f), false, true, false, false });      // 3階
 
 			m_loadCount++;
 
@@ -320,6 +318,12 @@ void Game::Update()
 			if (m_audioManager)
 			{
 				m_audioManager->PlayBGM(enSound_StageBGM,0.5f);
+			}
+
+			if (m_ui)
+			{
+				m_goalState = enGoalState_DefeatEnemy;
+				m_ui->ShowGoal(L"敵を倒せ");
 			}
 
 			m_isReady = true;
@@ -413,52 +417,33 @@ void Game::Update()
 	{
 		bool isInAnyArea = false;
 
-		for (auto& area : m_fadeAreas) {
+		for (int i = 0; i < m_fadeAreas.size(); i++) {
+			auto& area = m_fadeAreas[i];
 			Vector3 diff = playerPos - area.pos;
-			if (diff.Length() < area.radius &&
-				playerPos.y > area.pos.y - 50.0f)
+			if (diff.Length() < area.radius &&playerPos.y > area.pos.y - 50.0f)
 			{
+				m_currentFadeAreaIndex = i;
+
 				m_nextMovePos = area.targetPos;
 
-				m_nextIntro = area.intro;
-				m_nextBossIntro = area.bossIntro;
+				if (!area.playedIntro)
+				{
+					m_nextIntro = area.intro;
+					m_nextBossIntro = area.bossIntro;
+
+					area.playedIntro = true;
+				}
+				else
+				{
+					m_nextIntro = false;
+					m_nextBossIntro = false;
+				}
 
 				m_isMoveNextFloor = true;
 
-				m_audioManager->PlaySE(
-					enSound_StairsSE,
-					0.5f,
-					enSEPlay_AllowOverlap
-				);
+				m_audioManager->PlaySE(enSound_StairsSE,0.5f,enSEPlay_AllowOverlap);
 
 				m_fade->StartFadeOut();
-	
-				// 次フロアへ進んだ時だけ必要数増加
-				if (m_fade->IsFadeOutFinished())
-				{
-					m_player->SetPosition(m_nextMovePos);
-
-					m_intro = m_nextIntro;
-					m_bossIntro = m_nextBossIntro;
-
-					m_floorNo++;
-					m_needGireCount++;
-
-					m_isMoveNextFloor = false;
-
-					m_fade->StartFadeIn();
-				}
-
-				if (m_ui)
-				{
-					m_goalState = enGoalState_DefeatEnemy;
-
-					m_ui->ShowGoal(
-						L"敵を倒せ"
-					);
-				}
-
-				m_gameCamera->ResetCameraTimer();
 
 				isInAnyArea = true;
 				break;
@@ -474,14 +459,56 @@ void Game::Update()
 			m_intro = m_nextIntro;
 			m_bossIntro = m_nextBossIntro;
 
-			m_floorNo++;
-			m_needGireCount++;
+			if (m_intro || m_bossIntro)
+			{
+				if (m_bossIntro)
+				{
+					m_gameCamera->StartBossCamera();
+				}
+				else if (m_intro)
+				{
+					m_gameCamera->StartIntroCamera();
+				}
+				m_fade->StartFadeIn();
 
-			// 階到達後に表示
+				m_gameCamera->ResetCameraTimer();
+			}
+
+			auto& area = m_fadeAreas[m_currentFadeAreaIndex];
+
+			if (!area.movedFloor)
+			{
+				m_floorNo++;
+				m_needGireCount++;
+
+				area.movedFloor = true;
+			}
+
 			if (m_ui)
 			{
 				m_goalState = enGoalState_DefeatEnemy;
 
+				m_goalDelayTimer = 0.0f;
+				m_isGoalDelay = true;
+			}
+
+			m_isMoveNextFloor = false;
+
+			if (!m_intro && !m_bossIntro)
+			{
+				m_fade->StartFadeIn();
+			}
+		}
+	}
+
+	if (m_isGoalDelay)
+	{
+		m_goalDelayTimer += g_gameTime->GetFrameDeltaTime();
+
+		if (m_goalDelayTimer >= 0.1f) // ← 0.1秒後
+		{
+			if (m_ui)
+			{
 				if (m_floorNo == 4)
 				{
 					m_ui->ShowGoal(L"ボスを倒せ");
@@ -492,9 +519,7 @@ void Game::Update()
 				}
 			}
 
-			m_isMoveNextFloor = false;
-
-			m_fade->StartFadeIn();
+			m_isGoalDelay = false;
 		}
 	}
 	CreateGire();
@@ -503,6 +528,11 @@ void Game::Update()
 void Game::Pause()
 {
 	if (m_isSetting)
+	{
+		return;
+	}
+
+	if (m_ui && m_ui->IsInventoryOpen())
 	{
 		return;
 	}
@@ -528,6 +558,14 @@ void Game::PauseRender()
 	{
 		m_pauseSelect++;
 		if (m_pauseSelect > 2) m_pauseSelect = 0;
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(
+				enSound_ChoiceSE,
+				0.3f,
+				enSEPlay_AllowOverlap
+			);
+		}
 	}
 
 	// ↑移動
@@ -535,11 +573,27 @@ void Game::PauseRender()
 	{
 		m_pauseSelect--;
 		if (m_pauseSelect < 0) m_pauseSelect = 2;
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(
+				enSound_ChoiceSE,
+				0.3f,
+				enSEPlay_AllowOverlap
+			);
+		}
 	}
 
 	// 決定
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(
+				enSound_DecisionSE,
+				0.3f,
+				enSEPlay_AllowOverlap
+			);
+		}
 		switch (m_pauseSelect)
 		{
 		case 0: // ゲームに戻る
@@ -610,9 +664,7 @@ void Game::CreateGire()
 		{
 			m_goalState = enGoalState_GetGear;
 
-			m_ui->ShowGoal(
-				L"歯車をとれ"
-			);
+			m_ui->ShowGoal(L"歯車をとれ");
 		}
 	}
 	if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
@@ -626,9 +678,7 @@ void Game::CreateGire()
 		{
 			m_goalState = enGoalState_GetGear;
 
-			m_ui->ShowGoal(
-				L"歯車をとれ"
-			);
+			m_ui->ShowGoal(L"歯車をとれ");
 		}
 	}
 }

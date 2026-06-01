@@ -74,6 +74,7 @@ void Player::Update()
 		!isFade &&
 		!IntroFlag &&
 		!bossIntroFlag)
+	if (!m_guardFlag &&!m_isAttack &&!isFade &&!IntroFlag &&!bossIntroFlag)
 	{
 		Move();
 		Rotation();
@@ -84,9 +85,7 @@ void Player::Update()
 		m_moveSpeed.x = 0.0f;
 		m_moveSpeed.z = 0.0f;
 	}
-	if (!isFade &&
-		!IntroFlag &&
-		!bossIntroFlag)
+	if (!isFade &&!IntroFlag &&!bossIntroFlag)
 	{
 		JumpAndGravity();
 
@@ -297,11 +296,7 @@ void Player::FootStep()
 			case 2: id = enSound_PlayerWalkSE3; break;
 			}
 
-			m_audioManager->PlaySE(
-				id,
-				1.0f,
-				enSEPlay_AllowOverlap
-			);
+			m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
 
 			m_footStepTime = 0.5f;
 		}
@@ -323,11 +318,7 @@ void Player::FootStep()
 			case 1: id = enSound_PlayerDashSE2; break;
 			case 2: id = enSound_PlayerDashSE3; break;
 			}
-			m_audioManager->PlaySE(
-				id,
-				1.0f,
-				enSEPlay_AllowOverlap
-			);
+			m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
 
 			m_footStepTime = 0.3f;
 		}
@@ -362,8 +353,7 @@ void Player::Attack()
 		}
 
 		// 0.2秒後に当たり判定生成
-		if (m_attackStartTime >= 0.2f &&
-			!m_hasCreatedAttackCollision)
+		if (m_attackStartTime >= 0.2f &&!m_hasCreatedAttackCollision)
 		{
 			OnCollision();
 
@@ -378,8 +368,7 @@ void Player::Attack()
 				m_attackCoolTime = 2.0f;
 			}
 		}
-		if (m_attackStartTime >= 0.45f &&
-			!m_hasPlayedHitSE)
+		if (m_attackStartTime >= 0.45f &&!m_hasPlayedHitSE)
 		{
 			if (!m_enemyHitFlag)
 			{
@@ -394,11 +383,7 @@ void Player::Attack()
 				case 2: id = enSound_MissSE_03; break;
 				}
 
-				m_audioManager->PlaySE(
-					id,
-					1.0f,
-					enSEPlay_AllowOverlap
-				);
+				m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
 			}
 
 			m_hasPlayedHitSE = true;
@@ -485,11 +470,7 @@ void Player::Hit()
 			{
 				m_powerBuffPotionCount++;
 
-				m_audioManager->PlaySE(
-					enSound_PowerUPSE,
-					1.0f,
-					enSEPlay_AllowOverlap
-				);
+				m_audioManager->PlaySE(enSound_PowerUPSE,1.0f,enSEPlay_AllowOverlap);
 
 				DeleteGO(collision);
 
@@ -509,11 +490,7 @@ void Player::Hit()
 			{
 				m_attackSpeedPotionCount++;
 
-				m_audioManager->PlaySE(
-					enSound_AttackSpeedUPSE,
-					1.0f,
-					enSEPlay_AllowOverlap
-				);
+				m_audioManager->PlaySE(enSound_AttackSpeedUPSE,1.0f,enSEPlay_AllowOverlap);
 
 				DeleteGO(collision);
 
@@ -534,11 +511,7 @@ void Player::Hit()
 			{
 				m_healPotionCount++;
 
-				m_audioManager->PlaySE(
-					enSound_HealSE,
-					1.0f,
-					enSEPlay_AllowOverlap
-				);
+				m_audioManager->PlaySE(enSound_HealSE,1.0f,enSEPlay_AllowOverlap);
 
 				DeleteGO(collision);
 
@@ -571,9 +544,7 @@ void Player::GetGires()
 
 			if (ui)
 			{
-				ui->ShowGoal(
-					L"階段を上れ"
-				);
+				ui->ShowGoal(L"階段を上れ");
 			}
 		}
 	}
@@ -613,8 +584,7 @@ void Player::PlayerState()
 	}
 
 	if (!m_isKnockBack &&
-		g_pad[0]->IsTrigger(enButtonB) &&
-		m_characterController.IsOnGround())
+		g_pad[0]->IsTrigger(enButtonB) &&m_characterController.IsOnGround())
 	{
 		m_playerState = enPlayerState_Jump;
 
@@ -783,11 +753,7 @@ void Player::MakeHealEffect()
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
 
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_Heal,
-		effectPos,
-		50.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_Heal,effectPos,50.0f);
 }
 
 void Player::MakePowerBuffEffect()
@@ -795,11 +761,7 @@ void Player::MakePowerBuffEffect()
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
 
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_PowerBuff,
-		effectPos,
-		10.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_PowerBuff,effectPos,10.0f);
 }
 
 void Player::MakeAttackSpeedBuffEffect()
@@ -807,11 +769,7 @@ void Player::MakeAttackSpeedBuffEffect()
 	Vector3 effectPos = m_position;
 	effectPos.y += 200.0f;
 
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_AttackSpeedBuff,
-		effectPos,
-		10.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_AttackSpeedBuff,effectPos,10.0f);
 }
 
 bool Player::UseItem(int itemNo)

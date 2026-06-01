@@ -171,13 +171,13 @@ void AudioManager::SetSEVolume(float volume)
 {
 	m_seVolume = Clamp(volume, 0.0f, 1.0f);
 
-	for (auto& se : m_playingSE)
-	{
-		if (se.se)
-		{
-			se.se->SetVolume(m_seVolume * m_masterVolume);
-		}
-	}
+	//for (auto& se : m_playingSE)
+	//{
+	//	if (se.se)
+	//	{
+	//		se.se->SetVolume(m_seVolume * m_masterVolume);
+	//	}
+	//}
 }
 
 void AudioManager::LoadAll()
@@ -222,6 +222,8 @@ void AudioManager::LoadAll()
 	Load(enSound_GetItemSE, "Assets/Sound/SE/GetItemSE.wav");
 	Load(enSound_CriticalSE, "Assets/Sound/SE/CriticalSE.wav");
 	Load(enSound_BackstabSE, "Assets/Sound/SE/BackstabSE.wav");
+	Load(enSound_DecisionSE, "Assets/Sound/SE/DecisionSE.wav");
+	Load(enSound_ChoiceSE, "Assets/Sound/SE/ChoiceSE.wav");
 }
 
 void AudioManager::Load(AudioID id, const std::string& path)

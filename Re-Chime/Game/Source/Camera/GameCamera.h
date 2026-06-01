@@ -31,11 +31,16 @@ public:
 	void CameraTransition();
 	void UpdateFadeOutCamera();
 	void UpdateFadeInCamera();
+	void StartIntroCamera();
+	void StartBossCamera();
 	void ResetCameraTimer()
 	{
 		m_introCameraTime = 0.0f;
 		m_bossCameraTime = 0.0f;
-		m_isStartFade = false;
+	}
+	void SetCameraState(EnCameraState state)
+	{
+		m_cameraState = state;
 	}
 
 	/////////////////////////////////////
