@@ -157,8 +157,7 @@ void Game::Update()
 				{
 					if (objData.EqualObjectName(L"Stage"))
 					{
-						m_stage =
-							NewGO<Stage>(0,"stage");
+						m_stage = NewGO<Stage>(0,"stage");
 
 						m_stage->SetPosition(objData.position);
 					}

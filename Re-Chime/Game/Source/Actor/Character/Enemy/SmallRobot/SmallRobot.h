@@ -26,6 +26,7 @@ public:
 	~SmallRobot();
 	bool Start() override;
 	void Update() override;
+	void UpdateTimer();
 	void KnockBack();
 	void Move() override;
 	void Rotation() override;
@@ -34,6 +35,7 @@ public:
 	void OnCollision() override;
 	void Time() override;
 	void Hit() override;
+	void TakeDamage(int damage, float knockBackTime);
 	void DamageIntarval() override;
 	void AttackHit() override;
 	void Death() override;
