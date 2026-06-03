@@ -508,7 +508,6 @@ void Game::SpawnEnemy(const SpawnData& spawnData)
 void Game::SpawnCurrentFloorEnemy()
 {
 	m_remainEnemyCount = 0;
-	m_createGire = false;
 	for (auto& spawnData : m_spawnList)
 	{
 		if (spawnData.spawned)
@@ -530,6 +529,7 @@ void Game::SpawnCurrentFloorEnemy()
 			m_remainEnemyCount++;
 		}
 	}
+	m_createGire = false;
 }
 
 void Game::Pause()
