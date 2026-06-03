@@ -197,6 +197,9 @@
     <ClInclude Include="Source\Manager\EffectManager\EffectManager.h">
       <Filter>Source\Manager\EffectManager</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Manager\SpawnData\SpawnData.h">
+      <Filter>Source\Manager\SpawnData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -297,6 +300,9 @@
     </Filter>
     <Filter Include="Source\Manager\EffectManager">
       <UniqueIdentifier>{f6b67c8a-e5a2-4ab8-80b9-e9b38cb65955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Manager\SpawnData">
+      <UniqueIdentifier>{258fe238-4726-4b9b-acf4-c6fba257f893}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

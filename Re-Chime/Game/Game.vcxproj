@@ -287,6 +287,7 @@
     <ClInclude Include="Source\Camera\GameCamera.h" />
     <ClInclude Include="Source\Manager\AudioManager\AudioManager.h" />
     <ClInclude Include="Source\Manager\EffectManager\EffectManager.h" />
+    <ClInclude Include="Source\Manager\SpawnData\SpawnData.h" />
     <ClInclude Include="Source\UIBase\DamageText\DamageText.h" />
     <ClInclude Include="Source\UIBase\DifficultyLevel\DifficultyLevel.h" />
     <ClInclude Include="Source\UIBase\Fade\Fade.h" />
