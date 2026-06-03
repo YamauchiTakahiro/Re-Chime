@@ -19,6 +19,7 @@
 #include "Source/UIBase/Fade/Fade.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
 #include "Source/UIBase/VolumeSettings/VolumeSettings.h"
+#include "Source/Manager/SpawnData/SpawnData.h"
 
 namespace
 {
@@ -86,12 +87,11 @@ Game::~Game()
 	DeleteGO(m_volumeSetting);
 	DeleteGO(m_effectManager);
 	DeleteGO(m_fade);
-	DeleteGO(m_barrier1);
-	DeleteGO(m_barrier2);
-	DeleteGO(m_barrier3);
-	DeleteGO(m_barrier4);
-	DeleteGO(m_barrier5);
-	DeleteGO(m_barrier6);
+	const auto& barriers = FindGOs<Barrier>("barrier");
+	for (auto barrier : barriers)
+	{
+		DeleteGO(barrier);
+	}
 }
 
 void Game::Update()
@@ -155,96 +155,56 @@ void Game::Update()
 
 						m_stage->SetPosition(objData.position);
 					}
-					else if (objData.EqualObjectName(L"mediumRobot"))
-					{
-						auto enemy = NewGO<MediumRobot>(0, "mediumRobot");
-
-						enemy->SetPosition(objData.position);
-
-						enemy->SetScale(objData.scale);
-
-						m_mediumRobot.push_back(enemy);
-
-						m_enemyCount++;
-					}
 					else if (objData.EqualObjectName(L"smallRobot") == true)
 					{
-						auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
-
-						smallRobot->SetPosition(objData.position);
-
-						smallRobot->SetScale(objData.scale);
-
-						m_smallRobot.push_back(smallRobot);
-
-						m_enemyCount++;
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_SmallRobot;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
+					}
+					else if (objData.EqualObjectName(L"mediumRobot"))
+					{
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_MediumRobot;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
 					}
 					else if (objData.EqualObjectName(L"FloorBoss") == true)
 					{
-						auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
-
-						floorBoss->SetPosition(objData.position);
-
-						floorBoss->SetScale(objData.scale);
-
-						m_floorBoss.push_back(floorBoss);
-
-						m_enemyCount++;
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_FloorBoss;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
 					}
 					else if (objData.EqualObjectName(L"finalBoss") == true)
 					{
-						m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
-
-						m_finalBoss->SetPosition(objData.position);
-
-						m_finalBoss->SetScale(objData.scale);
-
-						m_enemyCount++;
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_FinalBoss;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
 					}
-					else if (objData.EqualObjectName(L"barrier1") == true)
+					else if (objData.EqualObjectName(L"barrier") == true)
 					{
-						m_barrier1 = NewGO<Barrier>(0, "barrier");
-						m_barrier1->SetPosition(objData.position);
-						m_barrier1->SetRotation(objData.rotation);
-						m_barrier1->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier2") == true)
-					{
-						m_barrier2 = NewGO<Barrier>(0, "barrier");
-						m_barrier2->SetPosition(objData.position);
-						m_barrier2->SetRotation(objData.rotation);
-						m_barrier2->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier3") == true)
-					{
-						m_barrier3 = NewGO<Barrier>(0, "barrier");
-						m_barrier3->SetPosition(objData.position);
-						m_barrier3->SetRotation(objData.rotation);
-						m_barrier3->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier4") == true)
-					{
-						m_barrier4 = NewGO<Barrier>(0, "barrier");
-						m_barrier4->SetPosition(objData.position);
-						m_barrier4->SetRotation(objData.rotation);
-						m_barrier4->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier5") == true)
-					{
-						m_barrier5 = NewGO<Barrier>(0, "barrier");
-						m_barrier5->SetPosition(objData.position);
-						m_barrier5->SetRotation(objData.rotation);
-						m_barrier5->SetScale(objData.scale);
-					}
-					else if (objData.EqualObjectName(L"barrier6") == true)
-					{
-						m_barrier6 = NewGO<Barrier>(0, "barrier");
-						m_barrier6->SetPosition(objData.position);
-						m_barrier6->SetRotation(objData.rotation);
-						m_barrier6->SetScale(objData.scale);
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_Barrier;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.rot = objData.rotation;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
 					}
 					return true;
 				});
+
+			SpawnCurrentFloorEnemy();
 
 			m_loadCount++;
 
@@ -350,18 +310,15 @@ void Game::Update()
 		switch (m_floorNo)
 		{
 		case 1:
-			FirstFloor();
-			m_createGire = false;
+			DeleteBarriers();
 			break;
 
 		case 2:
-			SecondFloor();
-			m_createGire = false;
+			DeleteBarriers();
 			break;
 
 		case 3:
-			ThirdFloor();
-			m_createGire = false;
+			DeleteBarriers();
 			break;
 
 		case 4:
@@ -458,6 +415,8 @@ void Game::Update()
 				area.movedFloor = true;
 			}
 
+			SpawnCurrentFloorEnemy();
+
 			if (m_ui)
 			{
 				m_goalState = enGoalState_DefeatEnemy;
@@ -497,6 +456,80 @@ void Game::Update()
 		}
 	}
 	CreateGire();
+}
+
+void Game::SpawnEnemy(const SpawnData& spawnData)
+{
+	switch (spawnData.spawnType)
+	{
+		case enSpawnType::enSpawnType_SmallRobot:
+		{
+			auto smallRobot = NewGO<SmallRobot>(0, "smallRobot");
+			smallRobot->SetPosition(spawnData.pos);
+			smallRobot->SetScale(spawnData.scale);
+			m_smallRobot.push_back(smallRobot);
+			break;
+		}
+		case enSpawnType::enSpawnType_MediumRobot:
+		{
+			auto mediumRobot = NewGO<MediumRobot>(0, "mediumRobot");
+			mediumRobot->SetPosition(spawnData.pos);
+			mediumRobot->SetScale(spawnData.scale);
+			m_mediumRobot.push_back(mediumRobot);
+			break;
+		}
+		case enSpawnType::enSpawnType_FloorBoss:
+		{
+			auto floorBoss = NewGO<FloorBoss>(0, "floorBoss");
+			floorBoss->SetPosition(spawnData.pos);
+			floorBoss->SetScale(spawnData.scale);
+			m_floorBoss.push_back(floorBoss);
+			break;
+		}
+		case enSpawnType::enSpawnType_FinalBoss:
+		{
+			m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+			m_finalBoss->SetPosition(spawnData.pos);
+			m_finalBoss->SetScale(spawnData.scale);
+			break;
+		}
+		case enSpawnType::enSpawnType_Barrier:
+		{
+			auto barrier = NewGO<Barrier>(0, "barrier");
+			barrier->SetPosition(spawnData.pos);
+			barrier->SetScale(spawnData.scale);
+			barrier->SetRotation(spawnData.rot);
+			m_barrier.push_back(barrier);
+			break;
+		}
+	}
+}
+
+void Game::SpawnCurrentFloorEnemy()
+{
+	m_remainEnemyCount = 0;
+	m_createGire = false;
+	for (auto& spawnData : m_spawnList)
+	{
+		if (spawnData.spawned)
+		{
+			continue;
+		}
+
+		if (spawnData.floorNum != m_floorNo)
+		{
+			continue;
+		}
+
+		SpawnEnemy(spawnData);
+
+		spawnData.spawned = true;
+
+		if(spawnData.spawnType != enSpawnType::enSpawnType_Barrier)
+		{
+			m_remainEnemyCount++;
+		}
+	}
 }
 
 void Game::Pause()
@@ -591,33 +624,35 @@ void Game::PauseRender()
 	}
 }
 
-void Game::FirstFloor()
+void Game::DeleteBarriers()
 {
-	DeleteGO(m_barrier1);
-	DeleteGO(m_barrier2);
-}
-
-void Game::SecondFloor()
-{
-	DeleteGO(m_barrier3);
-	DeleteGO(m_barrier4);
-}
-
-void Game::ThirdFloor()
-{
-	DeleteGO(m_barrier5);
-	DeleteGO(m_barrier6);
+	const auto& barriers = FindGOs<Barrier>("barrier");
+	for (auto barrier : barriers)
+	{
+		DeleteGO(barrier);
+	}
 }
 
 void Game::CreateGire()
 {
-	int gireCount = m_player->GetGireCount();
-
-	if (m_numDefeatedEnemy == 6 && !m_createGire && gireCount == 0)
+	if (m_remainEnemyCount == 0 && !m_createGire)
 	{
-		m_gire = NewGO<Gire>(0, "gire");
-		m_gire->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-		m_gire->SetScale(Vector3(3.0f, 3.0f, 3.0f));
+		Vector3 pos;
+
+		switch (m_floorNo)
+		{
+		case 1:
+			pos = Vector3(0.0f, 0.0f, 0.0f);
+			break;
+
+		case 2:
+			pos = Vector3(0.0f, 2115.0f, 0.0f);
+			break;
+
+		case 3:
+			pos = Vector3(0.0f, 4280.0f, 0.0f);
+			break;
+		}
 		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
 		m_createGire = true;
 		if (m_ui)
@@ -626,35 +661,11 @@ void Game::CreateGire()
 
 			m_ui->ShowGoal(L"歯車をとれ");
 		}
-	}
-	if (m_numDefeatedEnemy == 11 && !m_createGire && gireCount == 1)
-	{
 		m_gire = NewGO<Gire>(0, "gire");
-		m_gire->SetPosition(Vector3(0.0f, 2115.0f, 0.0f));
+		m_gire->SetPosition(pos);
 		m_gire->SetScale(Vector3(3.0f, 3.0f, 3.0f));
-		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-		m_createGire = true;
-		if (m_ui)
-		{
-			m_goalState = enGoalState_GetGear;
-
-			m_ui->ShowGoal(L"歯車をとれ");
-		}
 	}
-	if (m_numDefeatedEnemy == 13 && !m_createGire && gireCount == 2)
-	{
-		m_gire = NewGO<Gire>(0, "gire");
-		m_gire->SetPosition(Vector3(0.0f, 4280.0f, 0.0f));
-		m_gire->SetScale(Vector3(3.0f, 3.0f, 3.0f));
-		m_audioManager->PlaySE(enSound_GearDropSE, 0.5f);
-		m_createGire = true;
-		if (m_ui)
-		{
-			m_goalState = enGoalState_GetGear;
 
-			m_ui->ShowGoal(L"歯車をとれ");
-		}
-	}
 }
 
 void Game::Render(RenderContext& rc)
@@ -777,4 +788,24 @@ float Game::GetInventoryCoolTime() const
 	}
 
 	return 10.0f;
+}
+
+int Game::GetFloorFromY(float y) const
+{
+	if (y < 2137.0f)
+	{
+		return 1;
+	}
+	else if (y < 4285.0f)
+	{
+		return 2;
+	}
+	else if (y < 6442.2f)
+	{
+		return 3;
+	}
+	else
+	{
+		return 4;
+	}
 }

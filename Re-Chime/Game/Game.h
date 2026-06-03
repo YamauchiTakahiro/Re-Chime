@@ -24,6 +24,7 @@ class Heal;
 class Fade;
 class EffectManager;
 class VolumeSettings;
+class SpawnData;
 
 class Game : public IGameObject
 {
@@ -43,12 +44,12 @@ public:
 	~Game();
 	bool Start();
 	void Update();
+	void SpawnEnemy(const SpawnData& spawnData);
+	void SpawnCurrentFloorEnemy();
 	void Pause();
 	void PauseRender();
 	void CreateGire();
-	void FirstFloor();
-	void SecondFloor();
-	void ThirdFloor();
+	void DeleteBarriers();
 	void FourthFloor();
 	bool IsFade() const;
 
@@ -63,7 +64,11 @@ public:
 	}
 	void EnemyCount()
 	{
-		m_numDefeatedEnemy++;
+		m_remainEnemyCount--;
+		wchar_t text[256];
+		swprintf_s(text, L"remain=%d\n", m_remainEnemyCount);
+		OutputDebugStringW(text);
+
 	}
 	bool GetIsPause(bool isPause)
 	{
@@ -147,6 +152,8 @@ public:
 		return m_difficulty;
 	}
 
+	int GetFloorFromY(float y) const;
+
 	float GetInventoryCoolTime() const;
 
 	void Render(RenderContext& rc);
@@ -156,12 +163,7 @@ private:
 	Player* m_player = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	Stage* m_stage = nullptr;
-	Barrier* m_barrier1 = nullptr;
-	Barrier* m_barrier2 = nullptr;
-	Barrier* m_barrier3 = nullptr;
-	Barrier* m_barrier4 = nullptr;
-	Barrier* m_barrier5 = nullptr;
-	Barrier* m_barrier6 = nullptr;
+	std::vector<Barrier*> m_barrier;
 	UI* m_ui = nullptr;
 	FontRender m_gear;
 	std::vector<SmallRobot*> m_smallRobot;
@@ -175,6 +177,7 @@ private:
 	Difficulty m_difficulty = NORMAL;
 	EffectManager* m_effectManager = nullptr;
 	VolumeSettings* m_volumeSettings = nullptr;
+	std::vector<SpawnData> m_spawnList;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
 	FontRender m_Cursor;
@@ -195,7 +198,7 @@ private:
 	int m_pauseSelect = 0; //ポーズメニュー、0:タイトルに戻る、1:ゲームに戻る、2:音量調整
 	bool m_isPause = false;
 	bool m_isPlayerReturn = false;
-	int m_enemyCount = 0;		//!<敵の数。
+	int m_remainEnemyCount = 0;		//!<敵の数。
 	int m_numDefeatedEnemy = 0;	//!<倒した敵の数。
 	bool m_isSetting = false;
 	bool m_intro = true;
