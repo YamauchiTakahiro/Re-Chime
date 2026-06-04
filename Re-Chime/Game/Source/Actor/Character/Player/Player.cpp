@@ -565,6 +565,8 @@ void Player::GetGires()
 
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
+			m_gireCount++;
+
 			m_isGetGire = true;
 
 			DeleteGO(m_gire);
