@@ -184,7 +184,7 @@ void Game::Update()
 						spawnData.floorNum = GetFloorFromY(objData.position.y);
 						m_spawnList.push_back(spawnData);
 					}
-	/*				else if (objData.EqualObjectName(L"finalBoss") == true)
+					else if (objData.EqualObjectName(L"finalBoss") == true)
 					{
 						SpawnData spawnData;
 						spawnData.spawnType = enSpawnType::enSpawnType_FinalBoss;
@@ -194,15 +194,6 @@ void Game::Update()
 						m_spawnList.push_back(spawnData);
 					}
 					else if (objData.EqualObjectName(L"barrier") == true)
-						m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
-
-						m_finalBoss->SetPosition(objData.position);
-
-						m_finalBoss->SetScale(objData.scale);
-
-						m_enemyCount++;
-					}*/
-					else if (objData.EqualObjectName(L"barrier1") == true)
 					{
 						SpawnData spawnData;
 						spawnData.spawnType = enSpawnType::enSpawnType_Barrier;
@@ -318,30 +309,34 @@ void Game::Update()
 	int gireCount = m_player->GetGireCount();
 	if (gireCount >= m_needGireCount)
 	{
-		switch (m_floorNo)
+		if (!m_getGire)
 		{
-		case 1:
-			DeleteBarriers();
-			break;
-
-		case 2:
-			DeleteBarriers();
-			break;
-
-		case 3:
-			DeleteBarriers();
-			break;
-
-		case 4:
-			m_gameClear = NewGO<GameClear>(0, "gameClear");
-
-			if (m_audioManager)
+			switch (m_floorNo)
 			{
-				m_audioManager->StopBGM(enSound_StageBGM);
-			}
+			case 1:
+				DeleteBarriers();
+				break;
 
-			DeleteGO(this);
-			return;
+			case 2:
+				DeleteBarriers();
+				break;
+
+			case 3:
+				DeleteBarriers();
+				break;
+
+			case 4:
+				m_gameClear = NewGO<GameClear>(0, "gameClear");
+
+				if (m_audioManager)
+				{
+					m_audioManager->StopBGM(enSound_StageBGM);
+				}
+
+				DeleteGO(this);
+				return;
+			}
+			m_getGire = true;
 		}
 	}
 
@@ -638,6 +633,7 @@ void Game::PauseRender()
 
 void Game::DeleteBarriers()
 {
+	m_audioManager->PlaySE(enSound_BrokenBarricadeSE, 0.5f, enSEPlay_NoOverlap);
 	const auto& barriers = FindGOs<Barrier>("barrier");
 	for (auto barrier : barriers)
 	{
