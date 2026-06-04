@@ -101,7 +101,7 @@ private:
     float m_timeCount = 0.0f;		//!<タイマー用の変数。
     float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
     float m_attackCollisionLife = 0.0f;
-	float m_rotationSpeed = 2.0f;		//!<回転速度。
+	float m_rotationSpeed = 1.0f;		//!<回転速度。
 	bool m_isAttack = false;		//!<攻撃しているかどうか。
 	bool m_isDeath = false;		//!<死亡しているかどうか。
 	bool m_searchPlayer = false;	//!<プレイヤーを索敵しているかどうか。
