@@ -120,6 +120,15 @@ void UI::Update()
 	{
 		m_isInventoryOpen = !m_isInventoryOpen;
 
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_OpenSE);
+		}
+		else
+		{
+			m_audioManager->PlaySE(enSound_CloseSE);
+		}
+
 		m_game->SetGameStop(m_isInventoryOpen);
 	}
 
@@ -399,6 +408,11 @@ void UI::Inventory()
 		}
 
 		m_isUseItem = false;
+
+		/*if (useSuccess == false)
+		{
+			m_audioManager->PlaySE(enSound_CancelSE);
+		}*/
 	}
 
 	wchar_t text[64];

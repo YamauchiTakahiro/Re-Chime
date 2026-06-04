@@ -224,6 +224,8 @@ void AudioManager::LoadAll()
 	Load(enSound_BackstabSE, "Assets/Sound/SE/BackstabSE.wav");
 	Load(enSound_DecisionSE, "Assets/Sound/SE/DecisionSE.wav");
 	Load(enSound_ChoiceSE, "Assets/Sound/SE/ChoiceSE.wav");
+	Load(enSound_OpenSE, "Assets/Sound/SE/Open.wav");
+	Load(enSound_CloseSE, "Assets/Sound/SE/Close.wav");
 }
 
 void AudioManager::Load(AudioID id, const std::string& path)

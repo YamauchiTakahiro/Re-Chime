@@ -147,6 +147,8 @@ public:
 		m_difficulty = difficulty;
 	}
 
+	void DrawGearArrow(RenderContext& rc);
+
 	Difficulty GetDifficulty() const
 	{
 		return m_difficulty;
@@ -180,6 +182,7 @@ private:
 	std::vector<SpawnData> m_spawnList;
 	SpriteRender m_font;
 	SpriteRender m_Pause;
+	SpriteRender m_gearArrow;
 	FontRender m_Cursor;
 	FontRender m_TitleReturnText;
 	FontRender m_PlayerReturnText;
@@ -249,5 +252,8 @@ private:
 	bool m_isPlayedFloor2Intro = false;
 	bool m_isPlayedFloor3Intro = false;
 	bool m_isPlayedBossIntro = false;
+	float m_navAngle = 0.0f;
+	Vector3 m_navPos = Vector3::Zero;
+	float m_navTimer = 0.0f;
 };
 

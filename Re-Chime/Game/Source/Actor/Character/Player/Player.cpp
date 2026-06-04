@@ -567,6 +567,9 @@ void Player::GetGires()
 		{
 			m_isGetGire = true;
 
+			DeleteGO(m_gire);
+			m_gire = nullptr;
+
 			auto ui = FindGO<UI>("ui");
 
 			if (ui)

@@ -56,6 +56,8 @@ bool Game::Start()
 	m_maxLoadCount = 8;
 	srand((unsigned)time(NULL));
 
+	m_gearArrow.Init("Assets/UIData/gearArrow.DDs", 128, 128);
+
 	return true;
 }
 
@@ -182,7 +184,7 @@ void Game::Update()
 						spawnData.floorNum = GetFloorFromY(objData.position.y);
 						m_spawnList.push_back(spawnData);
 					}
-					else if (objData.EqualObjectName(L"finalBoss") == true)
+	/*				else if (objData.EqualObjectName(L"finalBoss") == true)
 					{
 						SpawnData spawnData;
 						spawnData.spawnType = enSpawnType::enSpawnType_FinalBoss;
@@ -192,6 +194,15 @@ void Game::Update()
 						m_spawnList.push_back(spawnData);
 					}
 					else if (objData.EqualObjectName(L"barrier") == true)
+						m_finalBoss = NewGO<FinalBoss>(0, "finalBoss");
+
+						m_finalBoss->SetPosition(objData.position);
+
+						m_finalBoss->SetScale(objData.scale);
+
+						m_enemyCount++;
+					}*/
+					else if (objData.EqualObjectName(L"barrier1") == true)
 					{
 						SpawnData spawnData;
 						spawnData.spawnType = enSpawnType::enSpawnType_Barrier;
@@ -456,6 +467,7 @@ void Game::Update()
 		}
 	}
 	CreateGire();
+	m_navTimer += g_gameTime->GetFrameDeltaTime();
 }
 
 void Game::SpawnEnemy(const SpawnData& spawnData)
@@ -676,6 +688,12 @@ void Game::Render(RenderContext& rc)
 	}
 	m_gear.Draw(rc);
 	m_Pos.Draw(rc);
+	m_gire = FindGO<Gire>("gire");
+
+	if (m_gire != nullptr)
+	{
+		DrawGearArrow(rc);
+	}
 	if (m_isPause)
 	{
 		float move = sinf(m_pauseTime) * 10.0f;
@@ -808,4 +826,116 @@ int Game::GetFloorFromY(float y) const
 	{
 		return 4;
 	}
+}
+
+void Game::DrawGearArrow(RenderContext& rc)
+{
+	if (m_player == nullptr || m_gire == nullptr)
+	{
+		return;
+	}
+
+	Vector3 playerPos = m_player->GetPosition();
+	Vector3 gearPos = m_gire->GetPosition();
+
+	// 距離
+	float distance = (gearPos - playerPos).Length();
+
+	// 近すぎたら非表示
+	if (distance < 300.0f)
+	{
+		return;
+	}
+
+	// プレイヤー→歯車方向
+	Vector3 dir = gearPos - playerPos;
+	dir.y = 0.0f;
+
+	if (dir.LengthSq() < 0.01f)
+	{
+		return;
+	}
+
+	dir.Normalize();
+
+	// カメラ基準
+	Vector3 camForward = g_camera3D->GetForward();
+	camForward.y = 0.0f;
+	camForward.Normalize();
+
+	Vector3 camRight;
+	camRight.Cross(Vector3::AxisY, camForward);
+	camRight.Normalize();
+
+	float screenX = dir.Dot(camRight);
+	float screenY = dir.Dot(camForward);
+
+	// 目標角度
+	float targetAngle = atan2f(screenX, screenY);
+
+	// -----------------------------
+	// 角度補間
+	// -----------------------------
+	float diff = targetAngle - m_navAngle;
+
+	while (diff > Math::PI)
+	{
+		diff -= Math::PI * 2.0f;
+	}
+
+	while (diff < -Math::PI)
+	{
+		diff += Math::PI * 2.0f;
+	}
+
+	m_navAngle += diff * 0.15f;
+
+	// -----------------------------
+	// 距離で半径変化
+	// -----------------------------
+	float radius = 250.0f + min(distance * 0.05f, 250.0f);
+
+	// -----------------------------
+	// フワフワ
+	// -----------------------------
+	float wave = sinf(m_navTimer * 5.0f) * 10.0f;
+
+	Vector3 targetPos;
+	targetPos.x = sinf(m_navAngle) * radius;
+	targetPos.y = cosf(m_navAngle) * radius + wave;
+	targetPos.z = 0.0f;
+
+	// -----------------------------
+	// 補間移動
+	// -----------------------------
+	m_navPos += (targetPos - m_navPos) * 0.1f;
+
+	// -----------------------------
+	// 距離でサイズ変化
+	// -----------------------------
+	float scale = distance / 3000.0f;
+
+	if (scale < 0.8f)
+	{
+		scale = 0.8f;
+	}
+
+	if (scale > 2.0f)
+	{
+		scale = 2.0f;
+	}
+
+	m_gearArrow.SetScale(Vector3(scale, scale, scale));
+
+	// -----------------------------
+	// 回転
+	// -----------------------------
+	Quaternion rot;
+	rot.SetRotationZ(m_navAngle - Math::DegToRad(90.0f));
+
+	m_gearArrow.SetRotation(rot);
+	m_gearArrow.SetPosition(m_navPos);
+
+	m_gearArrow.Update();
+	m_gearArrow.Draw(rc);
 }
