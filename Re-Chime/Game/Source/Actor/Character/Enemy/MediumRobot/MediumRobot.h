@@ -106,7 +106,7 @@ private:
 	bool m_isDeath = false;		//!<死亡しているかどうか。
 	bool m_searchPlayer = false;	//!<プレイヤーを索敵しているかどうか。
     bool m_hasDetectedPlayer = false;
-    float m_moveSpeedValue = 400.0f;
+    float m_moveSpeedValue = 0.0f;
     DifficultyLevel* m_difficultyLevel = nullptr;
 
     //========================
