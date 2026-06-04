@@ -567,7 +567,7 @@ void Player::GetGires()
 		{
 			m_gireCount++;
 
-			m_isGetGire = true;
+			//m_isGetGire = true;
 
 			DeleteGO(m_gire);
 			m_gire = nullptr;

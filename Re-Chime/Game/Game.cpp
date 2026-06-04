@@ -555,6 +555,28 @@ void Game::Pause()
 	if (g_pad[0]->IsTrigger(enButtonStart)) 
 	{
 		m_isPause = !m_isPause; 
+
+		if (m_audioManager != nullptr)
+		{
+			if (m_isPause)
+			{
+				// 開いた
+				m_audioManager->PlaySE(
+					enSound_PauseSE,
+					0.3f,
+					enSEPlay_AllowOverlap
+				);
+			}
+			else
+			{
+				// 閉じた
+				m_audioManager->PlaySE(
+					enSound_PauseCloseSE,
+					0.3f,
+					enSEPlay_AllowOverlap
+				);
+			}
+		}
 	}
 	m_Pause.Update();
 }
@@ -615,7 +637,6 @@ void Game::PauseRender()
 			m_isPause = false;
 			m_audioManager->PlayBGM(enSound_StageBGM, 0.5f);
 			break;
-			m_isPause = false;
 		case 1: // 音量調節
 				m_volumeSetting = NewGO<VolumeSettings>(0, "VolumeSetting");
 				m_isSetting = true;
