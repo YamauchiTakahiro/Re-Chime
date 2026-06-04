@@ -537,6 +537,7 @@ void Game::SpawnCurrentFloorEnemy()
 		}
 	}
 	m_createGire = false;
+	m_getGire = false;
 }
 
 void Game::Pause()

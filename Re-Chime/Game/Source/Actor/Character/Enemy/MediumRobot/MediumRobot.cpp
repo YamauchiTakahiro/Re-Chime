@@ -180,7 +180,7 @@ void MediumRobot::Move()
 	if (m_searchPlayer)
 	{
 		toPlayer.Normalize();
-		m_moveSpeed = toPlayer * 100.0f;
+		m_moveSpeed = toPlayer * 400.0f;
 		m_moveSpeed.y = 0.0f;
 	}
 	else
@@ -195,22 +195,51 @@ void MediumRobot::Move()
 
 void MediumRobot::Rotation()
 {
-	if (m_searchPlayer)
+	if (!m_searchPlayer)
 	{
-		Vector3 playerPos = m_player->GetPosition();
-		Vector3 toPlayer = playerPos - m_position;
-		float distToPlayer = toPlayer.Length();
-		if (distToPlayer <= 1000)
-		{
-			toPlayer.Normalize();
-			m_rotation.SetRotationYFromDirectionXZ(toPlayer);
-		}
+		return;
 	}
+
+	Vector3 playerPos = m_player->GetPosition();
+	Vector3 toPlayer = playerPos - m_position;
+	toPlayer.y = 0.0f;
+
+	if (toPlayer.LengthSq() < 0.001f)
+	{
+		return;
+	}
+
+	toPlayer.Normalize();
+
+	Quaternion targetRot;
+	targetRot.SetRotationYFromDirectionXZ(toPlayer);
+
+	float t =
+		m_rotationSpeed *
+		g_gameTime->GetFrameDeltaTime();
+
+	if (t > 1.0f)
+	{
+		t = 1.0f;
+	}
+
+	m_rotation.Slerp(
+		t,
+		m_rotation,
+		targetRot
+	);
+
 	m_modelRender.SetRotation(m_rotation);
 }
 
 void MediumRobot::SearchPlayer()
 {
+	if (m_hasDetectedPlayer)
+	{
+		m_searchPlayer = true;
+		return;
+	}
+
 	m_searchPlayer = false;
 
 	m_forward = Vector3::AxisZ;
@@ -222,12 +251,14 @@ void MediumRobot::SearchPlayer()
 	if (diff.Length() <= 2000.0f)
 	{
 		diff.Normalize();
+
 		float angle = acosf(diff.Dot(m_forward));
-		if (Math::PI * 0.15f <= fabsf(angle))
+
+		if (fabsf(angle) <= Math::PI * 0.15f)
 		{
-			return;
+			m_searchPlayer = true;
+			m_hasDetectedPlayer = true;
 		}
-		m_searchPlayer = true;
 	}
 }
 
@@ -321,7 +352,7 @@ void MediumRobot::Hit()
 				{
 					m_mediumRobotHp = 0;
 				}
-				m_searchPlayer = true;
+				m_hasDetectedPlayer = true;
 
 				//========================
 				// ノックバック
@@ -388,7 +419,7 @@ void MediumRobot::Hit()
 				{
 					m_mediumRobotHp = 0;
 				}
-				m_searchPlayer = true;
+				m_hasDetectedPlayer = true;
 
 				//========================
 				// ノックバック
