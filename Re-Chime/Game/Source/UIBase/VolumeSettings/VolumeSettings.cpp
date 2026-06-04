@@ -80,7 +80,7 @@ bool VolumeSettings::Start()
     m_targetPos = m_cursorPos;
 
     m_game = FindGO<Game>("game");
-    m_title = FindGO<Title>("Title");
+    //m_title = FindGO<Title>("Title");
     m_audioManager = FindGO<AudioManager>("audioManager");
 
     if (m_audioManager)

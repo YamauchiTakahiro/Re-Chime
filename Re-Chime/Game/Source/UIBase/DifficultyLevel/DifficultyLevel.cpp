@@ -4,6 +4,7 @@
 #include "Source/UIBase/Title/Title.h"
 #include "Game.h"
 #include "Difficulty.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 
 namespace
 {
@@ -117,11 +118,21 @@ void DifficultyLevel::DifficultySelect()
 	{
 		m_select--;
 		if (m_select < 0) m_select = 3;
+
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_ChoiceSE);
+		}
 	}
 	if (g_pad[0]->IsTrigger(enButtonDown))
 	{
 		m_select++;
 		if (m_select > 3) m_select = 0;
+
+		if (m_audioManager)
+		{
+			m_audioManager->PlaySE(enSound_ChoiceSE);
+		}
 	}
 
 	if(m_select == 0)

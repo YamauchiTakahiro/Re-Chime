@@ -2,6 +2,7 @@
 #include "Source/UIBase/UIBase.h"
 #include "Difficulty.h"
 
+class AudioManager;
 class DifficultyLevel : public UIBase
 {
 public:
@@ -27,6 +28,7 @@ private:
 	SpriteRender m_Lunatic;
 
 	FontRender m_Cursor;
+	AudioManager* m_audioManager = nullptr;
 
 	float m_animTime = 0.0f;
 };
