@@ -229,6 +229,7 @@ private:
 	std::vector<FadeArea> m_fadeAreas;
 	FadeArea* m_currentFadeArea = nullptr;
 	bool m_createGire = false;
+	bool m_getGire = false;
 	bool m_isGameStop = false;
 
 	enum EnGoalState
