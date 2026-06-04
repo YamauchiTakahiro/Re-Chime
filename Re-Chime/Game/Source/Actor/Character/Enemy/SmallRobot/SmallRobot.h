@@ -118,5 +118,6 @@ private:
 	bool m_searchPlayer = false;
 	bool m_isKnockBack = false;
 	bool m_hasDetectedPlayer = false;
+	float m_moveSpeedValue = 100.0f;
 };
 

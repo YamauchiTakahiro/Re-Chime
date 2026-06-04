@@ -119,4 +119,5 @@ private:
 	bool m_attackHitActive = false;
 	float m_attackWarnTimer;
 	float m_attackActiveTimer;
+	float m_moveSpeedValue = 250.0f;
 };

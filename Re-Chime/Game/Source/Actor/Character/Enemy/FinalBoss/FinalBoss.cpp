@@ -60,6 +60,7 @@ bool FinalBoss::Start()
 			m_finalBossMaxHp = 200;
 			m_attackPower = 10;
 			m_shotCoolTimeReset = 3.0f;
+			m_moveSpeedValue = 700.0f;
 			break;
 
 		case NORMAL:
@@ -67,6 +68,7 @@ bool FinalBoss::Start()
 			m_finalBossMaxHp = 300;
 			m_attackPower = 20;
 			m_shotCoolTimeReset = 2.0f;
+			m_moveSpeedValue = 850.0f;
 			break;
 
 		case HARD:
@@ -74,6 +76,7 @@ bool FinalBoss::Start()
 			m_finalBossMaxHp = 500;
 			m_attackPower = 35;
 			m_shotCoolTimeReset = 1.5f;
+			m_moveSpeedValue = 1000.0f;
 			break;
 
 		case LUNATIC:
@@ -81,6 +84,7 @@ bool FinalBoss::Start()
 			m_finalBossMaxHp = 750;
 			m_attackPower = 50;
 			m_shotCoolTimeReset = 1.0f;
+			m_moveSpeedValue = 1600.0f;
 			break;
 		}
 	}
@@ -170,8 +174,8 @@ void FinalBoss::Move()
 	if (diff.LengthSq() > 0.0001f)
 	{
 		diff.Normalize();
-		m_moveSpeed.x = diff.x * 1000.0f;
-		m_moveSpeed.z = diff.z * 1000.0f;
+		m_moveSpeed.x = diff.x * m_moveSpeedValue;
+		m_moveSpeed.z = diff.z * m_moveSpeedValue;
 	}
 
 	m_position = m_characterController.Execute(

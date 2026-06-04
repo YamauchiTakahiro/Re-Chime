@@ -109,5 +109,6 @@ private:
 	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
     bool m_isShowBossHP = false;
     bool m_isDead = false;
+    float m_moveSpeedValue = 1000.0f;
 };
 

@@ -58,6 +58,7 @@ bool MediumRobot::Start()
 			m_mediumRobotMaxHp = 50;
 			m_attackPower = 5;
 			m_knockBackPower = 1200.0f;
+			m_moveSpeedValue = 250.0f;
 			break;
 
 		case NORMAL:
@@ -65,6 +66,7 @@ bool MediumRobot::Start()
 			m_mediumRobotMaxHp = 75;
 			m_attackPower = 10;
 			m_knockBackPower = 800.0f;
+			m_moveSpeedValue = 300.0f;
 			break;
 
 		case HARD:
@@ -72,6 +74,7 @@ bool MediumRobot::Start()
 			m_mediumRobotMaxHp = 120;
 			m_attackPower = 15;
 			m_knockBackPower = 500.0f;
+			m_moveSpeedValue = 400.0f;
 			break;
 
 		case LUNATIC:
@@ -79,6 +82,7 @@ bool MediumRobot::Start()
 			m_mediumRobotMaxHp = 180;
 			m_attackPower = 25;
 			m_knockBackPower = 200.0f;
+			m_moveSpeedValue = 650.0f;
 			break;
 		}
 	}
@@ -180,7 +184,7 @@ void MediumRobot::Move()
 	if (m_searchPlayer)
 	{
 		toPlayer.Normalize();
-		m_moveSpeed = toPlayer * 400.0f;
+		m_moveSpeed = toPlayer * m_moveSpeedValue;
 		m_moveSpeed.y = 0.0f;
 	}
 	else
