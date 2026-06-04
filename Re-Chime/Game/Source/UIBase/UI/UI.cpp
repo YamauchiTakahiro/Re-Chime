@@ -23,19 +23,23 @@ UI::UI()
 	m_Gear.Update();
 
 	m_Abutton.Init("Assets/UIData/A.DDs", 75.0f, 75.0f);
-	m_Abutton.SetPosition(Vector3(700.0f, -400.0f, 0.0f));
+	m_Abutton.SetPosition(Vector3(700.0f, -410.0f, 0.0f));
+	m_Abutton.SetScale(Vector3(1.2f, 1.2f, 1.2f));
 	m_Abutton.Update();
 
 	m_Bbutton.Init("Assets/UIData/B.DDs", 75.0f, 75.0f);
-	m_Bbutton.SetPosition(Vector3(750.0f, -350.0f, 0.0f));
+	m_Bbutton.SetPosition(Vector3(760.0f, -350.0f, 0.0f));
+	m_Bbutton.SetScale(Vector3(1.2f, 1.2f, 1.0f));
 	m_Bbutton.Update();
 
 	m_Xbutton.Init("Assets/UIData/X.DDs", 75.0f, 75.0f);
-	m_Xbutton.SetPosition(Vector3(650.0f, -350.0f, 0.0f));
+	m_Xbutton.SetPosition(Vector3(640.0f, -350.0f, 0.0f));
+	m_Xbutton.SetScale(Vector3(1.2f, 1.2f, 1.0f));
 	m_Xbutton.Update();
 
 	m_Ybutton.Init("Assets/UIData/Y.DDs", 75.0f, 75.0f);
-	m_Ybutton.SetPosition(Vector3(700.0f, -300.0f, 0.0f));
+	m_Ybutton.SetPosition(Vector3(700.0f, -290.0f, 0.0f));
+	m_Ybutton.SetScale(Vector3(1.2f, 1.2f, 1.0f));
 	m_Ybutton.Update();
 
 	m_game = FindGO<Game>("game");
@@ -195,40 +199,41 @@ void UI::Update()
 	}
 	m_HP.Update();
 
-	if (g_pad[0]->IsPress(enButtonA))
+	if (m_player->GetCoolTime() > 0.0f)
 	{
-		m_Abutton.SetMulColor(g_vec4White);
+		m_Abutton.SetMulColor(
+			Vector4(0.3f, 0.3f, 0.3f, 1.0f));
 	}
 	else
 	{
-		m_Abutton.SetMulColor(g_vec4Gray);
+		m_Abutton.SetMulColor(g_vec4White);
 	}
 
 	if (g_pad[0]->IsPress(enButtonB))
 	{
-		m_Bbutton.SetMulColor(g_vec4White);
+		m_Bbutton.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
-		m_Bbutton.SetMulColor(g_vec4Gray);
+		m_Bbutton.SetMulColor(g_vec4White);
 	}
 
 	if (g_pad[0]->IsPress(enButtonX))
 	{
-		m_Xbutton.SetMulColor(g_vec4White);
+		m_Xbutton.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
-		m_Xbutton.SetMulColor(g_vec4Gray);
+		m_Xbutton.SetMulColor(g_vec4White);
 	}
 
 	if (g_pad[0]->IsPress(enButtonY))
 	{
-		m_Ybutton.SetMulColor(g_vec4White);
+		m_Ybutton.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
-		m_Ybutton.SetMulColor(g_vec4Gray);
+		m_Ybutton.SetMulColor(g_vec4White);
 	}
 	// 点滅制御
 	m_blinkTimer += g_gameTime->GetFrameDeltaTime();
@@ -268,10 +273,17 @@ void UI::Update()
 	{
 		wchar_t coolText[256];
 
-		swprintf_s(coolText, L"ATKCL:%.1f", coolTime);
+		if (coolTime >= 1.0f)
+		{
+			swprintf_s(coolText, L"%.1d",(int)ceilf(coolTime));
+		}
+		else
+		{
+			swprintf_s(coolText, L"%.1f", coolTime);
+		}
 
-		m_CoolTimeText.SetPosition(Vector3(640.0f, -450.0f, 0.0f));
-		m_CoolTimeText.SetScale(1.4f);
+		m_CoolTimeText.SetPosition(Vector3(670.0f, -385.0f, 0.0f));
+		m_CoolTimeText.SetScale(0.95f);
 		m_CoolTimeText.SetText(coolText);
 		m_CoolTimeText.SetColor(g_vec4White);
 	}

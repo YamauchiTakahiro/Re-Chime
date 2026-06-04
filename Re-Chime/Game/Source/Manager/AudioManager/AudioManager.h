@@ -43,6 +43,8 @@ enum AudioID
 	enSound_ChoiceSE,
 	enSound_OpenSE,
 	enSound_CloseSE,
+	enSound_PauseSE,
+	enSound_PauseCloseSE,
 	enSound_Num //このステータスは、サウンドの総数を表しているため、この下には追加しないでください
 };
 
