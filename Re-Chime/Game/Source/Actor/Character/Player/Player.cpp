@@ -209,7 +209,7 @@ void Player::Move()
 
 		if (g_pad[0]->IsPress(enButtonY) == false)
 		{
-			m_speed = 240.0f;
+			m_speed = 300.0f;
 		}
 
 		if (g_pad[0]->IsPress(enButtonY))

@@ -110,12 +110,13 @@ private:
 	float m_attackCollisionLife = 0.0f;	//!<攻撃判定の有効時間。
 	float m_knockBackPower = 0.0f; //ノックバックの強さ。
 	float m_knockBackTime = 0.0f;
+	float m_rotationSpeed = 15.0f;		//!<回転速度。
 	Vector3 m_knockBackMove = Vector3::Zero;
 	bool m_isShowHP = false;
 	bool m_isAttack = false;
 	bool m_isDeath = false;
 	bool m_searchPlayer = false;
 	bool m_isKnockBack = false;
-
+	bool m_hasDetectedPlayer = false;
 };
 

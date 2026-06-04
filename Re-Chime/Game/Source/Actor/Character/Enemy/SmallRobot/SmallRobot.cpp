@@ -212,22 +212,45 @@ void SmallRobot::Move()
 
 void SmallRobot::Rotation()
 {
-	if(m_searchPlayer)
+	if (!m_searchPlayer)
 	{
-		Vector3 playerPos = m_player->GetPosition();
-		Vector3 toPlayer = playerPos - m_position;
-		float distToPlayer = toPlayer.Length();
-		if (distToPlayer <= 1000)
-		{
-			toPlayer.Normalize();
-			m_rotation.SetRotationYFromDirectionXZ(toPlayer);
-		}
+		return;
 	}
+	
+	Vector3 playerPos = m_player->GetPosition();
+	Vector3 toPlayer = playerPos - m_position;
+	toPlayer.y = 0.0f;
+	if (toPlayer.Length() < 0.001f)
+	{
+		return;
+	}
+
+	toPlayer.Normalize();
+
+	Quaternion targetRot;
+	targetRot.SetRotationYFromDirectionXZ(toPlayer);
+
+	float t = m_rotationSpeed * g_gameTime->GetFrameDeltaTime();
+
+	if (t > 1.0f)
+	{
+		t = 1.0f;
+	}
+
+	m_rotation.Slerp(t, m_rotation, targetRot);
+
 	m_modelRender.SetRotation(m_rotation);
 }
 
 void SmallRobot::SearchPlayer()
 {
+	// 一度見つけたら永久追跡
+	if (m_hasDetectedPlayer)
+	{
+		m_searchPlayer = true;
+		return;
+	}
+
 	m_searchPlayer = false;
 
 	m_forward = Vector3::AxisZ;
@@ -236,15 +259,17 @@ void SmallRobot::SearchPlayer()
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 diff = playerPos - m_position;
 
-	if(diff.Length() <= 2000.0f)
+	if (diff.Length() <= 2000.0f)
 	{
 		diff.Normalize();
+
 		float angle = acosf(diff.Dot(m_forward));
-		if (Math::PI * 0.15f <= fabsf(angle))
+
+		if (fabsf(angle) <= Math::PI * 0.15f)
 		{
-			return;
+			m_searchPlayer = true;
+			m_hasDetectedPlayer = true;
 		}
-		m_searchPlayer = true;
 	}
 }
 
@@ -374,7 +399,7 @@ void SmallRobot::TakeDamage(int damage, float knockBackTime)
 		m_smallRobotHp = 0;
 	}
 
-	m_searchPlayer = true;
+	m_hasDetectedPlayer = true;
 
 	Vector3 dir = m_position - m_player->GetPosition();
 	dir.y = 0.0f;
