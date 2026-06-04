@@ -475,11 +475,16 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 			m_isKnockBack = true;
 			m_damageIntarvalTime = 2.0f; // ダメージのインターバルを設定
 		}
-		else if (m_guardFlag && m_damageIntarvalTime == 0.0f)
+		else if (m_guardFlag && m_damageIntarvalTime <= 0.0f)
 		{
-			m_playerHp -= damage / 2; // ガードしている場合はダメージを半減
-			m_damageIntarvalTime = 2.0f; // ダメージのインターバルを設定
-			m_audioManager->PlaySE(enSound_PlayerGuardSE, 1.0f, enSEPlay_AllowOverlap);
+			m_playerHp -= damage / 2;
+			m_damageIntarvalTime = 2.0f;
+
+			m_audioManager->PlaySE(
+				enSound_PlayerGuardSE,
+				1.0f,
+				enSEPlay_AllowOverlap
+			);
 		}
 	}
 }
@@ -694,6 +699,11 @@ void Player::JumpState()
 
 void Player::GuardState()
 {
+	if (!g_pad[0]->IsPress(enButtonX))
+	{
+		m_guardFlag = false;
+	}
+
 	if (!m_guardFlag)
 	{
 		PlayerState();
