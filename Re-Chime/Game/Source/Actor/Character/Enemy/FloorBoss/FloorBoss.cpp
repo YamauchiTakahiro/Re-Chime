@@ -47,7 +47,7 @@ bool FloorBoss::Start()
 	m_audioManager = FindGO<AudioManager>("audioManager");
 	m_difficultyLevel = FindGO<DifficultyLevel>("difficultyLevel");
 
-	//========================
+//========================
 // 難易度設定
 //========================
 	if (m_game != nullptr)
@@ -59,6 +59,7 @@ bool FloorBoss::Start()
 			m_floorBossMaxHP = 150;
 			m_attackPower = 10;
 			m_attackIntervalTime = 3.0f;
+			m_moveSpeedValue = 180.0f;
 			break;
 
 		case NORMAL:
@@ -66,6 +67,7 @@ bool FloorBoss::Start()
 			m_floorBossMaxHP = 250;
 			m_attackPower = 20;
 			m_attackIntervalTime = 3.0f;
+			m_moveSpeedValue = 230.0f;
 			break;
 
 		case HARD:
@@ -73,6 +75,7 @@ bool FloorBoss::Start()
 			m_floorBossMaxHP = 400;
 			m_attackPower = 35;
 			m_attackIntervalTime = 2.5f;
+			m_moveSpeedValue = 250.0f;
 			break;
 
 		case LUNATIC:
@@ -80,6 +83,7 @@ bool FloorBoss::Start()
 			m_floorBossMaxHP = 700;
 			m_attackPower = 50;
 			m_attackIntervalTime = 2.0f;
+			m_moveSpeedValue = 400.0f;
 			break;
 		}
 	}
@@ -147,7 +151,7 @@ void FloorBoss::Move()
 	if (distToPlayer <= 1500)
 	{
 		toPlayer.Normalize();
-		m_moveSpeed = toPlayer * 250.0f;
+		m_moveSpeed = toPlayer * m_moveSpeedValue;
 		m_moveSpeed.y = 0.0f;
 	}
 	else if (distToPlayer > 2000)
