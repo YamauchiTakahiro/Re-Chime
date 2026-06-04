@@ -11,6 +11,7 @@
 #include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
+#include "Source/Manager/AudioManager/AudioManager.h"
 
 SmallRobot::SmallRobot()
 {
@@ -63,7 +64,6 @@ bool SmallRobot::Start()
 			m_smallRobotMaxHp = 50;
 			m_attackPower = 5;
 			m_knockBackPower = 1200.0f;
-			m_moveSpeedValue = 100.0f;
 			break;
 
 		case NORMAL:
@@ -71,7 +71,6 @@ bool SmallRobot::Start()
 			m_smallRobotMaxHp = 75;
 			m_attackPower = 10;
 			m_knockBackPower = 800.0f;
-			m_moveSpeedValue = 125.0f;
 			break;
 
 		case HARD:
@@ -79,7 +78,6 @@ bool SmallRobot::Start()
 			m_smallRobotMaxHp = 120;
 			m_attackPower = 15;
 			m_knockBackPower = 500.0f;
-			m_moveSpeedValue = 150.0f;
 			break;
 
 		case LUNATIC:
@@ -87,7 +85,6 @@ bool SmallRobot::Start()
 			m_smallRobotMaxHp = 180;
 			m_attackPower = 25;
 			m_knockBackPower = 150.0f;
-			m_moveSpeedValue = 200.0f;
 			break;
 		}
 	}
@@ -190,42 +187,71 @@ void SmallRobot::KnockBack()
 void SmallRobot::Move()
 {
 	Vector3 playerPos = m_player->GetPosition();
-	Vector3 toPlayer = playerPos - m_position;
-	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 500 && m_timeCount == 0.0f && m_searchPlayer)
+	float distToPlayer =
+		(playerPos - m_position).Length();
+
+	if (distToPlayer <= 500.0f &&
+		m_timeCount == 0.0f &&
+		m_searchPlayer)
 	{
 		m_timeCount = 2.0f;
-		Time();
 	}
+
 	if (m_searchPlayer)
 	{
-		toPlayer.Normalize();
-		m_moveSpeed = toPlayer * m_moveSpeedValue;
-		m_moveSpeed.y = 0.0f;
+		Vector3 forward = Vector3::Front;
+
+		m_rotation.Apply(forward);
+
+		forward.y = 0.0f;
+		forward.Normalize();
+
+		m_moveSpeed =
+			forward * m_moveSpeedValue;
 	}
 	else
 	{
-		m_moveSpeed = toPlayer * 0.0f;
+		m_moveSpeed = Vector3::Zero;
 	}
 
-	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
+	m_position =
+		m_characterController.Execute(
+			m_moveSpeed,
+			2.0f / 60.0f
+		);
 
 	m_modelRender.SetPosition(m_position);
 }
 
 void SmallRobot::Rotation()
 {
-	if(m_searchPlayer)
+	if (!m_searchPlayer)
 	{
-		Vector3 playerPos = m_player->GetPosition();
-		Vector3 toPlayer = playerPos - m_position;
-		float distToPlayer = toPlayer.Length();
-		if (distToPlayer <= 1000)
-		{
-			toPlayer.Normalize();
-			m_rotation.SetRotationYFromDirectionXZ(toPlayer);
-		}
+		return;
 	}
+	
+	Vector3 playerPos = m_player->GetPosition();
+	Vector3 toPlayer = playerPos - m_position;
+	toPlayer.y = 0.0f;
+	if (toPlayer.Length() < 0.001f)
+	{
+		return;
+	}
+
+	toPlayer.Normalize();
+
+	Quaternion targetRot;
+	targetRot.SetRotationYFromDirectionXZ(toPlayer);
+
+	float t = m_rotationSpeed * g_gameTime->GetFrameDeltaTime();
+
+	if (t > 1.0f)
+	{
+		t = 1.0f;
+	}
+
+	m_rotation.Slerp(t, m_rotation, targetRot);
+
 	m_modelRender.SetRotation(m_rotation);
 }
 
@@ -386,7 +412,7 @@ void SmallRobot::TakeDamage(int damage, float knockBackTime)
 		m_smallRobotHp = 0;
 	}
 
-	m_searchPlayer = true;
+	m_hasDetectedPlayer = true;
 
 	Vector3 dir = m_position - m_player->GetPosition();
 	dir.y = 0.0f;

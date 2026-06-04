@@ -174,25 +174,42 @@ void MediumRobot::KnockBack()
 void MediumRobot::Move()
 {
 	Vector3 playerPos = m_player->GetPosition();
-	Vector3 toPlayer = playerPos - m_position;
-	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 500 && m_timeCount == 0.0f && m_searchPlayer)
+	float distToPlayer =
+		(playerPos - m_position).Length();
+
+	if (distToPlayer <= 500.0f &&
+		m_timeCount == 0.0f &&
+		m_searchPlayer)
 	{
 		m_timeCount = 2.0f;
-		Time();
 	}
+
 	if (m_searchPlayer)
 	{
-		toPlayer.Normalize();
-		m_moveSpeed = toPlayer * m_moveSpeedValue;
-		m_moveSpeed.y = 0.0f;
+		Vector3 forward = Vector3::Front;
+
+		m_rotation.Apply(forward);
+
+		forward.y = 0.0f;
+
+		if (forward.LengthSq() > 0.001f)
+		{
+			forward.Normalize();
+		}
+
+		m_moveSpeed =
+			forward * m_moveSpeedValue;
 	}
 	else
 	{
-		m_moveSpeed = toPlayer * 0.0f;
+		m_moveSpeed = Vector3::Zero;
 	}
 
-	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
+	m_position =
+		m_characterController.Execute(
+			m_moveSpeed,
+			2.0f / 60.0f
+		);
 
 	m_modelRender.SetPosition(m_position);
 }
