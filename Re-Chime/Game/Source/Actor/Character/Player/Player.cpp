@@ -576,12 +576,19 @@ void Player::GetGires()
 
 			DeleteGO(m_gire);
 			m_gire = nullptr;
-
-			auto ui = FindGO<UI>("ui");
-
-			if (ui)
+			
+			if (m_gireCount == 4)
 			{
-				ui->ShowGoal(L"階段を上れ");
+				m_game->SetGameClearFlag(true);
+			}
+			else
+			{
+				auto ui = FindGO<UI>("ui");
+
+				if (ui)
+				{
+					ui->ShowGoal(L"階段を上れ");
+				}
 			}
 		}
 	}

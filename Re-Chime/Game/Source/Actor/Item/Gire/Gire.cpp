@@ -11,7 +11,7 @@ Gire::Gire()
 
 Gire::~Gire()
 {
-	DeleteGO(m_collisionObject);
+
 }
 
 bool Gire::Start()

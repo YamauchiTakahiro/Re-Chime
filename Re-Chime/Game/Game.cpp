@@ -63,6 +63,7 @@ bool Game::Start()
 
 Game::~Game()
 {
+	DeleteGO(m_gire);
 	const auto& smallRobots = FindGOs<SmallRobot>("smallRobot");
 	for (auto smallRobot : smallRobots)
 	{
@@ -85,7 +86,6 @@ Game::~Game()
 	DeleteGO(m_ui);
 	//DeleteGO(m_gameOver);
 	//DeleteGO(m_gameClear);
-	DeleteGO(m_gire);
 	DeleteGO(m_volumeSetting);
 	DeleteGO(m_effectManager);
 	DeleteGO(m_fade);
@@ -324,20 +324,15 @@ void Game::Update()
 			case 3:
 				DeleteBarriers();
 				break;
-
-			case 4:
-				m_gameClear = NewGO<GameClear>(0, "gameClear");
-
-				if (m_audioManager)
-				{
-					m_audioManager->StopBGM(enSound_StageBGM);
-				}
-
-				DeleteGO(this);
-				return;
 			}
 			m_getGire = true;
 		}
+	}
+
+	if (m_gameClearFlag)
+	{
+		MoveGameClear();
+		return;
 	}
 
 	//プレイヤーの現在の座標を表示
@@ -463,6 +458,18 @@ void Game::Update()
 	}
 	CreateGire();
 	m_navTimer += g_gameTime->GetFrameDeltaTime();
+}
+
+void Game::MoveGameClear()
+{
+	m_gameClear = NewGO<GameClear>(0, "gameClear");
+
+	if (m_audioManager)
+	{
+		m_audioManager->StopBGM(enSound_StageBGM);
+	}
+
+	DeleteGO(this);
 }
 
 void Game::SpawnEnemy(const SpawnData& spawnData)
