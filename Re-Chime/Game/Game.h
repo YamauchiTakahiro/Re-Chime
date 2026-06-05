@@ -44,6 +44,7 @@ public:
 	~Game();
 	bool Start();
 	void Update();
+	void MoveGameClear();
 	void SpawnEnemy(const SpawnData& spawnData);
 	void SpawnCurrentFloorEnemy();
 	void Pause();
@@ -102,6 +103,12 @@ public:
 	int GetNeedGireCount() const
 	{
 		return m_needGireCount;
+	}
+
+	bool SetGameClearFlag(bool flag)
+	{
+		m_gameClearFlag = flag;
+		return m_gameClearFlag;
 	}
 
 	int GetFloorNo() const
@@ -230,6 +237,7 @@ private:
 	FadeArea* m_currentFadeArea = nullptr;
 	bool m_createGire = false;
 	bool m_getGire = false;
+	bool m_gameClearFlag = false;
 	bool m_isGameStop = false;
 
 	enum EnGoalState

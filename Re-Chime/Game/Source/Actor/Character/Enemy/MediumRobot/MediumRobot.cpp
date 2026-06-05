@@ -59,6 +59,7 @@ bool MediumRobot::Start()
 			m_attackPower = 5;
 			m_knockBackPower = 1200.0f;
 			m_moveSpeedValue = 250.0f;
+			m_rotationSpeed = 1.0f;
 			break;
 
 		case NORMAL:
@@ -67,6 +68,7 @@ bool MediumRobot::Start()
 			m_attackPower = 10;
 			m_knockBackPower = 800.0f;
 			m_moveSpeedValue = 300.0f;
+			m_rotationSpeed = 1.5f;
 			break;
 
 		case HARD:
@@ -75,6 +77,7 @@ bool MediumRobot::Start()
 			m_attackPower = 15;
 			m_knockBackPower = 500.0f;
 			m_moveSpeedValue = 400.0f;
+			m_rotationSpeed = 2.0f;
 			break;
 
 		case LUNATIC:
@@ -83,6 +86,7 @@ bool MediumRobot::Start()
 			m_attackPower = 25;
 			m_knockBackPower = 200.0f;
 			m_moveSpeedValue = 650.0f;
+			m_rotationSpeed = 2.0f;
 			break;
 		}
 	}
