@@ -25,6 +25,11 @@ bool Gire::Start()
 
 void Gire::Update()
 {
+	if (FindGO<Player>("player") == nullptr)
+	{
+		DeleteGO(this);
+		return;
+	}
 	Move();
 
 	bool isGetGire = m_player->GetGier();

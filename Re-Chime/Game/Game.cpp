@@ -157,33 +157,33 @@ void Game::Update()
 
 						m_stage->SetPosition(objData.position);
 					}
-					else if (objData.EqualObjectName(L"smallRobot") == true)
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_SmallRobot;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
-					else if (objData.EqualObjectName(L"mediumRobot"))
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_MediumRobot;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
-					else if (objData.EqualObjectName(L"FloorBoss") == true)
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_FloorBoss;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
+					//else if (objData.EqualObjectName(L"smallRobot") == true)
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_SmallRobot;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
+					//else if (objData.EqualObjectName(L"mediumRobot"))
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_MediumRobot;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
+					//else if (objData.EqualObjectName(L"FloorBoss") == true)
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_FloorBoss;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
 					else if (objData.EqualObjectName(L"finalBoss") == true)
 					{
 						SpawnData spawnData;
@@ -193,16 +193,16 @@ void Game::Update()
 						spawnData.floorNum = GetFloorFromY(objData.position.y);
 						m_spawnList.push_back(spawnData);
 					}
-					else if (objData.EqualObjectName(L"barrier") == true)
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_Barrier;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.rot = objData.rotation;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
+					//else if (objData.EqualObjectName(L"barrier") == true)
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_Barrier;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.rot = objData.rotation;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
 					return true;
 				});
 
@@ -331,6 +331,12 @@ void Game::Update()
 
 	if (m_gameClearFlag)
 	{
+		if (m_gire != nullptr)
+		{
+			DeleteGO(m_gire);
+			m_gire = nullptr;
+		}
+
 		MoveGameClear();
 		return;
 	}
