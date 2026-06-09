@@ -165,13 +165,13 @@ private:
     ModelRender m_modelRender;
     CharacterController m_characterController;
 	float m_speed = 0.0f;					//!<移動速度。
-    Vector3 m_moveSpeed;
-    Quaternion m_rotation;
-    Vector3 m_position;
-	Vector3 m_scale;
-    CollisionObject* m_collisionObject;
-    Vector3 m_forward;
-    Vector3 m_knockBack;
+    Vector3 m_moveSpeed = Vector3::Zero;
+    Quaternion m_rotation = Quaternion::Identity;
+    Vector3 m_position = Vector3::Zero;
+	Vector3 m_scale = Vector3::Zero;
+    CollisionObject* m_collisionObject = nullptr;
+    Vector3 m_forward = Vector3::Zero;
+    Vector3 m_knockBack = Vector3::Zero;
 	Gire* m_gire = nullptr;
     Game* m_game = nullptr;
 	AudioManager* m_audioManager = nullptr;
