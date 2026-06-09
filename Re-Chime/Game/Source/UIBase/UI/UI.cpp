@@ -4,6 +4,14 @@
 #include "Game.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/AudioManager/AudioManager.h"
+#include "CoolRing.h"
+
+static float Clamp01(float v)
+{
+	if (v < 0.0f) return 0.0f;
+	if (v > 1.0f) return 1.0f;
+	return v;
+}
 
 UI::UI()
 {
@@ -89,6 +97,12 @@ UI::UI()
 	m_selectFrame.Init("Assets/UIData/SelectFrame.DDs", 132.0f, 128.0f);
 	m_selectFrame.SetPosition(Vector3(-893.0f, 125.0f, 0.0f));
 	m_selectFrame.Update();
+
+	m_coolRing.Init();
+
+	m_coolRing.SetPosition(Vector3(700.0f, -410.0f, 0.0f));
+
+	m_coolRing.SetScale(Vector3(0.65f, 0.65f, 1.0f));
 
 	m_goalText.SetScale(2.0f);
 	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
@@ -256,18 +270,19 @@ void UI::Update()
 
 	//クールタイム表示
 	float coolTime = m_player->GetCoolTime();
+	float maxTime = m_player->GetCoolTimeMax();
+
+	float rate = 0.0f;
+
+	if (maxTime > 0.0f)
+	{
+		rate = coolTime / maxTime;
+	}
+
+	m_coolRing.SetProgress(rate);
 
 	// クールタイムが始まったら表示
-	if (coolTime > 0.0f)
-	{
-		m_isShowCoolTime = true;
-	}
-
-	// クールタイム終了で非表示
-	if (coolTime <= 0.0f)
-	{
-		m_isShowCoolTime = false;
-	}
+	m_isShowCoolTime = (coolTime > 0.0f);
 
 	if (m_isShowCoolTime)
 	{
@@ -292,8 +307,7 @@ void UI::Update()
 		m_CoolTimeText.SetText(L"");
 	}
 
-	float itemCool =
-		m_inventoryUseCoolTime;
+	float itemCool =m_inventoryUseCoolTime;
 
 	if (itemCool > 0.0f)
 	{
@@ -467,6 +481,10 @@ void UI::Render(RenderContext& rc)
 	m_HP.Draw(rc);
 	m_Gear.Draw(rc);
 	m_Abutton.Draw(rc);
+	if (m_player->GetCoolTime() > 0.0f)
+	{
+		m_coolRing.Draw(rc);
+	}
 	m_Bbutton.Draw(rc);
 	m_Xbutton.Draw(rc);
 	m_Ybutton.Draw(rc);
