@@ -12,10 +12,10 @@ enum class enSpawnType
 
 struct SpawnData
 {
-	enSpawnType spawnType;
-	Vector3 pos;
-	Quaternion rot;
-	Vector3 scale;
-	int floorNum;
+	enSpawnType spawnType = enSpawnType::enSpawnType_SmallRobot;
+	Vector3 pos = Vector3::Zero;
+	Quaternion rot = Quaternion::Identity;
+	Vector3 scale = Vector3::Zero;
+	int floorNum = 0;
 	bool spawned = false;
 };

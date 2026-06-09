@@ -196,13 +196,9 @@ void MediumRobot::Move()
 
 		forward.y = 0.0f;
 
-		if (forward.LengthSq() > 0.001f)
-		{
-			forward.Normalize();
-		}
+		forward.Normalize();
 
-		m_moveSpeed =
-			forward * m_moveSpeedValue;
+		m_moveSpeed = forward * 400.0f;
 	}
 	else
 	{
@@ -225,8 +221,9 @@ void MediumRobot::Rotation()
 		return;
 	}
 
-	Vector3 playerPos = m_player->GetPosition();
-	Vector3 toPlayer = playerPos - m_position;
+	Vector3 toPlayer =
+		m_player->GetPosition() - m_position;
+
 	toPlayer.y = 0.0f;
 
 	if (toPlayer.LengthSq() < 0.001f)
@@ -243,10 +240,7 @@ void MediumRobot::Rotation()
 		m_rotationSpeed *
 		g_gameTime->GetFrameDeltaTime();
 
-	if (t > 1.0f)
-	{
-		t = 1.0f;
-	}
+	t = min(t, 1.0f);
 
 	m_rotation.Slerp(
 		t,

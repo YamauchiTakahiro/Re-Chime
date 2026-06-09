@@ -61,6 +61,8 @@ bool FinalBoss::Start()
 			m_attackPower = 10;
 			m_shotCoolTimeReset = 3.0f;
 			m_moveSpeedValue = 700.0f;
+			m_searchRange = 2500.0f;
+			m_bulletSpeed = 1200.0f;
 			break;
 
 		case NORMAL:
@@ -69,6 +71,8 @@ bool FinalBoss::Start()
 			m_attackPower = 20;
 			m_shotCoolTimeReset = 2.0f;
 			m_moveSpeedValue = 850.0f;
+			m_searchRange = 3000.0f;
+			m_bulletSpeed = 1400.0f;
 			break;
 
 		case HARD:
@@ -77,6 +81,8 @@ bool FinalBoss::Start()
 			m_attackPower = 35;
 			m_shotCoolTimeReset = 1.5f;
 			m_moveSpeedValue = 1000.0f;
+			m_searchRange = 3500.0f;
+			m_bulletSpeed = 1600.0f;
 			break;
 
 		case LUNATIC:
@@ -85,6 +91,8 @@ bool FinalBoss::Start()
 			m_attackPower = 50;
 			m_shotCoolTimeReset = 1.0f;
 			m_moveSpeedValue = 1600.0f;
+			m_searchRange = 4000.0f;
+			m_bulletSpeed = 2000.0f;
 			break;
 		}
 	}
@@ -136,6 +144,23 @@ void FinalBoss::Update()
 	{
 		m_shotCoolTime -= g_gameTime->GetFrameDeltaTime();
 	}
+
+	if (!m_firstPhaseChange &&
+		m_finalBossHp <= m_finalBossMaxHp * 0.5f)
+	{
+		m_firstPhaseChange = true;
+
+		m_shotCoolTimeReset *= 0.8f;
+	}
+
+	if (!m_secondPhaseChange &&
+		m_finalBossHp <= m_finalBossMaxHp * 0.25f)
+	{
+		m_secondPhaseChange = true;
+
+		m_shotCoolTimeReset *= 0.7f;
+	}
+
 	Time();
 
 	Hit();
@@ -219,8 +244,9 @@ void FinalBoss::Shot()
 
 	m_isShot = true;
 
+	PhaseChange();
+
 	// 弾生成
-	m_bullet = NewGO<Bullet>(0, "bossBullet");
 	int randomNum = rand() % 2 + 1;
 	AudioID id;
 	switch (randomNum)
@@ -236,22 +262,118 @@ void FinalBoss::Shot()
 		1.0f,
 		enSEPlay_AllowOverlap
 	);
+	m_shotCoolTime = m_shotCoolTimeReset;
+}
 
-	// 発射位置
+void FinalBoss::CreateBullet(float angleOffset)
+{
+	m_bullet = NewGO<Bullet>(0, "bossBullet");
+
 	Vector3 shotPos = m_position;
 
 	Vector3 forward = Vector3::Front;
 	m_rotation.Apply(forward);
+
+	// Y軸回転を加える
+	Quaternion rot;
+	rot.SetRotationDegY(angleOffset);
+	rot.Apply(forward);
 
 	shotPos += forward * 450.0f;
 	shotPos.y += 450.0f;
 
 	m_bullet->SetPosition(shotPos);
 	m_bullet->SetStartPosition(shotPos);
+	m_bullet->SetMoveSpeed(forward * m_bulletSpeed);
+}
 
-	// 弾速度
-	m_bullet->SetMoveSpeed(forward * 1500.0f);
-	m_shotCoolTime = m_shotCoolTimeReset;
+void FinalBoss::PhaseChange()
+{
+	switch (m_game->GetDifficulty())
+	{
+	case EASY:
+	{
+		if (!m_firstPhaseChange)
+		{
+			CreateBullet(0.0f);
+		}
+		else if (!m_secondPhaseChange)
+		{
+			CreateBullet(-15.0f);
+			CreateBullet(15.0f);
+		}
+		else
+		{
+			CreateBullet(-30.0f);
+			CreateBullet(0.0f);
+			CreateBullet(30.0f);
+		}
+		break;
+	}
+	case NORMAL:
+	{
+		if (!m_firstPhaseChange)
+		{
+			CreateBullet(0.0f);
+		}
+		else if (!m_secondPhaseChange)
+		{
+			CreateBullet(-15.0f);
+			CreateBullet(15.0f);
+		}
+		else
+		{
+			CreateBullet(-20.0f);
+			CreateBullet(0.0f);
+			CreateBullet(20.0f);
+		}
+		break;
+	}
+	case HARD:
+	{
+		if (!m_firstPhaseChange)
+		{
+			CreateBullet(0.0f);
+		}
+		else if (!m_secondPhaseChange)
+		{
+			CreateBullet(-20.0f);
+			CreateBullet(20.0f);
+		}
+		else
+		{
+			CreateBullet(-40.0f);
+			CreateBullet(-20.0f);
+			CreateBullet(20.0f);
+			CreateBullet(40.0f);
+		}
+		break;
+	}
+	case LUNATIC:
+	{
+		if (!m_firstPhaseChange)
+		{
+			CreateBullet(0.0f);
+		}
+		else if (!m_secondPhaseChange)
+		{
+			CreateBullet(-25.0f);
+			CreateBullet(0.0f);
+			CreateBullet(25.0f);
+		}
+		else
+		{
+			CreateBullet(-45.0f);
+			CreateBullet(-15.0f);
+			CreateBullet(0.0f);
+			CreateBullet(15.0f);
+			CreateBullet(45.0f);
+		}
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 void FinalBoss::Hit()
@@ -328,7 +450,7 @@ const bool FinalBoss::SearchPlayer() const
 {
 	Vector3 diff = m_player->GetPosition() - m_position;
 
-	if (diff.LengthSq() <= 3000.0f * 3000.0f)
+	if (diff.LengthSq() <= m_searchRange * m_searchRange)
 	{
 		diff.Normalize();
 		float cos = m_forward.Dot(diff);

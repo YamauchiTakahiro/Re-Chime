@@ -26,6 +26,8 @@ class FinalBoss : public Enemy
     void Move() override;
     void Rotation() override;
     void Shot();
+	void CreateBullet(float angleOffset);
+	void PhaseChange();
     //void OnCollision() override;
     void Hit() override;
     void DamageIntarval() override;
@@ -79,9 +81,9 @@ private:
 	EnFinalBossState m_finalBossState = enFinalBossState_Idle;
     ModelRender m_modelRender;
     CharacterController m_characterController;
-    Vector3 m_position;
-    Vector3 m_moveSpeed;
-    Quaternion m_rotation;
+    Vector3 m_position = Vector3::Zero;
+    Vector3 m_moveSpeed = Vector3::Zero;
+    Quaternion m_rotation = Quaternion::Identity;
     Player* m_player = nullptr;
 	Gire* m_gire = nullptr;
 	Game* m_game = nullptr;
@@ -90,25 +92,28 @@ private:
     DifficultyLevel* m_difficultyLevel = nullptr;
     DamageText* m_damageText = nullptr;
     CollisionObject* m_collisionObject = nullptr;
-    Vector3 m_forward;
-    Vector3 m_scale;
-    //int m_finalBossHp = 10;		//!<最終ボスのHP。
+    Vector3 m_forward = Vector3::Front;
+    Vector3 m_scale = Vector3::One;
     SpriteRender m_bossHPFrame;
     SpriteRender m_bossHPBar;
     bool m_isShowHP = false;
-    int m_finalBossHp = 200;		//!<最終ボスのHP。
-	int m_finalBossMaxHp = 200;	//!<最終ボスの最大HP。
-	int m_attackPower = 20;		//!<攻撃力。
+    int m_finalBossHp = 0;		//!<最終ボスのHP。
+	int m_finalBossMaxHp = 0;	//!<最終ボスの最大HP。
+	int m_attackPower = 0;		//!<攻撃力。
 	float m_damageIntarvalTime = 0.0f;	//!<ダメージを受けてからの無敵時間。
     float m_chaseTimer = 0.0f;						//追跡タイマー。
     float m_idleTimer = 0.0f;						//待機タイマー。
 	float m_attackCollisionLife = 0.0f;				//攻撃判定の有効時間。
     float m_shotCoolTime = 0.0f;
 	float m_shotCoolTimeReset = 0.0f;						//攻撃のクールタイム。
+	float m_searchRange = 0.0f;						//プレイヤーを発見する範囲。
+	float m_bulletSpeed = 0.0f;						//弾の速さ。
 	bool m_isShot = false;		//!<攻撃しているかどうか。
 	bool m_discoveryPlayer = false;	//!<プレイヤーを発見しているかどうか。
     bool m_isShowBossHP = false;
     bool m_isDead = false;
-    float m_moveSpeedValue = 1000.0f;
+	bool m_firstPhaseChange = false;		//最初のフェーズチェンジをしたかどうか。
+	bool m_secondPhaseChange = false;		//2回目のフェーズチェンジをしたかどうか。
+    float m_moveSpeedValue = 0.0f;
 };
 

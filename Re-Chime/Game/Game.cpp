@@ -80,7 +80,6 @@ Game::~Game()
 		DeleteGO(mediumRobot);
 	}
 	DeleteGO(m_finalBoss);
-	DeleteGO(m_player);
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_stage);
 	DeleteGO(m_ui);
@@ -94,6 +93,7 @@ Game::~Game()
 	{
 		DeleteGO(barrier);
 	}
+	DeleteGO(m_player);
 }
 
 void Game::Update()
