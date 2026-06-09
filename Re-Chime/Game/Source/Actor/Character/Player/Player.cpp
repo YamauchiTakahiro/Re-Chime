@@ -207,12 +207,12 @@ void Player::Move()
 			moveDir.Normalize();
 		}
 
-		if (g_pad[0]->IsPress(enButtonY) == false)
+		if (g_pad[0]->IsPress(enButtonRB1) == false)
 		{
 			m_speed = 300.0f;
 		}
 
-		if (g_pad[0]->IsPress(enButtonY))
+		if (g_pad[0]->IsPress(enButtonRB1))
 		{
 			m_speed = 480.0f;
 		}
@@ -618,7 +618,7 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (g_pad[0]->IsPress(enButtonX) &&
+	if (g_pad[0]->IsPress(enButtonLB1) &&
 		m_guardTimeLimit >= 3.0f &&
 		m_guardCoolTime <= 0.0f)
 	{
@@ -647,7 +647,7 @@ void Player::PlayerState()
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (g_pad[0]->IsPress(enButtonY))
+		if (g_pad[0]->IsPress(enButtonRB1))
 		{
 			m_playerState = enPlayerState_Run;
 			return;
@@ -709,7 +709,7 @@ void Player::JumpState()
 
 void Player::GuardState()
 {
-	if (!g_pad[0]->IsPress(enButtonX))
+	if (!g_pad[0]->IsPress(enButtonLB1))
 	{
 		m_guardFlag = false;
 	}
