@@ -159,6 +159,16 @@ public:
         return m_attackSpeedPotionCount;
     }
 
+    float GetStamina() const
+    {
+        return m_stamina;
+    }
+
+    float GetMaxStamina() const
+    {
+        return m_maxStamina;
+    }
+
     bool UseItem(int itemNo);
     void SetScale();
     void Render(RenderContext& rc)override;
@@ -203,6 +213,9 @@ private:
     float m_itemUseCoolTime = 0.0f;
 	float m_knockBackPower = 0.0f;
     float m_guardCoolTime = 0.0f;
+	float m_stamina = 0.0f;                 //!<スタミナ。
+	float m_maxStamina = 0.0f;            //!<最大スタミナ。
+	float m_staminaRegenRate = 0.0f;      //!<スタミナの回復率。
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;
@@ -221,5 +234,6 @@ private:
     bool m_canPickItem = false;
     bool m_isJumpStart = false;
     bool m_hasJumped = false;
+    bool m_canDash = true;
 };
 

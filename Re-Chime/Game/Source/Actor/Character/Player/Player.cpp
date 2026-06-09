@@ -43,6 +43,35 @@ bool Player::Start()
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
+	if (m_game != nullptr)
+	{
+		switch (m_game->GetDifficulty())
+		{
+		case EASY:
+			m_stamina = 120.0f;
+			m_maxStamina = 120.0f;
+			m_staminaRegenRate = 25.0f;
+			break;
+		case NORMAL:
+			m_stamina = 100.0f;
+			m_maxStamina = 100.0f;
+			m_staminaRegenRate = 20.0f;
+			break;
+
+		case HARD:
+			m_stamina = 100.0f;
+			m_maxStamina = 100.0f;
+			m_staminaRegenRate = 15.0f;
+			break;
+
+		case LUNATIC:
+			m_stamina = 100.0f;
+			m_maxStamina = 100.0f;
+			m_staminaRegenRate = 10.0f;
+			break;
+		}
+	}
+
 	m_modelRender.SetShadowCasterFlag(true);
 
 	SetScale();
@@ -181,6 +210,36 @@ void Player::UpdateTimer()
 			}
 		}
 	}
+
+	Vector3 moveInput;
+	moveInput.x = g_pad[0]->GetLStickXF();
+	moveInput.z = g_pad[0]->GetLStickYF();
+
+	if (m_playerState == enPlayerState_Run &&
+		moveInput.LengthSq() > 0.01f)
+	{
+		m_stamina -= 30.0f * dt;
+	}
+	else
+	{
+		m_stamina += m_staminaRegenRate * dt;
+	}
+
+	if (m_stamina <= 0.0f)
+	{
+		m_stamina = 0.0f;
+		m_canDash = false;
+	}
+
+	if (m_stamina >= 50.0f)
+	{
+		m_canDash = true;
+	}
+
+	if (m_stamina > m_maxStamina)
+	{
+		m_stamina = m_maxStamina;
+	}
 }
 
 void Player::Move()
@@ -207,14 +266,14 @@ void Player::Move()
 			moveDir.Normalize();
 		}
 
-		if (g_pad[0]->IsPress(enButtonRB1) == false)
-		{
-			m_speed = 300.0f;
-		}
-
-		if (g_pad[0]->IsPress(enButtonRB1))
+		if (g_pad[0]->IsPress(enButtonRB1) &&
+			m_canDash)
 		{
 			m_speed = 480.0f;
+		}
+		else
+		{
+			m_speed = 300.0f;
 		}
 
 		m_moveSpeed += moveDir * m_speed;
@@ -647,10 +706,10 @@ void Player::PlayerState()
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (g_pad[0]->IsPress(enButtonRB1))
+		if (g_pad[0]->IsPress(enButtonRB1) &&
+			m_canDash)
 		{
 			m_playerState = enPlayerState_Run;
-			return;
 		}
 		else
 		{
