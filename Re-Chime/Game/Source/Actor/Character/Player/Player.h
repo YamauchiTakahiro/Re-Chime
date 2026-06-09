@@ -134,6 +134,11 @@ public:
         return m_attackCoolTime;
     }
 
+    float GetCoolTimeMax() const
+    {
+        return m_attackCoolTimeMax;
+    }
+
     bool IsNearItem() const
     {
         return isNearItem;
@@ -185,6 +190,7 @@ private:
     int m_powerBuffPotionCount = 0;
     int m_attackSpeedPotionCount = 0;
 	float m_attackCoolTime = 0.0f;				//!<攻撃のクールタイム。
+    float m_attackCoolTimeMax = 0.0f;
 	float m_damageIntarvalTime = 3.0f;		//!<ダメージを受けてからのクールタイム。
 	float m_powerBuffTime = 0.0f;				//!<攻撃力バフの時間。
 	float m_attackSpeedBuffTime = 0.0f;		//!<攻撃速度バフの時間。

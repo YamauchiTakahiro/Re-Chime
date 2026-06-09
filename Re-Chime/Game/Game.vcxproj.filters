@@ -98,6 +98,7 @@
     <ClCompile Include="Source\Manager\EffectManager\EffectManager.cpp">
       <Filter>Source\Manager\EffectManager</Filter>
     </ClCompile>
+    <ClCompile Include="CoolRing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -200,6 +201,8 @@
     <ClInclude Include="Source\Manager\SpawnData\SpawnData.h">
       <Filter>Source\Manager\SpawnData</Filter>
     </ClInclude>
+    <ClInclude Include="CoolRing.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -304,5 +307,8 @@
     <Filter Include="Source\Manager\SpawnData">
       <UniqueIdentifier>{258fe238-4726-4b9b-acf4-c6fba257f893}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Game.rc" />
   </ItemGroup>
 </Project>

@@ -1,9 +1,11 @@
 ﻿#pragma once
 #include "Source/UIBase/UIBase.h"
+#include "CoolRing.h"
 class Player;
 class Game;
 class DifficultyLevel;
 class AudioManager;
+class CoolRing;
 class UI :public UIBase
 {
     public:
@@ -28,6 +30,7 @@ private:
     Player* m_player = nullptr;
     Game* m_game = nullptr;
     AudioManager* m_audioManager = nullptr;
+    CoolRing m_coolRing;
     SpriteRender m_inventory;
     SpriteRender m_PS1;
     SpriteRender m_PS2;
@@ -44,7 +47,6 @@ private:
     FontRender m_ItemCoolTimeText;
     FontRender m_Cursor;
     Vector3 m_cursorPos;
-
     float m_goalShowTimer = 5.0f;
     float m_goalAlpha = 1.0f;
     float m_blinkTimer = 0.0f;//点滅タイマー

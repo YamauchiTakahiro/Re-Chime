@@ -389,12 +389,15 @@ void Player::Attack()
 			if (m_attackSpeedBuffFlag)
 			{
 				m_attackCoolTime = 1.0f;
+				m_attackCoolTimeMax = 1.0f;
 			}
 			else
 			{
 				m_attackCoolTime = 2.0f;
+				m_attackCoolTimeMax = 2.0f;
 			}
 		}
+
 		if (m_attackStartTime >= 0.45f &&!m_hasPlayedHitSE)
 		{
 			if (!m_enemyHitFlag)
