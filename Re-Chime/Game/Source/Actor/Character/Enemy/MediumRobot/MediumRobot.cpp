@@ -198,7 +198,7 @@ void MediumRobot::Move()
 
 		forward.Normalize();
 
-		m_moveSpeed = forward * 400.0f;
+		m_moveSpeed = forward * m_moveSpeedValue;
 	}
 	else
 	{
