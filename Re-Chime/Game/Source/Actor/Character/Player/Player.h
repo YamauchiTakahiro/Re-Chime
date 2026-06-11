@@ -19,9 +19,12 @@ private:
         enPlayerState_Jump,         //ジャンプ。
 		enPlayerState_Run,          //走り。
         enPlayerState_Attack,       //攻撃。
+		enPlayerState_Tackle,        //タックル。
 		enPlayerState_Guard,        //ガード。
 		enPlayerState_KnockBack,      //ノックバック。
+		enPlayerState_Num,
 	};
+
     enum EnAnimationClip {		//アニメーション。
         enAnimationClip_Idle,
         enAnimationClip_Walk,
@@ -32,6 +35,13 @@ private:
         enAnimationClip_KnockBack,
         enAnimationClip_Num,
     };
+
+	enum EnCollisionType{
+        enCollisionType_Attack,
+        enCollisionType_Tackle,
+        enCollisionType_Num,
+	};
+
 public:
     Player();
     ~Player();
@@ -42,7 +52,8 @@ public:
 	void JumpAndGravity();
     void Rotation() override;
 	void Attack() override;
-	void OnCollision() override;
+	void Tackle();
+	void OnCollision(EnCollisionType type);
 	void Hit() override;
 	void GetGires();
 	void TakeDamage(int damage, const Vector3& enemyPos);
@@ -53,6 +64,7 @@ public:
 	void MakePowerBuffEffect();
 	void MakeAttackSpeedBuffEffect();
 	void AttackState();
+	void TackleState();
 	void IdleState();
 	void WalkState();
 	void RunState();
@@ -197,6 +209,7 @@ private:
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward = Vector3::Zero;
     Vector3 m_knockBack = Vector3::Zero;
+    Vector3 m_tackleVelocity = Vector3::Zero;
 	Gire* m_gire = nullptr;
     Game* m_game = nullptr;
 	AudioManager* m_audioManager = nullptr;
@@ -218,7 +231,7 @@ private:
 	float m_footStepTime = 0.0f;					//!<足音の時間。
 	float m_jumpDelay = 0.0f;					//!<ジャンプの時間。
 	float m_fadeTime = 0.0f;					//!<フェードの時間。
-    float m_attackCollisionLife = 0.0f;
+    float m_CollisionLife = 0.0f;
 	float m_attackStartTime = 0.0f;
     float m_itemUseCoolTime = 0.0f;
 	float m_knockBackPower = 0.0f;
@@ -226,6 +239,9 @@ private:
 	float m_stamina = 0.0f;                 //!<スタミナ。
 	float m_maxStamina = 0.0f;            //!<最大スタミナ。
 	float m_staminaRegenRate = 0.0f;      //!<スタミナの回復率。
+	float m_tackleTime = 0.0f;                 //!<タックルの時間。
+	float m_tackleCoolTime = 0.0f;              //!<タックルのクールタイム。
+	float m_tacklePower = 1200.0f;                 //!<タックルの威力。
     int m_gireCount = 0;						//!<ギアの数。
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;
@@ -237,7 +253,7 @@ private:
 	bool m_isPlayingRunSE = false;
     bool m_isHealFlag = false;
 	bool m_isJump = false;
-	bool m_hasCreatedAttackCollision = false;
+	bool m_hasCreatedCollision = false;
 	bool m_enemyHitFlag = false;
 	bool m_hasPlayedHitSE = false;
     bool isNearItem = false; //アイテムに近いかどうか
@@ -245,5 +261,6 @@ private:
     bool m_isJumpStart = false;
     bool m_hasJumped = false;
     bool m_canDash = true;
+	bool m_isTackle = false;
 };
 
