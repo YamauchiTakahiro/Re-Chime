@@ -35,6 +35,11 @@ public:
 	void OnCollision() override;
 	void Time() override;
 	void Hit() override;
+	void ReceiveAttack(bool isTackle);
+	int CalcDamage(int damage);
+	void ApplyKnockBack(bool isTackle);
+	void PlayHitSE(bool isCritical);
+	void CreateDamageText(int damage);
 	void TakeDamage(int damage, float knockBackTime);
 	void DamageIntarval() override;
 	void AttackHit() override;

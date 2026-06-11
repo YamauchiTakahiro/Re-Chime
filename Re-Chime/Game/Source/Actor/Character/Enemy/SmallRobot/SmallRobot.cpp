@@ -339,74 +339,50 @@ void SmallRobot::Hit()
 
 	for (auto collision : collisions)
 	{
-		if (!collision->IsHit(m_characterController) ||
-			m_damageIntarvalTime > 0.0f)
+		if (!collision->IsHit(m_characterController))
 		{
 			continue;
 		}
 
-		int damage = m_player->GetAttackPower();
-
-		bool isBackstab = !m_searchPlayer;
-		bool isCritical = (rand() % 100 + 1) <= 5;
-
-		float knockBackTime = isCritical ? 0.2f : 0.25f;
-
-		damage *= isCritical
-			? (isBackstab ? 4 : 2)
-			: (isBackstab ? 2 : 1);
-
-		AudioID se;
-
-		if (isBackstab)
+		if (m_damageIntarvalTime > 0.0f)
 		{
-			se = enSound_BackstabSE;
-		}
-		else if (isCritical)
-		{
-			se = enSound_CriticalSE;
-		}
-		else
-		{
-			static AudioID attackSE[] =
-			{
-				enSound_PlayerAttackSE_01,
-				enSound_PlayerAttackSE_02,
-				enSound_PlayerAttackSE_03
-			};
-
-			se = attackSE[rand() % 3];
+			continue;
 		}
 
-		if (!m_player->GetAttackHit())
+		ReceiveAttack(false);
+	}
+
+	const auto& tackleCollisions =
+		g_collisionObjectManager->FindCollisionObjects("playerTackle");
+
+	for (auto collision : tackleCollisions)
+	{
+		if (!collision->IsHit(m_characterController))
 		{
-			m_player->SetAttackHit(true);
-			m_audioManager->PlaySE(se, 0.5f, enSEPlay_AllowOverlap);
+			continue;
 		}
 
-		TakeDamage(damage, knockBackTime);
+		if (m_damageIntarvalTime > 0.0f)
+		{
+			continue;
+		}
 
-		m_damageIntarvalTime = 1.5f;
-
-		//========================
-		// ダメージ表示生成
-		//========================
-		DamageText* damageText = NewGO<DamageText>(0);
-
-		Vector3 textPos = m_position;
-
-		textPos.y += 250.0f;
-
-		damageText->SetPosition(textPos);
-
-		damageText->SetDamage(damage);
+		ReceiveAttack(true);
 	}
 }
 
-void SmallRobot::TakeDamage(int damage, float knockBackTime)
+void SmallRobot::ReceiveAttack(bool isTackle)
 {
-	m_smallRobotHp -= damage;
+	int damage = m_player->GetAttackPower();
+	damage = CalcDamage(damage);
 
+	// タックルならダメージを下げる
+	if (isTackle)
+	{
+		damage *= 0.6f; // ←ここが重要（好みで調整）
+	}
+
+	m_smallRobotHp -= damage;
 	if (m_smallRobotHp < 0)
 	{
 		m_smallRobotHp = 0;
@@ -414,6 +390,36 @@ void SmallRobot::TakeDamage(int damage, float knockBackTime)
 
 	m_hasDetectedPlayer = true;
 
+	ApplyKnockBack(isTackle);
+
+	CreateDamageText(damage);
+
+	m_damageIntarvalTime = 2.0f;
+}
+
+int SmallRobot::CalcDamage(int damage)
+{
+	int randomNum = rand() % 100 + 1;
+
+	bool isCritical = randomNum <= 5;
+
+	if (!m_searchPlayer)
+	{
+		damage *= isCritical ? 3 : 1.5f;
+
+		PlayHitSE(isCritical);
+	}
+	else
+	{
+		damage *= isCritical ? 1.5f : 1.0f;
+		PlayHitSE(isCritical);
+	}
+
+	return damage;
+}
+
+void SmallRobot::ApplyKnockBack(bool isTackle)
+{
 	Vector3 dir = m_position - m_player->GetPosition();
 	dir.y = 0.0f;
 
@@ -422,9 +428,82 @@ void SmallRobot::TakeDamage(int damage, float knockBackTime)
 		dir.Normalize();
 	}
 
-	m_knockBackMove = dir * m_knockBackPower;
+	float power = m_knockBackPower;
+
+	if (isTackle)
+	{
+		power *= 2.0f;   // タックルは強ノックバック
+	}
+	else
+	{
+		power *= 1.0f;   // 通常
+	}
+
+	m_knockBackMove = dir * power;
 	m_isKnockBack = true;
-	m_knockBackTime = knockBackTime;
+	m_knockBackTime = 0.2f;
+}
+
+void SmallRobot::PlayHitSE(bool isCritical)
+{
+	bool isHit = m_player->GetAttackHit();
+
+	if (isHit)
+	{
+		return;
+	}
+
+	m_player->SetAttackHit(true);
+
+	if (!m_searchPlayer)
+	{
+		m_audioManager->PlaySE(
+			enSound_BackstabSE,
+			1.0f,
+			enSEPlay_AllowOverlap
+		);
+
+		return;
+	}
+
+	if (isCritical)
+	{
+		m_audioManager->PlaySE(
+			enSound_CriticalSE,
+			1.0f,
+			enSEPlay_AllowOverlap
+		);
+
+		return;
+	}
+
+	int r = rand() % 3;
+
+	AudioID id;
+
+	switch (r)
+	{
+	case 0: id = enSound_PlayerAttackSE_01; break;
+	case 1: id = enSound_PlayerAttackSE_02; break;
+	case 2: id = enSound_PlayerAttackSE_03; break;
+	}
+
+	m_audioManager->PlaySE(
+		id,
+		1.0f,
+		enSEPlay_AllowOverlap
+	);
+}
+
+void SmallRobot::CreateDamageText(int damage)
+{
+	DamageText* damageText = NewGO<DamageText>(0);
+
+	Vector3 textPos = m_position;
+	textPos.y += 250.0f;
+
+	damageText->SetPosition(textPos);
+	damageText->SetDamage(damage);
 }
 
 void SmallRobot::AttackHit()

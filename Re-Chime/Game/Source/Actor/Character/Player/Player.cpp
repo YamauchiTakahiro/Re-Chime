@@ -103,7 +103,6 @@ void Player::Update()
 		!isFade &&
 		!IntroFlag &&
 		!bossIntroFlag)
-	if (!m_guardFlag &&!m_isAttack &&!isFade &&!IntroFlag &&!bossIntroFlag)
 	{
 		Move();
 		Rotation();
@@ -120,10 +119,13 @@ void Player::Update()
 
 		Attack();
 
+		Tackle();
+
 		ManageState();
 	}
 
-	if (m_attackCollisionLife <= 0.0f)
+	if (m_CollisionLife <= 0.0f &&
+		m_collisionObject != nullptr)
 	{
 		DeleteGO(m_collisionObject);
 		m_collisionObject = nullptr;
@@ -164,7 +166,7 @@ void Player::UpdateTimer()
 	if (m_collisionObject != nullptr)
 	{
 		// 攻撃の当たり判定の寿命を計測
-		m_attackCollisionLife -= dt;
+		m_CollisionLife -= dt;
 	}
 	//アイテムのクールタイムを計測
 	m_itemUseCoolTime -= dt;
@@ -240,6 +242,26 @@ void Player::UpdateTimer()
 	{
 		m_stamina = m_maxStamina;
 	}
+
+
+	m_tackleCoolTime -= dt;
+
+	if (m_isTackle)
+	{
+		m_tackleTime -= dt;
+
+		if (m_tackleTime <= 0.0f)
+		{
+			m_tackleTime = 0.0f;
+			m_isTackle = false;
+			m_tackleCoolTime = 3.0f;
+		}
+	}
+
+	if (m_tackleCoolTime < 0.0f)
+	{
+		m_tackleCoolTime = 0.0f;
+	}
 }
 
 void Player::Move()
@@ -291,6 +313,17 @@ void Player::Move()
 		{
 			m_knockBack = Vector3::Zero;
 			m_isKnockBack = false;
+		}
+	}
+	else if (m_isTackle)
+	{
+		finalMoveSpeed = m_tackleVelocity;
+
+		m_tackleVelocity *= 0.9f;
+
+		if (m_tackleVelocity.LengthSq() < 100.0f)
+		{
+			m_tackleVelocity = Vector3::Zero;
 		}
 	}
 	else
@@ -439,12 +472,11 @@ void Player::Attack()
 		}
 
 		// 0.2秒後に当たり判定生成
-		if (m_attackStartTime >= 0.2f &&!m_hasCreatedAttackCollision)
+		if (m_attackStartTime >= 0.2f &&!m_hasCreatedCollision)
 		{
-			OnCollision();
+			OnCollision(enCollisionType_Attack);
 
-			m_hasCreatedAttackCollision = true;
-
+			m_hasCreatedCollision = true;
 			if (m_attackSpeedBuffFlag)
 			{
 				m_attackCoolTime = 1.0f;
@@ -480,7 +512,27 @@ void Player::Attack()
 	}
 }
 
-void Player::OnCollision()
+void Player::Tackle()
+{
+	if (m_playerState != enPlayerState_Tackle)
+	{
+		return;
+	}
+
+	if (m_isTackle && !m_isKnockBack)
+	{
+		if (!m_hasCreatedCollision)
+		{
+			OnCollision(enCollisionType_Tackle);
+
+			m_hasCreatedCollision = true;
+
+			m_tackleCoolTime = 3.0f;
+		}
+	}
+}
+
+void Player::OnCollision(EnCollisionType type)
 {
 	if (m_collisionObject != nullptr)
 	{
@@ -492,12 +544,34 @@ void Player::OnCollision()
 	Vector3 collisionPos = m_position;
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
-	collisionPos += m_forward * 350.0f;
-	collisionPos.y += 50.0f; // 攻撃の当たり判定を少し上にずらす
-	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
-	m_collisionObject->SetName("playerAttack");
 
-	m_attackCollisionLife = 0.1f;
+	float radius = 0.0f;
+	float forwardOffset = 0.0f;
+	float lifeTime = 0.0f;
+	const char* collisionName = "";
+		
+	switch (type)
+	{
+	case enCollisionType_Attack:
+		radius = 200.0f;
+		forwardOffset = 350.0f;
+		lifeTime = 0.1f;
+		collisionName = "playerAttack";
+		break;
+	case enCollisionType_Tackle:
+		radius = 300.0f;
+		forwardOffset = 150.0f;
+		lifeTime = 0.2f;
+		collisionName = "playerTackle";
+		break;
+	}
+
+	collisionPos += m_forward * forwardOffset;
+	collisionPos.y += 50.0f; // 攻撃の当たり判定を少し上にずらす
+	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, radius);
+	m_collisionObject->SetName(collisionName);
+
+	m_CollisionLife = lifeTime;
 }
 
 void Player::TakeDamage(int damage, const Vector3& enemyPos)
@@ -672,7 +746,28 @@ void Player::PlayerState()
 
 		// 追加
 		m_attackStartTime = 0.0f;
-		m_hasCreatedAttackCollision = false;
+		m_hasCreatedCollision = false;
+
+		return;
+	}
+
+	if (g_pad[0]->IsTrigger(enButtonX) &&
+		m_tackleCoolTime <= 0.0f &&
+		!m_guardFlag)
+	{
+		m_playerState = enPlayerState_Tackle;
+
+		m_isTackle = true;
+		m_tackleCoolTime = 3.0f;
+
+		m_hasCreatedCollision = false;
+
+		Vector3 dir = Vector3::Front;
+		m_rotation.Apply(dir);
+
+		m_tackleVelocity = dir * 1200.0f;
+
+		m_tackleTime = 0.3f;
 
 		return;
 	}
@@ -730,12 +825,20 @@ void Player::AttackState()
 	if (m_modelRender.IsPlayingAnimation() == false || m_isKnockBack)
 	{
 		m_isAttack = false;
-
-		// 追加
-		m_hasCreatedAttackCollision = false;
+		m_hasCreatedCollision = false;
 		m_attackStartTime = 0.0f;
 		m_enemyHitFlag = false;
 		m_hasPlayedHitSE = false;
+
+		PlayerState();
+	}
+}
+void Player::TackleState()
+{
+	if (!m_isTackle || m_isKnockBack)
+	{
+		m_hasCreatedCollision = false;
+		m_enemyHitFlag = false;
 
 		PlayerState();
 	}
@@ -805,6 +908,9 @@ void Player::ManageState()
 		break;
 	case enPlayerState_Attack:
 		AttackState();
+		break;
+	case enPlayerState_Tackle:
+		TackleState();
 		break;
 	case enPlayerState_Guard:
 		GuardState();
