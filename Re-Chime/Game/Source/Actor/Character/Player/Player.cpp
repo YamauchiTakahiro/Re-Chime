@@ -81,6 +81,20 @@ bool Player::Start()
 
 void Player::Update()
 {
+	bool isFade = m_game->IsFade();
+	bool IntroFlag = m_game->GetIntro();
+	bool bossIntroFlag = m_game->GetBossIntro();
+
+	if (isFade || IntroFlag || bossIntroFlag)
+	{
+		// 完全停止
+		m_moveSpeed = Vector3::Zero;
+		m_playerState = enPlayerState_Idle;
+
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
@@ -90,11 +104,7 @@ void Player::Update()
 	}
 
 	isNearItem = false;
-	m_canPickItem = false;
-
-	bool isFade = m_game->IsFade();
-	bool IntroFlag = m_game->GetIntro();
-	bool bossIntroFlag = m_game->GetBossIntro();
+	m_canPickItem = false;	
 
 	UpdateTimer();
 
@@ -303,7 +313,7 @@ void Player::Move()
 
 	Vector3 finalMoveSpeed = Vector3::Zero;
 
-	if (m_isKnockBack)
+	if (m_isKnockBack && !m_isTackle)
 	{
 		finalMoveSpeed = m_knockBack;
 
@@ -523,6 +533,20 @@ void Player::Tackle()
 	{
 		if (!m_hasCreatedCollision)
 		{
+			int attakcPower = rand() % 5 + 10; // 攻撃力を5から15の範囲でランダムに決定
+			if (m_powerBuffFlag == true)
+			{
+				m_attackPower = attakcPower * 2;
+				if (m_powerBuffTime <= 0)
+				{
+					m_powerBuffFlag = false;
+				}
+			}
+			else
+			{
+				m_attackPower = attakcPower;
+			}
+
 			OnCollision(enCollisionType_Tackle);
 
 			m_hasCreatedCollision = true;
@@ -577,6 +601,10 @@ void Player::OnCollision(EnCollisionType type)
 void Player::TakeDamage(int damage, const Vector3& enemyPos)
 {
 	if (m_isKnockBack)
+	{
+		return;
+	}
+	if (m_isTackle)
 	{
 		return;
 	}
