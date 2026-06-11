@@ -31,12 +31,15 @@ private:
     Game* m_game = nullptr;
     AudioManager* m_audioManager = nullptr;
     CoolRing m_coolRing;
+    CoolRing m_guardRing;
     SpriteRender m_inventory;
     SpriteRender m_PS1;
     SpriteRender m_PS2;
     SpriteRender m_PS3;
     SpriteRender m_selectFrame;
     SpriteRender m_Inventoryback;
+    SpriteRender m_LButton;
+    SpriteRender m_Guardsmark;
     Quaternion m_inventoryRotation;
     FontRender m_CoolTimeText;
     FontRender m_pickUpText;
@@ -46,6 +49,7 @@ private:
     FontRender m_goalText;
     FontRender m_ItemCoolTimeText;
     FontRender m_Cursor;
+    FontRender m_GuardCoolTimeText;
     Vector3 m_cursorPos;
     float m_goalShowTimer = 5.0f;
     float m_goalAlpha = 1.0f;

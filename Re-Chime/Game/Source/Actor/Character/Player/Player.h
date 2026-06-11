@@ -169,6 +169,16 @@ public:
         return m_maxStamina;
     }
 
+    float GetGuardTimeLimit() const
+    {
+        return m_guardTimeLimit;
+    }
+
+    float GetGuardTimeLimitMax() const
+    {
+        return 3.0f;
+    }
+
     bool UseItem(int itemNo);
     void SetScale();
     void Render(RenderContext& rc)override;
