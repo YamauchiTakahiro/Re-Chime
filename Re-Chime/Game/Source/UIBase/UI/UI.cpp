@@ -98,11 +98,21 @@ UI::UI()
 	m_selectFrame.SetPosition(Vector3(-893.0f, 125.0f, 0.0f));
 	m_selectFrame.Update();
 
+	m_LButton.Init("Assets/UIData/LButton.DDs", 75.0f, 50.0f);
+	m_LButton.SetPosition(Vector3(860.0f, -210.0f, 0.0f));
+	m_LButton.Update();
+
+	m_Guardsmark.Init("Assets/UIData/guardsmark.DDs", 75.0f, 75.0f);
+	m_Guardsmark.SetPosition(Vector3(800.0f, -210.0f, 0.0f));
+	m_Guardsmark.Update();
+
 	m_coolRing.Init();
-
 	m_coolRing.SetPosition(Vector3(700.0f, -410.0f, 0.0f));
-
 	m_coolRing.SetScale(Vector3(0.65f, 0.65f, 1.0f));
+
+	m_guardRing.Init();
+	m_guardRing.SetPosition(Vector3(800.0f, -210.0f, 0.0f));
+	m_guardRing.SetScale(Vector3(0.65f, 0.65f, 1.0f));
 
 	m_goalText.SetScale(2.0f);
 	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
@@ -288,22 +298,15 @@ void UI::Update()
 	{
 		wchar_t coolText[256];
 
-		if (coolTime >= 1.0f)
-		{
-			swprintf_s(coolText, L"%.1d",(int)ceilf(coolTime));
-		}
-		else
-		{
-			swprintf_s(coolText, L"%.1f", coolTime);
-		}
+		swprintf_s(coolText,L"%.1f",coolTime);
 
-		m_CoolTimeText.SetPosition(Vector3(670.0f, -385.0f, 0.0f));
+		m_CoolTimeText.SetPosition(Vector3(665.0f, -390.0f, 0.0f));
 		m_CoolTimeText.SetScale(0.95f);
 		m_CoolTimeText.SetText(coolText);
 		m_CoolTimeText.SetColor(g_vec4White);
 	}
 	else
-	{
+	{	
 		m_CoolTimeText.SetText(L"");
 	}
 
@@ -326,6 +329,30 @@ void UI::Update()
 		m_ItemCoolTimeText.SetText(L"");
 	}
 
+	float guardCoolTime =m_player->GetGuardTimeLimit();
+
+	bool isShowGuardCoolTime =(guardCoolTime > 0.0f);
+
+	if (guardCoolTime < m_player->GetGuardTimeLimitMax())
+	{
+		wchar_t guardText[64];
+
+		swprintf_s(guardText,L"%.1f",guardCoolTime);
+
+		m_GuardCoolTimeText.SetText(guardText);
+		m_GuardCoolTimeText.SetPosition(Vector3(770.0f, -190.0f, 0.0f));
+		m_GuardCoolTimeText.SetScale(0.8f);
+		m_GuardCoolTimeText.SetColor(g_vec4White);
+	}
+	else
+	{
+		m_GuardCoolTimeText.SetText(L"");
+	}
+
+	float guardRate = 1.0f - (guardCoolTime / m_player->GetGuardTimeLimitMax());
+
+	m_guardRing.SetProgress(guardRate);
+
 	if (m_isShowGoal)
 	{
 		m_goalTimer +=
@@ -347,6 +374,25 @@ void UI::Update()
 
 		m_goalText.SetColor(0.0f, 0.0f, 0.0f, m_goalFade);
     }
+
+	if (m_player->GetGuardTimeLimit() < 3.0f)
+	{
+		m_LButton.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+		m_Guardsmark.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+	}
+	else if (g_pad[0]->IsPress(enButtonLB1))
+	{
+		m_LButton.SetMulColor(g_vec4Gray);
+		m_LButton.SetScale(Vector3(0.9f, 0.9f, 1.0f));
+		m_Guardsmark.SetMulColor(g_vec4Gray);
+	}
+	else
+	{
+		m_LButton.SetMulColor(g_vec4White);
+		m_LButton.SetScale(Vector3(1.0f, 1.0f, 1.0f));
+		m_Guardsmark.SetMulColor(g_vec4White);
+	}
+	m_LButton.Update();
 
 	if (m_isInventoryOpen)
 	{
@@ -489,6 +535,10 @@ void UI::Render(RenderContext& rc)
 	m_Xbutton.Draw(rc);
 	m_Ybutton.Draw(rc);
 	m_GireText.Draw(rc);
+	m_Guardsmark.Draw(rc);
+	m_GuardCoolTimeText.Draw(rc);
+	m_guardRing.Draw(rc);
+	m_LButton.Draw(rc);
 
 	// 攻撃力バフ
 	if (m_player->GetPowerBuffFlag())

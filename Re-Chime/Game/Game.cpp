@@ -392,6 +392,12 @@ void Game::Update()
 	{
 		if (m_fade->IsFadeOutFinished())
 		{
+			if (m_gire != nullptr)
+			{
+				DeleteGO(m_gire);
+				m_gire = nullptr;
+			}
+
 			m_player->SetPosition(m_nextMovePos);
 
 			m_intro = m_nextIntro;
@@ -432,6 +438,7 @@ void Game::Update()
 				m_isGoalDelay = true;
 			}
 
+			m_createGire = false;
 			m_isMoveNextFloor = false;
 
 			if (!m_intro && !m_bossIntro)
@@ -721,7 +728,7 @@ void Game::Render(RenderContext& rc)
 	m_Pos.Draw(rc);
 	m_gire = FindGO<Gire>("gire");
 
-	if (m_gire != nullptr)
+	if (m_gire != nullptr && m_createGire)
 	{
 		DrawGearArrow(rc);
 	}
@@ -861,6 +868,16 @@ int Game::GetFloorFromY(float y) const
 
 void Game::DrawGearArrow(RenderContext& rc)
 {
+	if (m_isMoveNextFloor)
+	{
+		return;
+	}
+
+	if (m_fade && m_fade->IsFade())
+	{
+		return;
+	}
+
 	if (m_player == nullptr || m_gire == nullptr)
 	{
 		return;
