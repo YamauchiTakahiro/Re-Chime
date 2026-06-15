@@ -6,13 +6,6 @@
 #include "Source/Manager/AudioManager/AudioManager.h"
 #include "CoolRing.h"
 
-static float Clamp01(float v)
-{
-	if (v < 0.0f) return 0.0f;
-	if (v > 1.0f) return 1.0f;
-	return v;
-}
-
 UI::UI()
 {
 	m_HPBar.Init("Assets/UIData/HPFrame.DDs", 1024.0f, 128.0f);
@@ -106,6 +99,14 @@ UI::UI()
 	m_Guardsmark.SetPosition(Vector3(800.0f, -210.0f, 0.0f));
 	m_Guardsmark.Update();
 
+	m_RButton.Init("Assets/UIData/RButton.DDs", 75.0f, 50.0f);
+	m_RButton.SetPosition(Vector3(860.0f, -120.0f, 0.0f));
+	m_RButton.Update();
+
+	m_RunMark.Init("Assets/UIData/RunMark.DDs", 75.0f, 75.0f);
+	m_RunMark.SetPosition(Vector3(800.0f, -120.0f, 0.0f));
+	m_RunMark.Update();
+
 	m_coolRing.Init();
 	m_coolRing.SetPosition(Vector3(700.0f, -410.0f, 0.0f));
 	m_coolRing.SetScale(Vector3(0.65f, 0.65f, 1.0f));
@@ -116,6 +117,26 @@ UI::UI()
 
 	m_goalText.SetScale(2.0f);
 	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
+
+	Quaternion staminaRot;
+	staminaRot.SetRotationZ(89.5f);
+
+	m_StaminaBar.Init("Assets/UIData/StaminaFrame.DDs", 1024.0f, 128.0f);
+	m_StaminaBar.SetPosition(Vector3(129.0f, -68.0f, 0.0f));
+	m_StaminaBar.SetScale(Vector3(0.28f, 0.28f, 0.5f));
+	m_StaminaBar.SetRotation(staminaRot);
+	m_StaminaBar.Update();
+
+	m_Stamina.Init("Assets/UIData/StaminaBar.DDs",1024.0f,128.0f);
+	m_Stamina.SetPosition(Vector3(124.0f, -213.0f, 0.0f));
+	m_Stamina.SetScale(Vector3(0.41f, 3.0f, 0.5f));
+	m_Stamina.SetPivot(Vector2(0.0f, 0.5f));
+	m_Stamina.SetRotation(staminaRot);
+	m_Stamina.Update();
+
+	m_tackleRing.Init();
+	m_tackleRing.SetPosition(Vector3(640.0f, -350.0f, 0.0f));
+	m_tackleRing.SetScale(Vector3(0.65f, 0.65f, 1.0f));
 
 	/*m_Cursor.SetText(L">");
 	m_Cursor.SetScale(2.5f);*/
@@ -223,10 +244,33 @@ void UI::Update()
 	}
 	m_HP.Update();
 
+	float stamina = m_player->GetStamina();
+	float maxStamina = m_player->GetMaxStamina();
+
+	float staminaRate = stamina / maxStamina;
+
+	Vector3 staminaScale = {
+		0.28f,0.28f,0.5f
+	};
+
+	staminaScale.x *= staminaRate;
+
+	m_Stamina.SetScale(staminaScale);
+
+	if (stamina <= maxStamina * 0.25f)
+	{
+		m_Stamina.SetMulColor(g_vec4Red);
+	}
+	else
+	{
+		m_Stamina.SetMulColor(Vector4(0.2f,0.8f,1.0f,1.0f));
+	}
+
+	m_Stamina.Update();
+
 	if (m_player->GetCoolTime() > 0.0f)
 	{
-		m_Abutton.SetMulColor(
-			Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+		m_Abutton.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
 	}
 	else
 	{
@@ -242,7 +286,11 @@ void UI::Update()
 		m_Bbutton.SetMulColor(g_vec4White);
 	}
 
-	if (g_pad[0]->IsPress(enButtonX))
+	if (m_player->GetTackleCoolTime() > 0.0f)
+	{
+		m_Xbutton.SetMulColor(Vector4(0.3f,0.3f,0.3f,1.0f));
+	}
+	else if (g_pad[0]->IsPress(enButtonX))
 	{
 		m_Xbutton.SetMulColor(g_vec4Gray);
 	}
@@ -258,6 +306,10 @@ void UI::Update()
 	else
 	{
 		m_Ybutton.SetMulColor(g_vec4White);
+	}
+	if (g_pad[0]->IsPress(enButtonRB1))
+	{
+		m_Stamina.SetMulColor(g_vec4Yellow);
 	}
 	// 点滅制御
 	m_blinkTimer += g_gameTime->GetFrameDeltaTime();
@@ -310,6 +362,27 @@ void UI::Update()
 		m_CoolTimeText.SetText(L"");
 	}
 
+	float tackleCoolTime =m_player->GetTackleCoolTime();
+
+	if (tackleCoolTime > 0.0f)
+	{
+		wchar_t tackleText[64];
+
+		swprintf_s(tackleText,L"%.1f",tackleCoolTime);
+
+		m_TackleCoolTimeText.SetText(tackleText);
+		m_TackleCoolTimeText.SetPosition(Vector3(610.0f, -332.5f, 0.0f));
+		m_TackleCoolTimeText.SetScale(0.8f);
+		m_TackleCoolTimeText.SetColor(g_vec4White);
+	}
+	else
+	{
+		m_TackleCoolTimeText.SetText(L"");
+	}
+
+	float tackleRate =tackleCoolTime /m_player->GetTackleCoolTimeMax();
+	m_tackleRing.SetProgress(tackleRate);
+
 	float itemCool =m_inventoryUseCoolTime;
 
 	if (itemCool > 0.0f)
@@ -355,8 +428,7 @@ void UI::Update()
 
 	if (m_isShowGoal)
 	{
-		m_goalTimer +=
-			g_gameTime->GetFrameDeltaTime();
+		m_goalTimer +=g_gameTime->GetFrameDeltaTime();
 
 		// 最初の3秒は表示のみ
 		if (m_goalTimer >= 3.0f)
@@ -533,12 +605,25 @@ void UI::Render(RenderContext& rc)
 	}
 	m_Bbutton.Draw(rc);
 	m_Xbutton.Draw(rc);
+	m_TackleCoolTimeText.Draw(rc);
+	if (m_player->GetTackleCoolTime() > 0.0f)
+	{
+		m_tackleRing.Draw(rc);
+	}
 	m_Ybutton.Draw(rc);
 	m_GireText.Draw(rc);
 	m_Guardsmark.Draw(rc);
 	m_GuardCoolTimeText.Draw(rc);
 	m_guardRing.Draw(rc);
 	m_LButton.Draw(rc);
+	m_RunMark.Draw(rc);
+	m_RButton.Draw(rc);
+	if (m_player->IsDashing() ||
+		m_player->GetStamina() < m_player->GetMaxStamina())
+	{
+		m_StaminaBar.Draw(rc);
+		m_Stamina.Draw(rc);
+	}
 
 	// 攻撃力バフ
 	if (m_player->GetPowerBuffFlag())
