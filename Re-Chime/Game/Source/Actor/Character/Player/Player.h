@@ -191,6 +191,21 @@ public:
         return 3.0f;
     }
 
+    float GetTackleCoolTime() const
+    {
+        return m_tackleCoolTime;
+    }
+
+    float GetTackleCoolTimeMax() const
+    {
+        return 3.0f;
+    }
+
+    bool IsDashing() const
+    {
+        return m_playerState == enPlayerState_Run;
+    }
+
     bool UseItem(int itemNo);
     void SetScale();
     void Render(RenderContext& rc)override;

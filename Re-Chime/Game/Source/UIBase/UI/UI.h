@@ -32,6 +32,7 @@ private:
     AudioManager* m_audioManager = nullptr;
     CoolRing m_coolRing;
     CoolRing m_guardRing;
+    CoolRing m_tackleRing;
     SpriteRender m_inventory;
     SpriteRender m_PS1;
     SpriteRender m_PS2;
@@ -40,6 +41,10 @@ private:
     SpriteRender m_Inventoryback;
     SpriteRender m_LButton;
     SpriteRender m_Guardsmark;
+    SpriteRender m_RunMark;
+    SpriteRender m_RButton;
+    SpriteRender m_StaminaBar;
+    SpriteRender m_Stamina;
     Quaternion m_inventoryRotation;
     FontRender m_CoolTimeText;
     FontRender m_pickUpText;
@@ -50,6 +55,7 @@ private:
     FontRender m_ItemCoolTimeText;
     FontRender m_Cursor;
     FontRender m_GuardCoolTimeText;
+    FontRender m_TackleCoolTimeText;
     Vector3 m_cursorPos;
     float m_goalShowTimer = 5.0f;
     float m_goalAlpha = 1.0f;
