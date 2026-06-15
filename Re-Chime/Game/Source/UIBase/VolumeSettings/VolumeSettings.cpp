@@ -277,11 +277,7 @@ void VolumeSettings::Cursor()
     float offsetX = sinf(time * Speed) * amplitude;
 
     // 最終位置
-    m_Cursor.SetPosition(Vector3(
-        m_cursorPos.x + offsetX,
-        m_cursorPos.y,
-        0.0f
-    ));
+    m_Cursor.SetPosition(Vector3(m_cursorPos.x + offsetX, m_cursorPos.y, 0.0f));
 }
 
 

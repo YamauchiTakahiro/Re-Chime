@@ -4,7 +4,7 @@
 #include "Source/Actor/Character/Player/Player.h"
 #include "Source/Actor/Character/Enemy/FinalBoss/FinalBoss.h"
 #include "Source/UIBase/Fade/Fade.h"
-
+#include "Source/UIBase/UI/UI.h"
 float Clamp(float value, float min, float max)
 {
 	if (value < min)
@@ -19,7 +19,6 @@ float Clamp(float value, float min, float max)
 
 	return value;
 }
-#include "Source/UIBase/UI/UI.h"
 
 GameCamera::GameCamera()
 {
@@ -40,12 +39,7 @@ bool GameCamera::Start()
 	m_fade = FindGO<Fade>("fade");
 
 	//ばねカメラの初期化。
-	m_springCamera.Init(
-		*g_camera3D,		//ばねカメラの処理を行うカメラを指定する。
-		10000.0f,			//カメラの移動速度の最大値。
-		true,				//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
-		5.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
-	);
+	m_springCamera.Init(*g_camera3D, 10000.0f, true, 5.0f);
 
 	//カメラのニアクリップとファークリップを設定する //おそらく近平面と遠平面
 	g_camera3D->SetNear(1.0f);
@@ -89,7 +83,7 @@ void GameCamera::Update()
 
 void GameCamera::CameraState()
 {
-	if (m_cameraState == EnCameraState::FadeOut ||m_cameraState == EnCameraState::FadeIn)
+	if (m_cameraState == EnCameraState::FadeOut || m_cameraState == EnCameraState::FadeIn)
 	{
 		return;
 	}
@@ -220,13 +214,11 @@ void GameCamera::UpdateBossCamera()
 	t = t * t * (3.0f - 2.0f * t);
 
 	// 半径を徐々に小さく
-	float radius =
-		2000.0f - (1200.0f * t);
+	float radius = 2000.0f - (1200.0f * t);
 	Vector3 pos;
 	pos.x = target.x + sinf(rad) * radius;
 	pos.z = target.z + cosf(rad) * radius;
-	float height =
-		1200.0f - (700.0f * t);
+	float height = 1200.0f - (700.0f * t);
 
 	pos.y = target.y + height;
 	g_camera3D->SetPosition(pos);
