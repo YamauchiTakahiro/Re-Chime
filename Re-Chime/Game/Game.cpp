@@ -581,20 +581,12 @@ void Game::Pause()
 			if (m_isPause)
 			{
 				// 開いた
-				m_audioManager->PlaySE(
-					enSound_PauseSE,
-					0.3f,
-					enSEPlay_AllowOverlap
-				);
+				m_audioManager->PlaySE(enSound_PauseSE, 0.3f, enSEPlay_AllowOverlap);
 			}
 			else
 			{
 				// 閉じた
-				m_audioManager->PlaySE(
-					enSound_PauseCloseSE,
-					0.3f,
-					enSEPlay_AllowOverlap
-				);
+				m_audioManager->PlaySE(enSound_PauseCloseSE,0.3f,enSEPlay_AllowOverlap);
 			}
 		}
 	}
@@ -617,11 +609,7 @@ void Game::PauseRender()
 		if (m_pauseSelect > 2) m_pauseSelect = 0;
 		if (m_audioManager)
 		{
-			m_audioManager->PlaySE(
-				enSound_ChoiceSE,
-				0.3f,
-				enSEPlay_AllowOverlap
-			);
+			m_audioManager->PlaySE(enSound_ChoiceSE,0.3f,enSEPlay_AllowOverlap);
 		}
 	}
 
@@ -632,11 +620,7 @@ void Game::PauseRender()
 		if (m_pauseSelect < 0) m_pauseSelect = 2;
 		if (m_audioManager)
 		{
-			m_audioManager->PlaySE(
-				enSound_ChoiceSE,
-				0.3f,
-				enSEPlay_AllowOverlap
-			);
+			m_audioManager->PlaySE(enSound_ChoiceSE,0.3f,enSEPlay_AllowOverlap);
 		}
 	}
 
@@ -645,11 +629,7 @@ void Game::PauseRender()
 	{
 		if (m_audioManager)
 		{
-			m_audioManager->PlaySE(
-				enSound_DecisionSE,
-				0.3f,
-				enSEPlay_AllowOverlap
-			);
+			m_audioManager->PlaySE(enSound_DecisionSE,0.3f,enSEPlay_AllowOverlap);
 		}
 		switch (m_pauseSelect)
 		{

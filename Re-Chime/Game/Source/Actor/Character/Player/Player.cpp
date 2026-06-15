@@ -108,11 +108,7 @@ void Player::Update()
 
 	UpdateTimer();
 
-	if (!m_guardFlag &&
-		!m_isAttack &&
-		!isFade &&
-		!IntroFlag &&
-		!bossIntroFlag)
+	if (!m_guardFlag && !m_isAttack && !isFade && !IntroFlag && !bossIntroFlag)
 	{
 		Move();
 		Rotation();
@@ -227,8 +223,7 @@ void Player::UpdateTimer()
 	moveInput.x = g_pad[0]->GetLStickXF();
 	moveInput.z = g_pad[0]->GetLStickYF();
 
-	if (m_playerState == enPlayerState_Run &&
-		moveInput.LengthSq() > 0.01f)
+	if (m_playerState == enPlayerState_Run && moveInput.LengthSq() > 0.01f)
 	{
 		m_stamina -= 30.0f * dt;
 	}
@@ -298,8 +293,7 @@ void Player::Move()
 			moveDir.Normalize();
 		}
 
-		if (g_pad[0]->IsPress(enButtonRB1) &&
-			m_canDash)
+		if (g_pad[0]->IsPress(enButtonRB1) && m_canDash)
 		{
 			m_speed = 480.0f;
 		}
@@ -364,8 +358,7 @@ void Player::JumpAndGravity()
 		m_jumpDelay -= g_gameTime->GetFrameDeltaTime();
 
 		// 遅延終了でジャンプ
-		if (m_jumpDelay <= 0.0f &&
-			!m_hasJumped)
+		if (m_jumpDelay <= 0.0f && !m_hasJumped)
 		{
 			m_moveSpeed.y = 500.0f;
 
@@ -644,11 +637,7 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 			m_playerHp -= damage / 2;
 			m_damageIntarvalTime = 2.0f;
 
-			m_audioManager->PlaySE(
-				enSound_PlayerGuardSE,
-				1.0f,
-				enSEPlay_AllowOverlap
-			);
+			m_audioManager->PlaySE(enSound_PlayerGuardSE, 1.0f, enSEPlay_AllowOverlap);
 		}
 	}
 }
@@ -779,9 +768,7 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonX) &&
-		m_tackleCoolTime <= 0.0f &&
-		!m_guardFlag)
+	if (g_pad[0]->IsTrigger(enButtonX) && m_tackleCoolTime <= 0.0f && !m_guardFlag)
 	{
 		m_playerState = enPlayerState_Tackle;
 
@@ -800,9 +787,7 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (g_pad[0]->IsPress(enButtonLB1) &&
-		m_guardTimeLimit >= 3.0f &&
-		m_guardCoolTime <= 0.0f)
+	if (g_pad[0]->IsPress(enButtonLB1) && m_guardTimeLimit >= 3.0f && m_guardCoolTime <= 0.0f)
 	{
 		m_playerState = enPlayerState_Guard;
 		m_guardFlag = true;
@@ -829,8 +814,7 @@ void Player::PlayerState()
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (g_pad[0]->IsPress(enButtonRB1) &&
-			m_canDash)
+		if (g_pad[0]->IsPress(enButtonRB1) && m_canDash)
 		{
 			m_playerState = enPlayerState_Run;
 		}

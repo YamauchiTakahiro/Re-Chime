@@ -38,11 +38,6 @@ UI::UI()
 	m_Xbutton.SetScale(Vector3(1.2f, 1.2f, 1.0f));
 	m_Xbutton.Update();
 
-	m_Ybutton.Init("Assets/UIData/Y.DDs", 75.0f, 75.0f);
-	m_Ybutton.SetPosition(Vector3(700.0f, -290.0f, 0.0f));
-	m_Ybutton.SetScale(Vector3(1.2f, 1.2f, 1.0f));
-	m_Ybutton.Update();
-
 	m_game = FindGO<Game>("game");
 
 	m_UP.Init("Assets/UIData/ATKUP.DDs", 50.0f, 50.0f);
@@ -122,13 +117,13 @@ UI::UI()
 	staminaRot.SetRotationZ(89.5f);
 
 	m_StaminaBar.Init("Assets/UIData/StaminaFrame.DDs", 1024.0f, 128.0f);
-	m_StaminaBar.SetPosition(Vector3(129.0f, -68.0f, 0.0f));
+	m_StaminaBar.SetPosition(Vector3(235.0f, -68.0f, 0.0f));
 	m_StaminaBar.SetScale(Vector3(0.28f, 0.28f, 0.5f));
 	m_StaminaBar.SetRotation(staminaRot);
 	m_StaminaBar.Update();
 
 	m_Stamina.Init("Assets/UIData/StaminaBar.DDs",1024.0f,128.0f);
-	m_Stamina.SetPosition(Vector3(124.0f, -213.0f, 0.0f));
+	m_Stamina.SetPosition(Vector3(230.0f, -213.0f, 0.0f));
 	m_Stamina.SetScale(Vector3(0.41f, 3.0f, 0.5f));
 	m_Stamina.SetPivot(Vector2(0.0f, 0.5f));
 	m_Stamina.SetRotation(staminaRot);
@@ -201,7 +196,7 @@ void UI::Update()
 
 	bool updateCoolTime = false;
 
-	Difficulty difficulty =m_game->GetDifficulty();
+	Difficulty difficulty = m_game->GetDifficulty();
 
 	if (difficulty == EASY ||difficulty == NORMAL)
 	{
@@ -216,8 +211,7 @@ void UI::Update()
 
 	if (updateCoolTime)
 	{
-		m_inventoryUseCoolTime -=
-			g_gameTime->GetFrameDeltaTime();
+		m_inventoryUseCoolTime -= g_gameTime->GetFrameDeltaTime();
 
 		if (m_inventoryUseCoolTime < 0.0f)
 		{
@@ -249,9 +243,7 @@ void UI::Update()
 
 	float staminaRate = stamina / maxStamina;
 
-	Vector3 staminaScale = {
-		0.28f,0.28f,0.5f
-	};
+	Vector3 staminaScale = {0.28f,0.28f,0.5f};
 
 	staminaScale.x *= staminaRate;
 
@@ -259,11 +251,18 @@ void UI::Update()
 
 	if (stamina <= maxStamina * 0.25f)
 	{
+		// 25%以下
 		m_Stamina.SetMulColor(g_vec4Red);
+	}
+	else if (stamina <= maxStamina * 0.5f)
+	{
+		// 50%以下
+		m_Stamina.SetMulColor(g_vec4Yellow);
 	}
 	else
 	{
-		m_Stamina.SetMulColor(Vector4(0.2f,0.8f,1.0f,1.0f));
+		// 50%以上
+		m_Stamina.SetMulColor(Vector4(0.2f, 0.8f, 1.0f, 1.0f));
 	}
 
 	m_Stamina.Update();
@@ -299,18 +298,6 @@ void UI::Update()
 		m_Xbutton.SetMulColor(g_vec4White);
 	}
 
-	if (g_pad[0]->IsPress(enButtonY))
-	{
-		m_Ybutton.SetMulColor(g_vec4Gray);
-	}
-	else
-	{
-		m_Ybutton.SetMulColor(g_vec4White);
-	}
-	if (g_pad[0]->IsPress(enButtonRB1))
-	{
-		m_Stamina.SetMulColor(g_vec4Yellow);
-	}
 	// 点滅制御
 	m_blinkTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_blinkTimer > 0.2f)
@@ -362,7 +349,7 @@ void UI::Update()
 		m_CoolTimeText.SetText(L"");
 	}
 
-	float tackleCoolTime =m_player->GetTackleCoolTime();
+	float tackleCoolTime = m_player->GetTackleCoolTime();
 
 	if (tackleCoolTime > 0.0f)
 	{
@@ -380,10 +367,10 @@ void UI::Update()
 		m_TackleCoolTimeText.SetText(L"");
 	}
 
-	float tackleRate =tackleCoolTime /m_player->GetTackleCoolTimeMax();
+	float tackleRate = tackleCoolTime / m_player->GetTackleCoolTimeMax();
 	m_tackleRing.SetProgress(tackleRate);
 
-	float itemCool =m_inventoryUseCoolTime;
+	float itemCool = m_inventoryUseCoolTime;
 
 	if (itemCool > 0.0f)
 	{
@@ -441,8 +428,7 @@ void UI::Update()
 			m_goalFade = 0.0f;
 			m_isShowGoal = false;
 		}
-		m_goalText.SetText(
-			m_goalMessage.c_str());
+		m_goalText.SetText(m_goalMessage.c_str());
 
 		m_goalText.SetColor(0.0f, 0.0f, 0.0f, m_goalFade);
     }
@@ -513,20 +499,17 @@ void UI::Inventory()
 	{
 	case 0:
 		framePos = Vector3(-893.0f, 125.0f, 0.0f);
-		m_cursorPos =Vector3(-980.0f,125.0f,0.0f);
+		m_cursorPos = Vector3(-980.0f, 125.0f, 0.0f);
 		break;
 
 	case 1:
 		framePos = Vector3(-893.0f, 0.0f, 0.0f);
-		m_cursorPos =Vector3(-980.0f,0.0f,0.0f);
+		m_cursorPos = Vector3(-980.0f, 0.0f, 0.0f);
 		break;
 
 	case 2:
 		framePos = Vector3(-893.0f, -125.0f, 0.0f);
-		m_cursorPos =
-			Vector3(
-				-980.0f,
-				-125.0f,0.0f);
+		m_cursorPos = Vector3(-980.0f, -125.0f, 0.0f);
 		break;
 	}
 
@@ -535,7 +518,7 @@ void UI::Inventory()
 
 	if (m_isUseItem)
 	{
-		bool useSuccess =m_player->UseItem(m_selectItem);
+		bool useSuccess = m_player->UseItem(m_selectItem);
 
 		if (useSuccess)
 		{
@@ -546,8 +529,7 @@ void UI::Inventory()
 
 			if (m_game)
 			{
-				m_inventoryUseCoolTime =
-					m_game->GetInventoryCoolTime();
+				m_inventoryUseCoolTime = m_game->GetInventoryCoolTime();
 			}
 		}
 
@@ -610,7 +592,6 @@ void UI::Render(RenderContext& rc)
 	{
 		m_tackleRing.Draw(rc);
 	}
-	m_Ybutton.Draw(rc);
 	m_GireText.Draw(rc);
 	m_Guardsmark.Draw(rc);
 	m_GuardCoolTimeText.Draw(rc);
@@ -618,8 +599,9 @@ void UI::Render(RenderContext& rc)
 	m_LButton.Draw(rc);
 	m_RunMark.Draw(rc);
 	m_RButton.Draw(rc);
-	if (m_player->IsDashing() ||
-		m_player->GetStamina() < m_player->GetMaxStamina())
+	bool isIntro = m_game->GetIntro() || m_game->GetBossIntro();
+
+	if (!isIntro &&(m_player->IsDashing() ||m_player->GetStamina() < m_player->GetMaxStamina()))
 	{
 		m_StaminaBar.Draw(rc);
 		m_Stamina.Draw(rc);

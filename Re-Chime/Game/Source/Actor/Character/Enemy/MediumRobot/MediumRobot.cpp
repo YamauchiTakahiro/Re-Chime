@@ -158,10 +158,7 @@ void MediumRobot::KnockBack()
 
 	m_knockBackTime -= g_gameTime->GetFrameDeltaTime();
 
-	m_position = m_characterController.Execute(
-		m_knockBackMove,
-		2.0f / 60.0f
-	);
+	m_position = m_characterController.Execute(m_knockBackMove, 2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
 
@@ -178,12 +175,9 @@ void MediumRobot::KnockBack()
 void MediumRobot::Move()
 {
 	Vector3 playerPos = m_player->GetPosition();
-	float distToPlayer =
-		(playerPos - m_position).Length();
+	float distToPlayer = (playerPos - m_position).Length();
 
-	if (distToPlayer <= 500.0f &&
-		m_timeCount == 0.0f &&
-		m_searchPlayer)
+	if (distToPlayer <= 500.0f && m_timeCount == 0.0f && m_searchPlayer)
 	{
 		m_timeCount = 2.0f;
 	}
@@ -205,11 +199,7 @@ void MediumRobot::Move()
 		m_moveSpeed = Vector3::Zero;
 	}
 
-	m_position =
-		m_characterController.Execute(
-			m_moveSpeed,
-			2.0f / 60.0f
-		);
+	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
 }
@@ -221,8 +211,7 @@ void MediumRobot::Rotation()
 		return;
 	}
 
-	Vector3 toPlayer =
-		m_player->GetPosition() - m_position;
+	Vector3 toPlayer = m_player->GetPosition() - m_position;
 
 	toPlayer.y = 0.0f;
 
@@ -236,17 +225,11 @@ void MediumRobot::Rotation()
 	Quaternion targetRot;
 	targetRot.SetRotationYFromDirectionXZ(toPlayer);
 
-	float t =
-		m_rotationSpeed *
-		g_gameTime->GetFrameDeltaTime();
+	float t = m_rotationSpeed * g_gameTime->GetFrameDeltaTime();
 
 	t = min(t, 1.0f);
 
-	m_rotation.Slerp(
-		t,
-		m_rotation,
-		targetRot
-	);
+	m_rotation.Slerp(t, m_rotation, targetRot);
 
 	m_modelRender.SetRotation(m_rotation);
 }
@@ -325,8 +308,7 @@ void MediumRobot::Time()
 
 void MediumRobot::Hit()
 {
-	const auto& collisions =
-		g_collisionObjectManager->FindCollisionObjects("playerAttack");
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("playerAttack");
 
 	for (auto collision : collisions)
 	{
@@ -343,8 +325,7 @@ void MediumRobot::Hit()
 		ReceiveAttack(false);
 	}
 
-	const auto& tackleCollisions =
-		g_collisionObjectManager->FindCollisionObjects("playerTackle");
+	const auto& tackleCollisions = g_collisionObjectManager->FindCollisionObjects("playerTackle");
 
 	for (auto collision : tackleCollisions)
 	{
@@ -448,22 +429,14 @@ void MediumRobot::PlayHitSE(bool isCritical)
 
 	if (!m_searchPlayer)
 	{
-		m_audioManager->PlaySE(
-			enSound_BackstabSE,
-			1.0f,
-			enSEPlay_AllowOverlap
-		);
+		m_audioManager->PlaySE(enSound_BackstabSE, 1.0f, enSEPlay_AllowOverlap);
 
 		return;
 	}
 
 	if (isCritical)
 	{
-		m_audioManager->PlaySE(
-			enSound_CriticalSE,
-			1.0f,
-			enSEPlay_AllowOverlap
-		);
+		m_audioManager->PlaySE(enSound_CriticalSE, 1.0f, enSEPlay_AllowOverlap);
 
 		return;
 	}
@@ -479,11 +452,7 @@ void MediumRobot::PlayHitSE(bool isCritical)
 	case 2: id = enSound_PlayerAttackSE_03; break;
 	}
 
-	m_audioManager->PlaySE(
-		id,
-		1.0f,
-		enSEPlay_AllowOverlap
-	);
+	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 }
 
 void MediumRobot::CreateDamageText(int damage)
@@ -553,11 +522,7 @@ void MediumRobot::MakeExplosionEffect()
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
 
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_Explosion,
-		effectPos,
-		50.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_Explosion,effectPos,50.0f);
 }
 
 void MediumRobot::ManageState()

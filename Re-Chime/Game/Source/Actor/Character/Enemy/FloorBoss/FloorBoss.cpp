@@ -136,10 +136,7 @@ void FloorBoss::Move()
 	{
 		m_moveSpeed = Vector3::Zero;
 
-		m_position = m_characterController.Execute(
-			m_moveSpeed,
-			2.0f / 60.0f
-		);
+		m_position = m_characterController.Execute(m_moveSpeed,2.0f / 60.0f);
 
 		m_modelRender.SetPosition(m_position);
 		return;
@@ -236,11 +233,7 @@ void FloorBoss::Hit()
 				{
 					m_player->SetAttackHit(true);
 
-					m_audioManager->PlaySE(
-						enSound_CriticalSE,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+					m_audioManager->PlaySE(enSound_CriticalSE,1.0f,enSEPlay_AllowOverlap);
 				}
 				m_floorBossHP -= damage;
 			}
@@ -262,11 +255,7 @@ void FloorBoss::Hit()
 					case 2: id = enSound_PlayerAttackSE_03; break;
 					}
 
-					m_audioManager->PlaySE(
-						id,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+					m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
 				}
 				m_floorBossHP -= damage;
 			}
@@ -348,11 +337,7 @@ void FloorBoss::MakeExplosionEffect()
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
 
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_BossExplosion,
-		effectPos,
-		50.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_BossExplosion,effectPos,50.0f);
 }
 
 void FloorBoss::MakeNoticeCircleEffect()
@@ -362,11 +347,7 @@ void FloorBoss::MakeNoticeCircleEffect()
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
 	effectPos += m_forward * 450.0f;
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_NoticeCircle,
-		effectPos,
-		200.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_NoticeCircle,effectPos,200.0f);
 }
 
 void FloorBoss::ManageState()

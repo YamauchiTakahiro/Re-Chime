@@ -203,10 +203,7 @@ void FinalBoss::Move()
 		m_moveSpeed.z = diff.z * m_moveSpeedValue;
 	}
 
-	m_position = m_characterController.Execute(
-		m_moveSpeed,
-		g_gameTime->GetFrameDeltaTime()
-	);
+	m_position = m_characterController.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 
 	m_modelRender.SetPosition(m_position);
 }
@@ -257,11 +254,7 @@ void FinalBoss::Shot()
 		break;
 	}
 
-	m_audioManager->PlaySE(
-		id,
-		1.0f,
-		enSEPlay_AllowOverlap
-	);
+	m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
 	m_shotCoolTime = m_shotCoolTimeReset;
 }
 
@@ -394,11 +387,7 @@ void FinalBoss::Hit()
 				{
 					m_player->SetAttackHit(true);
 
-					m_audioManager->PlaySE(
-						enSound_CriticalSE,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+					m_audioManager->PlaySE(enSound_CriticalSE,1.0f,enSEPlay_AllowOverlap);
 				}
 				m_finalBossHp -= damage;
 			}
@@ -420,11 +409,7 @@ void FinalBoss::Hit()
 					case 2: id = enSound_PlayerAttackSE_03; break;
 					}
 
-					m_audioManager->PlaySE(
-						id,
-						1.0f,
-						enSEPlay_AllowOverlap
-					);
+					m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
 				}
 				m_finalBossHp -= damage;
 			}
@@ -503,11 +488,7 @@ void FinalBoss::MakeExplosionEffect()
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
 
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_BossExplosion,
-		effectPos,
-		50.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_BossExplosion,effectPos,50.0f);
 }
 
 void FinalBoss::ManageState()
