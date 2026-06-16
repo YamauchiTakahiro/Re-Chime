@@ -192,7 +192,6 @@ void AudioManager::LoadAll()
 	//SEの読み込み
 	Load(enSound_PlayerWalkSE1, "Assets/Sound/SE/PlayerWalkSE_01.wav");
 	Load(enSound_PlayerWalkSE2, "Assets/Sound/SE/PlayerWalkSE_02.wav");
-	Load(enSound_PlayerWalkSE3, "Assets/Sound/SE/PlayerWalkSE_03.wav");
 	Load(enSound_PlayerDashSE1, "Assets/Sound/SE/PlayerDashSE_01.wav");
 	Load(enSound_PlayerDashSE2, "Assets/Sound/SE/PlayerDashSE_02.wav");
 	Load(enSound_PlayerDashSE3, "Assets/Sound/SE/PlayerDashSE_03.wav");
