@@ -407,7 +407,7 @@ void Player::FootStep()
 		if (m_footStepTime <= 0.0f)
 		{
 			// 歩き足音をランダム再生
-			int r = rand() % 3;
+			int r = rand() % 2;
 
 			AudioID id;
 
@@ -415,7 +415,6 @@ void Player::FootStep()
 			{
 			case 0: id = enSound_PlayerWalkSE1; break;
 			case 1: id = enSound_PlayerWalkSE2; break;
-			case 2: id = enSound_PlayerWalkSE3; break;
 			}
 
 			m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
