@@ -167,10 +167,7 @@ void SmallRobot::KnockBack()
 
 	m_knockBackTime -= g_gameTime->GetFrameDeltaTime();
 
-	m_position = m_characterController.Execute(
-		m_knockBackMove,
-		2.0f / 60.0f
-	);
+	m_position = m_characterController.Execute(m_knockBackMove,2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
 
@@ -187,12 +184,9 @@ void SmallRobot::KnockBack()
 void SmallRobot::Move()
 {
 	Vector3 playerPos = m_player->GetPosition();
-	float distToPlayer =
-		(playerPos - m_position).Length();
+	float distToPlayer = (playerPos - m_position).Length();
 
-	if (distToPlayer <= 500.0f &&
-		m_timeCount == 0.0f &&
-		m_searchPlayer)
+	if (distToPlayer <= 500.0f && m_timeCount == 0.0f && m_searchPlayer)
 	{
 		m_timeCount = 2.0f;
 	}
@@ -206,19 +200,14 @@ void SmallRobot::Move()
 		forward.y = 0.0f;
 		forward.Normalize();
 
-		m_moveSpeed =
-			forward * m_moveSpeedValue;
+		m_moveSpeed = forward * m_moveSpeedValue;
 	}
 	else
 	{
 		m_moveSpeed = Vector3::Zero;
 	}
 
-	m_position =
-		m_characterController.Execute(
-			m_moveSpeed,
-			2.0f / 60.0f
-		);
+	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
 }
@@ -311,11 +300,7 @@ void SmallRobot::OnCollision()
 {
 	m_collisionObject = NewGO<CollisionObject>(0);
 
-	m_collisionObject->CreateSphere(
-		Vector3::Zero,
-		Quaternion::Identity,
-		200.0f
-	);
+	m_collisionObject->CreateSphere(Vector3::Zero, Quaternion::Identity, 200.0f);
 
 	m_collisionObject->SetName("smallRobotAttack");
 	m_collisionObject->SetIsEnableAutoDelete(false);
@@ -334,8 +319,7 @@ void SmallRobot::Time()
 
 void SmallRobot::Hit()
 {
-	const auto& collisions =
-		g_collisionObjectManager->FindCollisionObjects("playerAttack");
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("playerAttack");
 
 	for (auto collision : collisions)
 	{
@@ -352,8 +336,7 @@ void SmallRobot::Hit()
 		ReceiveAttack(false);
 	}
 
-	const auto& tackleCollisions =
-		g_collisionObjectManager->FindCollisionObjects("playerTackle");
+	const auto& tackleCollisions = g_collisionObjectManager->FindCollisionObjects("playerTackle");
 
 	for (auto collision : tackleCollisions)
 	{
@@ -457,22 +440,14 @@ void SmallRobot::PlayHitSE(bool isCritical)
 
 	if (!m_searchPlayer)
 	{
-		m_audioManager->PlaySE(
-			enSound_BackstabSE,
-			1.0f,
-			enSEPlay_AllowOverlap
-		);
+		m_audioManager->PlaySE(enSound_BackstabSE, 1.0f, enSEPlay_AllowOverlap);
 
 		return;
 	}
 
 	if (isCritical)
 	{
-		m_audioManager->PlaySE(
-			enSound_CriticalSE,
-			1.0f,
-			enSEPlay_AllowOverlap
-		);
+		m_audioManager->PlaySE(enSound_CriticalSE, 1.0f, enSEPlay_AllowOverlap);
 
 		return;
 	}
@@ -488,11 +463,7 @@ void SmallRobot::PlayHitSE(bool isCritical)
 	case 2: id = enSound_PlayerAttackSE_03; break;
 	}
 
-	m_audioManager->PlaySE(
-		id,
-		1.0f,
-		enSEPlay_AllowOverlap
-	);
+	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 }
 
 void SmallRobot::CreateDamageText(int damage)
@@ -604,11 +575,7 @@ void SmallRobot::MakeExplosionEffect()
 	Vector3 effectPos = m_position;
 	effectPos.y += 70.0f;
 
-	EffectManager::GetInstance().PlayEffect(
-		EffectManager::enEffect_Explosion,
-		effectPos,
-		50.0f
-	);
+	EffectManager::GetInstance().PlayEffect(EffectManager::enEffect_Explosion,effectPos,50.0f);
 }
 
 void SmallRobot::EnemyState()

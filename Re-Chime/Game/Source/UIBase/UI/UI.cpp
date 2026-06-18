@@ -23,19 +23,19 @@ UI::UI()
 	m_Gear.SetPosition(Vector3(-875.0f, -450.0f, 0.0f));
 	m_Gear.Update();
 
-	m_Abutton.Init("Assets/UIData/A.DDs", 75.0f, 75.0f);
-	m_Abutton.SetPosition(Vector3(700.0f, -410.0f, 0.0f));
-	m_Abutton.SetScale(Vector3(1.2f, 1.2f, 1.2f));
+	m_Abutton.Init("Assets/UIData/A.DDs", 50.0f, 50.0f);
+	m_Abutton.SetPosition(Vector3(700.0f, -380.0f, 0.0f));
+	m_Abutton.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 	m_Abutton.Update();
 
-	m_Bbutton.Init("Assets/UIData/B.DDs", 75.0f, 75.0f);
-	m_Bbutton.SetPosition(Vector3(760.0f, -350.0f, 0.0f));
-	m_Bbutton.SetScale(Vector3(1.2f, 1.2f, 1.0f));
+	m_Bbutton.Init("Assets/UIData/B.DDs", 50.0f, 50.0f);
+	m_Bbutton.SetPosition(Vector3(730.0f, -350.0f, 0.0f));
+	m_Bbutton.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 	m_Bbutton.Update();
 
-	m_Xbutton.Init("Assets/UIData/X.DDs", 75.0f, 75.0f);
-	m_Xbutton.SetPosition(Vector3(640.0f, -350.0f, 0.0f));
-	m_Xbutton.SetScale(Vector3(1.2f, 1.2f, 1.0f));
+	m_Xbutton.Init("Assets/UIData/X.DDs", 50.0f, 50.0f);
+	m_Xbutton.SetPosition(Vector3(670.0f, -350.0f, 0.0f));
+	m_Xbutton.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 	m_Xbutton.Update();
 
 	m_game = FindGO<Game>("game");
@@ -43,7 +43,6 @@ UI::UI()
 	m_UP.Init("Assets/UIData/ATKUP.DDs", 50.0f, 50.0f);
 	m_UP.SetPosition(Vector3(675.0f, 450.0f, 0.0f));
 	m_UP.SetScale(Vector3(3.0f, 3.0f, 0.0f));
-	//m_UP.SetPivot(Vector2(0.0f, 0.5f));
 	m_UP.Update();
 
 	m_AttackSpeed.Init("Assets/UIData/ATKSPDUP.DDs", 50.0f, 50.0f);
@@ -54,7 +53,6 @@ UI::UI()
 	m_inventory.Init("Assets/UIData/Inventory.DDs", 128.0f, 45.0f);
 	m_inventory.SetPosition(Vector3(-893.0f, 0.0f, 0.0f));
 	m_inventory.SetScale(Vector3(3.0f, 3.0f, 0.0f));
-	//画像の向きを変える
 	m_inventoryRotation.SetRotationZ(45.55f);
 	m_inventory.SetRotation(m_inventoryRotation);
 	m_inventory.Update();
@@ -66,18 +64,14 @@ UI::UI()
 	m_pickUpText.SetScale(1.0f);
 	m_pickUpText.SetColor(g_vec4White);
 
-	//攻撃スピードアップ
 	m_PS1.Init("Assets/UIData/ps1.DDs", 72.0f, 100.0f);
 	m_PS1.SetPosition(Vector3(-893.0f, 125.0f, 0.0f));
-	//m_PS1.SetScale(Vector3(3.0f, 3.0f, 0.0f));
 	m_PS1.Update();
 
-	//攻撃力アップ
 	m_PS2.Init("Assets/UIData/ps2.DDs", 72.0f, 100.0f);
 	m_PS2.SetPosition(Vector3(-893.0f, 0.0f, 0.0f));
 	m_PS2.Update();
 	
-	//回復
 	m_PS3.Init("Assets/UIData/ps3.DDs", 72.0f, 100.0f);
 	m_PS3.SetPosition(Vector3(-893.0f, -125.0f, 0.0f));
 	m_PS3.Update();
@@ -103,8 +97,8 @@ UI::UI()
 	m_RunMark.Update();
 
 	m_coolRing.Init();
-	m_coolRing.SetPosition(Vector3(700.0f, -410.0f, 0.0f));
-	m_coolRing.SetScale(Vector3(0.65f, 0.65f, 1.0f));
+	m_coolRing.SetPosition(Vector3(700.0f, -420.0f, 0.0f));
+	m_coolRing.SetScale(Vector3(0.66f, 0.66f, 1.0f));
 
 	m_guardRing.Init();
 	m_guardRing.SetPosition(Vector3(800.0f, -210.0f, 0.0f));
@@ -112,6 +106,10 @@ UI::UI()
 
 	m_goalText.SetScale(2.0f);
 	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
+
+	m_pickItemText.SetScale(0.1f);
+	m_pickItemText.SetPosition(Vector3(0.0f, 250.0f, 0.0f));
+	m_pickItemText.SetColor(1.0f, 0.9f, 0.3f, 1.0f);
 
 	Quaternion staminaRot;
 	staminaRot.SetRotationZ(89.5f);
@@ -130,11 +128,23 @@ UI::UI()
 	m_Stamina.Update();
 
 	m_tackleRing.Init();
-	m_tackleRing.SetPosition(Vector3(640.0f, -350.0f, 0.0f));
-	m_tackleRing.SetScale(Vector3(0.65f, 0.65f, 1.0f));
+	m_tackleRing.SetPosition(Vector3(630.0f, -350.0f, 0.0f));
+	m_tackleRing.SetScale(Vector3(0.67f, 0.67f, 1.0f));
 
-	/*m_Cursor.SetText(L">");
-	m_Cursor.SetScale(2.5f);*/
+	m_Attack.Init("Assets/UIData/AttackUI.DDs", 75.0f, 75.0f);
+	m_Attack.SetPosition(Vector3(700.0f, -420.0f, 0.0f));
+	m_Attack.SetScale(Vector3(1.2f, 1.2f, 1.2f));
+	m_Attack.Update();
+
+	m_Tackle.Init("Assets/UIData/TackleUI.DDs" ,75.0f, 75.0f);
+	m_Tackle.SetPosition(Vector3(630.0f, -350.0f, 0.0f));
+	m_Tackle.SetScale(Vector3(1.2f, 1.2f, 1.0f));
+	m_Tackle.Update();
+
+	m_Jump.Init("Assets/UIData/JumpUI.DDs", 75.0f, 75.0f);
+	m_Jump.SetPosition(Vector3(770.0f, -350.0f, 0.0f));
+	m_Jump.SetScale(Vector3(1.2f, 1.2f, 1.0f));
+	m_Jump.Update();
 
 	m_player = FindGO<Player>("player");
 	m_audioManager = FindGO<AudioManager>("audioManager");
@@ -269,33 +279,33 @@ void UI::Update()
 
 	if (m_player->GetCoolTime() > 0.0f)
 	{
-		m_Abutton.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+		m_Attack.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
 	}
 	else
 	{
-		m_Abutton.SetMulColor(g_vec4White);
+		m_Attack.SetMulColor(g_vec4White);
 	}
 
 	if (g_pad[0]->IsPress(enButtonB))
 	{
-		m_Bbutton.SetMulColor(g_vec4Gray);
+		m_Jump.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
-		m_Bbutton.SetMulColor(g_vec4White);
+		m_Jump.SetMulColor(g_vec4White);
 	}
 
 	if (m_player->GetTackleCoolTime() > 0.0f)
 	{
-		m_Xbutton.SetMulColor(Vector4(0.3f,0.3f,0.3f,1.0f));
+		m_Tackle.SetMulColor(Vector4(0.3f,0.3f,0.3f,1.0f));
 	}
 	else if (g_pad[0]->IsPress(enButtonX))
 	{
-		m_Xbutton.SetMulColor(g_vec4Gray);
+		m_Tackle.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
-		m_Xbutton.SetMulColor(g_vec4White);
+		m_Tackle.SetMulColor(g_vec4White);
 	}
 
 	// 点滅制御
@@ -339,7 +349,7 @@ void UI::Update()
 
 		swprintf_s(coolText,L"%.1f",coolTime);
 
-		m_CoolTimeText.SetPosition(Vector3(665.0f, -390.0f, 0.0f));
+		m_CoolTimeText.SetPosition(Vector3(665.0f, -400.0f, 0.0f));
 		m_CoolTimeText.SetScale(0.95f);
 		m_CoolTimeText.SetText(coolText);
 		m_CoolTimeText.SetColor(g_vec4White);
@@ -358,7 +368,7 @@ void UI::Update()
 		swprintf_s(tackleText,L"%.1f",tackleCoolTime);
 
 		m_TackleCoolTimeText.SetText(tackleText);
-		m_TackleCoolTimeText.SetPosition(Vector3(610.0f, -332.5f, 0.0f));
+		m_TackleCoolTimeText.SetPosition(Vector3(600.0f, -332.5f, 0.0f));
 		m_TackleCoolTimeText.SetScale(0.8f);
 		m_TackleCoolTimeText.SetColor(g_vec4White);
 	}
@@ -433,24 +443,70 @@ void UI::Update()
 		m_goalText.SetColor(0.0f, 0.0f, 0.0f, m_goalFade);
     }
 
+	if (m_isShowPickItem)
+	{
+		m_pickItemTimer += g_gameTime->GetFrameDeltaTime();
+
+		// 少し上へ移動
+		Vector3 pos = Vector3(300.0f, 300.0f + m_pickItemTimer * 30.0f, 0.0f);
+
+		m_pickItemText.SetPosition(pos);
+
+		// 2秒後からフェード
+		if (m_pickItemTimer >= 2.0f)
+		{
+			m_pickItemFade -= g_gameTime->GetFrameDeltaTime() * 2.0f;
+		}
+
+		if (m_pickItemFade <= 0.0f)
+		{
+			m_pickItemFade = 0.0f;
+			m_isShowPickItem = false;
+		}
+
+		m_pickItemText.SetText(m_pickItemMessage.c_str());
+
+		// 金色っぽい色
+		m_pickItemText.SetColor(1.0f, 0.9f, 0.3f, m_pickItemFade);
+	}
+
 	if (m_player->GetGuardTimeLimit() < 3.0f)
 	{
-		m_LButton.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
 		m_Guardsmark.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
 	}
 	else if (g_pad[0]->IsPress(enButtonLB1))
 	{
-		m_LButton.SetMulColor(g_vec4Gray);
-		m_LButton.SetScale(Vector3(0.9f, 0.9f, 1.0f));
 		m_Guardsmark.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
-		m_LButton.SetMulColor(g_vec4White);
-		m_LButton.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 		m_Guardsmark.SetMulColor(g_vec4White);
 	}
-	m_LButton.Update();
+
+	// ダッシュボタン演出
+	if (g_pad[0]->IsPress(enButtonRB1))
+	{
+		m_RunMark.SetScale(Vector3(1.1f, 1.1f, 1.0f));
+	}
+	else
+	{
+		m_RunMark.SetScale(Vector3(1.2f, 1.2f, 1.0f));
+	}
+
+	// 実際にダッシュ中ならアイコンを強調
+	if (m_player->IsDashing())
+	{
+		m_RunMark.SetMulColor(g_vec4Gray);
+	}
+	else
+	{
+		m_RunMark.SetMulColor(g_vec4White);
+	}
+
+	if (m_player->GetStamina() <= 0.0f)
+	{
+		m_RunMark.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+	}
 
 	if (m_isInventoryOpen)
 	{
@@ -571,6 +627,18 @@ void UI::ShowGoal(const wchar_t* text)
 	m_isShowGoal = true;
 }
 
+void UI::ShowPickItem(const wchar_t* text)
+{
+	m_pickItemMessage = text;
+
+	m_pickItemTimer = 0.0f;
+	m_pickItemFade = 1.0f;
+	m_isShowPickItem = true;
+
+	m_pickItemText.SetScale(1.0f);
+	m_pickItemText.SetPosition(Vector3(0.0f, 250.0f, 0.0f));
+}
+
 void UI::Render(RenderContext& rc)
 {
 	if (!m_isVisible)
@@ -580,18 +648,21 @@ void UI::Render(RenderContext& rc)
 	m_HPBar.Draw(rc);
 	m_HP.Draw(rc);
 	m_Gear.Draw(rc);
-	m_Abutton.Draw(rc);
+	m_Attack.Draw(rc);
 	if (m_player->GetCoolTime() > 0.0f)
 	{
 		m_coolRing.Draw(rc);
 	}
+	m_Abutton.Draw(rc);
+	m_Jump.Draw(rc);
 	m_Bbutton.Draw(rc);
-	m_Xbutton.Draw(rc);
-	m_TackleCoolTimeText.Draw(rc);
+	m_Tackle.Draw(rc);
 	if (m_player->GetTackleCoolTime() > 0.0f)
 	{
 		m_tackleRing.Draw(rc);
 	}
+	m_Xbutton.Draw(rc);
+	m_TackleCoolTimeText.Draw(rc);
 	m_GireText.Draw(rc);
 	m_Guardsmark.Draw(rc);
 	m_GuardCoolTimeText.Draw(rc);
@@ -668,5 +739,10 @@ void UI::Render(RenderContext& rc)
 	if (m_isShowGoal)
 	{
 		m_goalText.Draw(rc);
+	}
+
+	if (m_isShowPickItem)
+	{
+		m_pickItemText.Draw(rc);
 	}
 }

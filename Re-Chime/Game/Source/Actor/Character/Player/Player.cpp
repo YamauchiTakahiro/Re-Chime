@@ -119,6 +119,11 @@ void Player::Update()
 		m_moveSpeed.x = 0.0f;
 		m_moveSpeed.z = 0.0f;
 	}
+
+	Hit();
+
+	GetGires();
+
 	if (!isFade &&!IntroFlag &&!bossIntroFlag)
 	{
 		JumpAndGravity();
@@ -147,10 +152,6 @@ void Player::Update()
 	}
 
 	PlayAnimation();
-
-	Hit();
-
-	GetGires();
 
 	DamageIntarval();
 
@@ -656,6 +657,12 @@ void Player::Hit()
 
 				m_audioManager->PlaySE(enSound_PowerUPSE,1.0f,enSEPlay_AllowOverlap);
 
+				auto ui = FindGO<UI>("ui");
+				if (ui)
+				{
+					ui->ShowPickItem(L"攻撃力アップポーションを拾った");
+				}
+
 				DeleteGO(collision);
 
 				return;
@@ -675,6 +682,12 @@ void Player::Hit()
 				m_attackSpeedPotionCount++;
 
 				m_audioManager->PlaySE(enSound_AttackSpeedUPSE,1.0f,enSEPlay_AllowOverlap);
+
+				auto ui = FindGO<UI>("ui");
+				if (ui)
+				{
+					ui->ShowPickItem(L"クールタイム短縮ポーションを拾った");
+				}
 
 				DeleteGO(collision);
 
@@ -696,6 +709,12 @@ void Player::Hit()
 				m_healPotionCount++;
 
 				m_audioManager->PlaySE(enSound_HealSE,1.0f,enSEPlay_AllowOverlap);
+
+				auto ui = FindGO<UI>("ui");
+				if (ui)
+				{
+					ui->ShowPickItem(L"回復ポーションを拾った");
+				}
 
 				DeleteGO(collision);
 
@@ -724,11 +743,15 @@ void Player::GetGires()
 		{
 			m_gireCount++;
 
-			//m_isGetGire = true;
-
 			DeleteGO(m_gire);
 			m_gire = nullptr;
 			
+			auto ui = FindGO<UI>("ui");
+			if (ui)
+			{
+				ui->ShowPickItem(L"歯車を拾った");
+			}
+
 			if (m_gireCount == 4)
 			{
 				m_game->SetGameClearFlag(true);

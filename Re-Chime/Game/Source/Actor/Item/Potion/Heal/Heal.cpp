@@ -59,11 +59,7 @@ void Heal::Delete()
 {
 	if (m_player->GetHealPotionCount() > m_oldPotionCount)
 	{
-		m_audioManager->PlaySE(
-			enSound_GetItemSE,
-			1.0f,
-			enSEPlay_AllowOverlap
-		);
+		m_audioManager->PlaySE(enSound_GetItemSE,1.0f,enSEPlay_AllowOverlap);
 
 		DeleteGO(this);
 	}

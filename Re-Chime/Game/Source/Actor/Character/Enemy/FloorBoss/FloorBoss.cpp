@@ -435,7 +435,7 @@ void FloorBoss::FloorBossState()
 	else if (dist <= 500.0f &&
          m_timeCount <= 0.0f &&
          m_floorBossState != enFloorBossState_Attack)
-{
+    {
     m_floorBossState = enFloorBossState_Attack;
 
     m_attackStateTimer = 0.8f;
@@ -443,7 +443,7 @@ void FloorBoss::FloorBossState()
 
     m_timeCount = m_attackIntervalTime;
 	MakeNoticeCircleEffect();
-}
+    }
 	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		m_floorBossState = enFloorBossState_Walk;
