@@ -60,11 +60,7 @@ void AttackSpeedBuff::Delete()
 {
 	if (m_player->GetAttackSpeedPotionCount() > m_oldPotionCount)
 	{
-		m_audioManager->PlaySE(
-			enSound_GetItemSE,
-			1.0f,
-			enSEPlay_AllowOverlap
-		);
+		m_audioManager->PlaySE(enSound_GetItemSE,1.0f,enSEPlay_AllowOverlap);
 
 		DeleteGO(this);
 	}

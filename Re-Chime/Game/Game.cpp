@@ -56,7 +56,7 @@ bool Game::Start()
 	m_maxLoadCount = 8;
 	srand((unsigned)time(NULL));
 
-	m_gearArrow.Init("Assets/UIData/gearArrow.DDs", 128, 128);
+	m_gearArrow.Init("Assets/UIData/gearmarker.DDs", 128, 128);
 
 	return true;
 }
@@ -157,54 +157,54 @@ void Game::Update()
 
 						m_stage->SetPosition(objData.position);
 					}
-					else if (objData.EqualObjectName(L"smallRobot") == true)
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_SmallRobot;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
-					else if (objData.EqualObjectName(L"mediumRobot"))
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_MediumRobot;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
-					else if (objData.EqualObjectName(L"FloorBoss") == true)
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_FloorBoss;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
-					else if (objData.EqualObjectName(L"finalBoss") == true)
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_FinalBoss;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
-					else if (objData.EqualObjectName(L"barrier") == true)
-					{
-						SpawnData spawnData;
-						spawnData.spawnType = enSpawnType::enSpawnType_Barrier;
-						spawnData.pos = objData.position;
-						spawnData.scale = objData.scale;
-						spawnData.rot = objData.rotation;
-						spawnData.floorNum = GetFloorFromY(objData.position.y);
-						m_spawnList.push_back(spawnData);
-					}
+					//else if (objData.EqualObjectName(L"smallRobot") == true)
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_SmallRobot;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
+					//else if (objData.EqualObjectName(L"mediumRobot"))
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_MediumRobot;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
+					//else if (objData.EqualObjectName(L"FloorBoss") == true)
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_FloorBoss;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
+					//else if (objData.EqualObjectName(L"finalBoss") == true)
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_FinalBoss;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
+					//else if (objData.EqualObjectName(L"barrier") == true)
+					//{
+					//	SpawnData spawnData;
+					//	spawnData.spawnType = enSpawnType::enSpawnType_Barrier;
+					//	spawnData.pos = objData.position;
+					//	spawnData.scale = objData.scale;
+					//	spawnData.rot = objData.rotation;
+					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
+					//	m_spawnList.push_back(spawnData);
+					//}
 					return true;
-				});
+			});
 
 			SpawnCurrentFloorEnemy();
 
@@ -863,19 +863,53 @@ void Game::DrawGearArrow(RenderContext& rc)
 		return;
 	}
 
-	Vector3 playerPos = m_player->GetPosition();
 	Vector3 gearPos = m_gire->GetPosition();
+	gearPos.y += 250.0f;	// 歯車の少し上
 
-	// 距離
-	float distance = (gearPos - playerPos).Length();
+	Vector2 screenPos;
+	g_camera3D->CalcScreenPositionFromWorldPosition(screenPos,gearPos);
 
-	// 近すぎたら非表示
-	if (distance < 300.0f)
+	//--------------------------------------------------
+	// カメラ前方判定
+	//--------------------------------------------------
+	Vector3 camPos = g_camera3D->GetPosition();
+	Vector3 camForward = g_camera3D->GetForward();
+
+	Vector3 toGear = gearPos - camPos;
+
+	bool isFront = toGear.Dot(camForward) > 0.0f;
+
+	//--------------------------------------------------
+	// 画面内判定
+	//--------------------------------------------------
+	float halfW = 1920.0f * 0.5f;
+	float halfH = 1080.0f * 0.5f;
+
+	bool isOnScreen =isFront &&screenPos.x > -halfW &&screenPos.x < halfW &&screenPos.y > -halfH &&screenPos.y < halfH;
+
+	//--------------------------------------------------
+	// 画面内
+	//--------------------------------------------------
+	if (isOnScreen)
 	{
+		float wave = sinf(m_navTimer * 5.0f) * 15.0f;
+
+		m_gearArrow.SetPosition(Vector3(screenPos.x,screenPos.y + 50.0f + wave,0.0f));
+
+		m_gearArrow.SetScale(Vector3(1.0f, 1.0f, 1.0f));
+
+		m_gearArrow.Update();
+		m_gearArrow.Draw(rc);
+
 		return;
 	}
 
-	// プレイヤー→歯車方向
+	//--------------------------------------------------
+	// 画面外
+	//--------------------------------------------------
+
+	Vector3 playerPos = m_player->GetPosition();
+
 	Vector3 dir = gearPos - playerPos;
 	dir.y = 0.0f;
 
@@ -886,83 +920,29 @@ void Game::DrawGearArrow(RenderContext& rc)
 
 	dir.Normalize();
 
-	// カメラ基準
-	Vector3 camForward = g_camera3D->GetForward();
-	camForward.y = 0.0f;
-	camForward.Normalize();
+	Vector3 forward = g_camera3D->GetForward();
+	forward.y = 0.0f;
+	forward.Normalize();
 
-	Vector3 camRight;
-	camRight.Cross(Vector3::AxisY, camForward);
-	camRight.Normalize();
+	Vector3 right;
+	right.Cross(Vector3::AxisY, forward);
+	right.Normalize();
 
-	float screenX = dir.Dot(camRight);
-	float screenY = dir.Dot(camForward);
+	float x = dir.Dot(right);
+	float y = dir.Dot(forward);
 
-	// 目標角度
-	float targetAngle = atan2f(screenX, screenY);
+	float angle = atan2f(x, y);
 
-	// -----------------------------
-	// 角度補間
-	// -----------------------------
-	float diff = targetAngle - m_navAngle;
+	float radius = 400.0f;
 
-	while (diff > Math::PI)
-	{
-		diff -= Math::PI * 2.0f;
-	}
+	Vector3 pos;
+	pos.x = sinf(angle) * radius;
+	pos.y = cosf(angle) * radius;
+	pos.z = 0.0f;
 
-	while (diff < -Math::PI)
-	{
-		diff += Math::PI * 2.0f;
-	}
+	m_gearArrow.SetPosition(pos);
 
-	m_navAngle += diff * 0.15f;
-
-	// -----------------------------
-	// 距離で半径変化
-	// -----------------------------
-	float radius = 250.0f + min(distance * 0.05f, 250.0f);
-
-	// -----------------------------
-	// フワフワ
-	// -----------------------------
-	float wave = sinf(m_navTimer * 5.0f) * 10.0f;
-
-	Vector3 targetPos;
-	targetPos.x = sinf(m_navAngle) * radius;
-	targetPos.y = cosf(m_navAngle) * radius + wave;
-	targetPos.z = 0.0f;
-
-	// -----------------------------
-	// 補間移動
-	// -----------------------------
-	m_navPos += (targetPos - m_navPos) * 0.1f;
-
-	// -----------------------------
-	// 距離でサイズ変化
-	// -----------------------------
-	float scale = distance / 3000.0f;
-
-	if (scale < 0.8f)
-	{
-		scale = 0.8f;
-	}
-
-	if (scale > 2.0f)
-	{
-		scale = 2.0f;
-	}
-
-	m_gearArrow.SetScale(Vector3(scale, scale, scale));
-
-	// -----------------------------
-	// 回転
-	// -----------------------------
-	Quaternion rot;
-	rot.SetRotationZ(m_navAngle - Math::DegToRad(90.0f));
-
-	m_gearArrow.SetRotation(rot);
-	m_gearArrow.SetPosition(m_navPos);
+	m_gearArrow.SetScale(Vector3(1.2f, 1.2f, 1.2f));
 
 	m_gearArrow.Update();
 	m_gearArrow.Draw(rc);

@@ -59,11 +59,7 @@ void PowerBuff::Delete()
 {
 	if (m_player->GetPowerPotionCount() > m_oldPotionCount)
 	{
-		m_audioManager->PlaySE(
-			enSound_GetItemSE,
-			1.0f,
-			enSEPlay_AllowOverlap
-		);
+		m_audioManager->PlaySE(enSound_GetItemSE, 1.0f, enSEPlay_AllowOverlap);
 
 		DeleteGO(this);
 	}

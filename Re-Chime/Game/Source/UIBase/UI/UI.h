@@ -26,6 +26,7 @@ class UI :public UIBase
     }
 
     void ShowGoal(const wchar_t* text);
+    void ShowPickItem(const wchar_t* text);
 private:
     Player* m_player = nullptr;
     Game* m_game = nullptr;
@@ -45,6 +46,9 @@ private:
     SpriteRender m_RButton;
     SpriteRender m_StaminaBar;
     SpriteRender m_Stamina;
+    SpriteRender m_Attack;
+    SpriteRender m_Tackle;
+    SpriteRender m_Jump;
     Quaternion m_inventoryRotation;
     FontRender m_CoolTimeText;
     FontRender m_pickUpText;
@@ -56,6 +60,7 @@ private:
     FontRender m_Cursor;
     FontRender m_GuardCoolTimeText;
     FontRender m_TackleCoolTimeText;
+    FontRender m_pickItemText;
     Vector3 m_cursorPos;
     float m_goalShowTimer = 5.0f;
     float m_goalAlpha = 1.0f;
@@ -63,6 +68,8 @@ private:
     float m_goalFade = 1.0f;
     float m_goalTimer = 0.0f;
     float m_inventoryUseCoolTime = 0.0f;
+    float m_pickItemTimer = 0.0f;
+    float m_pickItemFade = 1.0f;
     bool m_isBlinkOn = true;
     bool m_isShowCoolTime = false;
     bool m_isVisible = true;
@@ -70,7 +77,9 @@ private:
     bool m_isShowGoal = false;
     bool m_isUseItem = false;
     bool m_startItemCoolTime = false;
+    bool m_isShowPickItem = false;
     int m_selectItem = 0;
     std::wstring m_goalMessage;
+    std::wstring m_pickItemMessage;
 };
 

@@ -51,7 +51,6 @@ public:
 	void PauseRender();
 	void CreateGire();
 	void DeleteBarriers();
-	void FourthFloor();
 	bool IsFade() const;
 
 	float GetLoadProgress() const
