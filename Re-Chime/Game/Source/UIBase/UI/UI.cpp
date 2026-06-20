@@ -108,7 +108,7 @@ UI::UI()
 	m_goalText.SetPosition(Vector3(-200.0f, 500.0f, 0.0f));
 
 	m_pickItemText.SetScale(0.1f);
-	m_pickItemText.SetPosition(Vector3(0.0f, 250.0f, 0.0f));
+	m_pickItemText.SetPosition(Vector3(-1000.0f, 250.0f, 0.0f));
 	m_pickItemText.SetColor(1.0f, 0.9f, 0.3f, 1.0f);
 
 	Quaternion staminaRot;
@@ -146,9 +146,16 @@ UI::UI()
 	m_Jump.SetScale(Vector3(1.2f, 1.2f, 1.0f));
 	m_Jump.Update();
 
-	m_player = FindGO<Player>("player");
+	m_description.Init("Assets/UIData/Description.DDs", 75.0f, 75.0f);
+	m_description.SetPosition(Vector3(0.0f, -180.0f, 0.0f));
+	m_description.SetScale(Vector3(15.0f, 3.0f, 0.0f));
+	m_description.Update();
+
+	m_ItemDescriptionText.SetPosition(Vector3(-500.0f, -100.0f, 0.0f));
+	m_ItemDescriptionText.SetScale(2.0f);
+	m_ItemDescriptionText.SetColor(g_vec4White);
+
 	m_audioManager = FindGO<AudioManager>("audioManager");
-	m_cursorPos = Vector3(0, 0, 0);
 }
 
 UI::~UI()
@@ -176,11 +183,14 @@ void UI::Update()
 
 		if (m_audioManager)
 		{
-			m_audioManager->PlaySE(enSound_OpenSE);
-		}
-		else
-		{
-			m_audioManager->PlaySE(enSound_CloseSE);
+			if (m_isInventoryOpen)
+			{
+				m_audioManager->PlaySE(enSound_OpenSE);
+			}
+			else
+			{
+				m_audioManager->PlaySE(enSound_CloseSE);
+			}
 		}
 
 		m_game->SetGameStop(m_isInventoryOpen);
@@ -401,7 +411,7 @@ void UI::Update()
 
 	float guardCoolTime =m_player->GetGuardTimeLimit();
 
-	bool isShowGuardCoolTime =(guardCoolTime > 0.0f);
+	//bool isShowGuardCoolTime =(guardCoolTime > 0.0f);
 
 	if (guardCoolTime < m_player->GetGuardTimeLimitMax())
 	{
@@ -616,6 +626,30 @@ void UI::Inventory()
 	m_PS1CountText.SetText(text);
 	m_PS1CountText.SetPosition(Vector3(-820.0f, -125.0f, 0.0f));
 	m_PS1CountText.SetScale(1.0f);
+
+	const wchar_t* description = L"";
+
+	switch (m_selectItem)
+	{
+	case 0:
+		description = L"回復薬\n"
+			          L"HPを回復";
+		m_ItemDescriptionText.SetColor(g_vec4Green);
+		break;
+
+	case 1:
+		description = L"攻撃薬\n"
+			          L"一定時間攻撃力UP";
+		m_ItemDescriptionText.SetColor(g_vec4Red);
+		break;
+
+	case 2:
+		description = L"速度薬\n"
+			          L"一定時間攻撃感覚短縮";
+		m_ItemDescriptionText.SetColor(g_vec4Yellow);
+		break;
+	}
+	m_ItemDescriptionText.SetText(description);
 }
 
 void UI::ShowGoal(const wchar_t* text)
@@ -636,7 +670,6 @@ void UI::ShowPickItem(const wchar_t* text)
 	m_isShowPickItem = true;
 
 	m_pickItemText.SetScale(1.0f);
-	m_pickItemText.SetPosition(Vector3(0.0f, 250.0f, 0.0f));
 }
 
 void UI::Render(RenderContext& rc)
@@ -734,6 +767,8 @@ void UI::Render(RenderContext& rc)
 		m_PS3CountText.Draw(rc);
 		m_selectFrame.Draw(rc);
 		m_ItemCoolTimeText.Draw(rc);
+		m_ItemDescriptionText.Draw(rc);
+		m_description.Draw(rc);
 	}
 
 	if (m_isShowGoal)

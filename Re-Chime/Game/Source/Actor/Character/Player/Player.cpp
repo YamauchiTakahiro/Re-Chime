@@ -686,7 +686,7 @@ void Player::Hit()
 				auto ui = FindGO<UI>("ui");
 				if (ui)
 				{
-					ui->ShowPickItem(L"クールタイム短縮ポーションを拾った");
+					ui->ShowPickItem(L"攻撃短縮ポーションを拾った");
 				}
 
 				DeleteGO(collision);
