@@ -3,7 +3,6 @@
 #include "CoolRing.h"
 class Player;
 class Game;
-class DifficultyLevel;
 class AudioManager;
 class CoolRing;
 class UI :public UIBase
@@ -49,6 +48,7 @@ private:
     SpriteRender m_Attack;
     SpriteRender m_Tackle;
     SpriteRender m_Jump;
+    SpriteRender m_description;
     Quaternion m_inventoryRotation;
     FontRender m_CoolTimeText;
     FontRender m_pickUpText;
@@ -57,13 +57,11 @@ private:
     FontRender m_PS3CountText;
     FontRender m_goalText;
     FontRender m_ItemCoolTimeText;
-    FontRender m_Cursor;
     FontRender m_GuardCoolTimeText;
     FontRender m_TackleCoolTimeText;
     FontRender m_pickItemText;
+    FontRender m_ItemDescriptionText;
     Vector3 m_cursorPos;
-    float m_goalShowTimer = 5.0f;
-    float m_goalAlpha = 1.0f;
     float m_blinkTimer = 0.0f;//点滅タイマー
     float m_goalFade = 1.0f;
     float m_goalTimer = 0.0f;
@@ -76,7 +74,6 @@ private:
     bool m_isInventoryOpen = false;
     bool m_isShowGoal = false;
     bool m_isUseItem = false;
-    bool m_startItemCoolTime = false;
     bool m_isShowPickItem = false;
     int m_selectItem = 0;
     std::wstring m_goalMessage;
