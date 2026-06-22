@@ -34,6 +34,8 @@ bool Player::Start()
 	m_animationClips[enAnimationClip_Guard].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_KnockBack].Load("Assets/animData/Player/playerKnockBack.tka");
 	m_animationClips[enAnimationClip_KnockBack].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Tackle].Load("Assets/animData/Player/playerTackle.tka");
+	m_animationClips[enAnimationClip_Tackle].SetLoopFlag(false);	
 	//モデルを初期化する。
 	m_modelRender.Init("Assets/modelData/Player/player.tkm", m_animationClips, enAnimationClip_Num);
 	m_characterController.Init(100.0f, 300.0f, m_position);
@@ -157,6 +159,11 @@ void Player::Update()
 
 	FootStep();
 
+	if (m_playerState == enPlayerState_Tackle)
+	{
+		TackleMove();
+	}
+
 	m_modelRender.Update();
 }
 
@@ -224,11 +231,11 @@ void Player::UpdateTimer()
 	moveInput.x = g_pad[0]->GetLStickXF();
 	moveInput.z = g_pad[0]->GetLStickYF();
 
-	if (m_playerState == enPlayerState_Run && moveInput.LengthSq() > 0.01f)
+	if (m_isDash && moveInput.LengthSq() > 0.01f)
 	{
 		m_stamina -= 30.0f * dt;
 	}
-	else
+	else if (m_playerState != enPlayerState_Jump)
 	{
 		m_stamina += m_staminaRegenRate * dt;
 	}
@@ -251,18 +258,6 @@ void Player::UpdateTimer()
 
 
 	m_tackleCoolTime -= dt;
-
-	if (m_isTackle)
-	{
-		m_tackleTime -= dt;
-
-		if (m_tackleTime <= 0.0f)
-		{
-			m_tackleTime = 0.0f;
-			m_isTackle = false;
-			m_tackleCoolTime = 3.0f;
-		}
-	}
 
 	if (m_tackleCoolTime < 0.0f)
 	{
@@ -341,6 +336,14 @@ void Player::Move()
 	m_position = m_characterController.Execute(finalMoveSpeed, 2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
+}
+
+void Player::TackleMove()
+{
+	Vector3 dir = Vector3::Front;
+	m_rotation.Apply(dir);
+
+	m_tackleVelocity = dir * 800.0f;
 }
 
 void Player::JumpAndGravity()
@@ -543,8 +546,6 @@ void Player::Tackle()
 			OnCollision(enCollisionType_Tackle);
 
 			m_hasCreatedCollision = true;
-
-			m_tackleCoolTime = 3.0f;
 		}
 	}
 }
@@ -771,6 +772,7 @@ void Player::GetGires()
 
 void Player::PlayerState()
 {
+	m_isDash = false;
 	if (m_isKnockBack)
 	{
 		m_playerState = enPlayerState_KnockBack;
@@ -795,16 +797,8 @@ void Player::PlayerState()
 		m_playerState = enPlayerState_Tackle;
 
 		m_isTackle = true;
-		m_tackleCoolTime = 3.0f;
 
 		m_hasCreatedCollision = false;
-
-		Vector3 dir = Vector3::Front;
-		m_rotation.Apply(dir);
-
-		m_tackleVelocity = dir * 1200.0f;
-
-		m_tackleTime = 0.3f;
 
 		return;
 	}
@@ -838,6 +832,7 @@ void Player::PlayerState()
 	{
 		if (g_pad[0]->IsPress(enButtonRB1) && m_canDash)
 		{
+			m_isDash = true;
 			m_playerState = enPlayerState_Run;
 		}
 		else
@@ -869,10 +864,12 @@ void Player::AttackState()
 }
 void Player::TackleState()
 {
-	if (!m_isTackle || m_isKnockBack)
+	if (m_modelRender.IsPlayingAnimation() == false || m_isKnockBack)
 	{
 		m_hasCreatedCollision = false;
 		m_enemyHitFlag = false;
+		m_isTackle = false;
+		m_tackleCoolTime = 3.0f;
 
 		PlayerState();
 	}
@@ -987,6 +984,9 @@ void Player::PlayAnimation()
 		break;
 	case enPlayerState_KnockBack:
 		ChangeAnimation(enAnimationClip_KnockBack);
+		break;
+	case enPlayerState_Tackle:
+		ChangeAnimation(enAnimationClip_Tackle);
 		break;
 	default:
 		break;

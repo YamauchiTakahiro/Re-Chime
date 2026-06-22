@@ -33,6 +33,7 @@ private:
         enAnimationClip_Attack,
         enAnimationClip_Guard,
         enAnimationClip_KnockBack,
+        enAnimationClip_Tackle,
         enAnimationClip_Num,
     };
 
@@ -49,6 +50,7 @@ public:
     void Update() override;
 	void UpdateTimer();
     void Move() override;
+	void TackleMove();
 	void JumpAndGravity();
     void Rotation() override;
 	void Attack() override;
@@ -224,7 +226,7 @@ private:
     CollisionObject* m_collisionObject = nullptr;
     Vector3 m_forward = Vector3::Zero;
     Vector3 m_knockBack = Vector3::Zero;
-    Vector3 m_tackleVelocity = Vector3::Zero;
+	Vector3 m_tackleVelocity = Vector3::Zero;   //タックルの速度。
 	Gire* m_gire = nullptr;
     Game* m_game = nullptr;
 	AudioManager* m_audioManager = nullptr;
@@ -254,7 +256,6 @@ private:
 	float m_stamina = 0.0f;                 //!<スタミナ。
 	float m_maxStamina = 0.0f;            //!<最大スタミナ。
 	float m_staminaRegenRate = 0.0f;      //!<スタミナの回復率。
-	float m_tackleTime = 0.0f;                 //!<タックルの時間。
 	float m_tackleCoolTime = 0.0f;              //!<タックルのクールタイム。
 	float m_tacklePower = 1200.0f;                 //!<タックルの威力。
     int m_gireCount = 0;						//!<ギアの数。
@@ -277,5 +278,7 @@ private:
     bool m_hasJumped = false;
     bool m_canDash = true;
 	bool m_isTackle = false;
+    bool m_isDash = false;
+	bool m_tackleMove = false;
 };
 
