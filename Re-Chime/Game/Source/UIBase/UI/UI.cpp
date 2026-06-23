@@ -632,9 +632,9 @@ void UI::Inventory()
 	switch (m_selectItem)
 	{
 	case 0:
-		description = L"回復薬\n"
-			          L"HPを回復";
-		m_ItemDescriptionText.SetColor(g_vec4Green);
+		description = L"速度薬\n"
+			L"一定時間攻撃感覚短縮";
+		m_ItemDescriptionText.SetColor(g_vec4Blue);
 		break;
 
 	case 1:
@@ -644,9 +644,9 @@ void UI::Inventory()
 		break;
 
 	case 2:
-		description = L"速度薬\n"
-			          L"一定時間攻撃感覚短縮";
-		m_ItemDescriptionText.SetColor(g_vec4Yellow);
+		description = L"回復薬\n"
+			L"HPを回復";
+		m_ItemDescriptionText.SetColor(g_vec4Green);
 		break;
 	}
 	m_ItemDescriptionText.SetText(description);
