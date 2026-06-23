@@ -84,7 +84,7 @@ bool SmallRobot::Start()
 			m_smallRobotHp = 180;
 			m_smallRobotMaxHp = 180;
 			m_attackPower = 25;
-			m_knockBackPower = 150.0f;
+			m_knockBackPower = 500.0f;
 			break;
 		}
 	}
