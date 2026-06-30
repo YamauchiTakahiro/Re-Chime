@@ -237,8 +237,8 @@ private:
 	int m_attackPower = 0;				//!<攻撃力。
     int m_heal = 20;
     int m_healPotionCount = 1;
-    int m_powerBuffPotionCount = 0;
-    int m_attackSpeedPotionCount = 0;
+    int m_powerBuffPotionCount = 1;
+    int m_attackSpeedPotionCount = 1;
 	float m_attackCoolTime = 0.0f;				//!<攻撃のクールタイム。
     float m_attackCoolTimeMax = 0.0f;
 	float m_damageIntarvalTime = 3.0f;		//!<ダメージを受けてからのクールタイム。

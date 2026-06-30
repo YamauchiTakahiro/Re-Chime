@@ -53,6 +53,7 @@ public:
 	void IdleState();
 	void AttackState();
 	void DeathState();
+	void ShowAlert();
 	Vector3 GetPosition()const override
 	{
 		return m_position;
@@ -107,6 +108,7 @@ private:
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
 	Vector2 m_enemyHPFramePosition = Vector2::Zero;
 	enSmallRobotState m_smallRobotState = enSmallRobotState_Idle;	//!<小型ロボットの状態。
+	SpriteRender m_alertMark;
 	int m_smallRobotHp = 50;		//!<小型ロボットのHP。
 	int m_smallRobotMaxHp = 50;	//!<小型ロボットの最大HP。
 	int m_attackPower = 10;		//!<攻撃力。
@@ -124,5 +126,8 @@ private:
 	bool m_isKnockBack = false;
 	bool m_hasDetectedPlayer = false;
 	float m_moveSpeedValue = 100.0f;
+	bool m_isShowAlert = false;
+	float m_alertTime = 0.0f;
+	float m_alertScale = 0.0f;
 };
 

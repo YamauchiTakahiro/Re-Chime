@@ -99,6 +99,10 @@ private:
     SpriteRender m_enemyHPFrame;
     Vector2 m_enemyHPBarPosition = Vector2::Zero;
     Vector2 m_enemyHPFramePosition = Vector2::Zero;
+    SpriteRender m_alertMark;
+    bool m_isShowAlert = false;
+    float m_alertTime = 0.0f;
+    float m_alertScale = 0.3f;
     bool m_isShowHP = false;
     int m_mediumRobotHp = 0;		//!<中型ロボットのHP。
     int m_mediumRobotMaxHp = 0;	//!<中型ロボットの最大HP。

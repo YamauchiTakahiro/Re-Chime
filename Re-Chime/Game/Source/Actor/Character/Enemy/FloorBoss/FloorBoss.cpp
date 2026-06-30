@@ -42,6 +42,14 @@ bool FloorBoss::Start()
 	m_bossHPBar.SetPivot(Vector2(0.0f, 0.5f));
 	m_bossHPBar.Update();
 
+	m_alertMark.Init("Assets/UIData/AlertMark.DDs", 128, 128);
+	m_alertMark.SetScale(Vector3(0.7f, 0.7f, 1));
+	m_alertMark.Update();
+
+	m_questionMark.Init("Assets/UIData/QuestionMark.DDS", 128, 128);
+	m_questionMark.SetScale(Vector3(0.7f, 0.7f, 1));
+	m_questionMark.Update();
+
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	m_audioManager = FindGO<AudioManager>("audioManager");
@@ -101,6 +109,32 @@ void FloorBoss::Update()
 		return;
 	}
 
+	float dist = (m_player->GetPosition() - m_position).Length();
+
+	bool detected = (dist <= 1500.0f);
+
+	if (detected && !m_hasDetectedPlayer)
+	{
+		m_hasDetectedPlayer = true;
+
+		m_isShowAlert = true;
+		m_alertTime = 1.0f;
+		m_alertScale = 0.0f;
+
+		m_isShowQuestion = false;
+	}
+
+	if (!detected && m_hasDetectedPlayer)
+	{
+		m_hasDetectedPlayer = false;
+
+		m_isShowQuestion = true;
+		m_questionTime = 1.0f;
+		m_questionScale = 0.0f;
+
+		m_isShowAlert = false;
+	}
+
 	Move();
 
 	Rotation();
@@ -125,6 +159,62 @@ void FloorBoss::Update()
 	{
 		DeleteGO(m_collisionObject);
 		m_collisionObject = nullptr;
+	}
+
+	if (m_isShowAlert)
+	{
+		m_alertTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_alertTime <= 0.0f)
+		{
+			m_isShowAlert = false;
+		}
+
+		Vector3 pos = m_position;
+		pos.y += 700.0f;
+
+		Vector2 screenPos;
+		g_camera3D->CalcScreenPositionFromWorldPosition(screenPos, pos);
+
+		m_alertMark.SetPosition(Vector3(screenPos.x, screenPos.y, 0));
+
+		m_alertScale += 5.0f * g_gameTime->GetFrameDeltaTime();
+
+		if (m_alertScale > 0.3f)
+		{
+			m_alertScale = 0.3f;
+		}
+
+		m_alertMark.SetScale(Vector3(m_alertScale, m_alertScale, 1));
+		m_alertMark.Update();
+	}
+
+	if (m_isShowQuestion)
+	{
+		m_questionTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_questionTime <= 0.0f)
+		{
+			m_isShowQuestion = false;
+		}
+
+		Vector3 pos = m_position;
+		pos.y += 700.0f;
+
+		Vector2 screenPos;
+		g_camera3D->CalcScreenPositionFromWorldPosition(screenPos, pos);
+
+		m_questionMark.SetPosition(Vector3(screenPos.x, screenPos.y, 0));
+
+		m_questionScale += 5.0f * g_gameTime->GetFrameDeltaTime();
+
+		if (m_questionScale > 0.3f)
+		{
+			m_questionScale = 0.3f;
+		}
+
+		m_questionMark.SetScale(Vector3(m_questionScale, m_questionScale, 1));
+		m_questionMark.Update();
 	}
 
 	m_modelRender.Update();
@@ -514,5 +604,15 @@ void FloorBoss::Render(RenderContext& rc)
 	{
 		m_bossHPFrame.Draw(rc);
 		m_bossHPBar.Draw(rc);
+	}
+
+	if (m_isShowAlert)
+	{
+		m_alertMark.Draw(rc);
+	}
+
+	if (m_isShowQuestion)
+	{
+		m_questionMark.Draw(rc);
 	}
 }

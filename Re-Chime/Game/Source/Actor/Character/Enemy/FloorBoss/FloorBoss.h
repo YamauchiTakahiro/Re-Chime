@@ -105,6 +105,18 @@ private:
 	SpriteRender m_bossHPFrame;
 	SpriteRender m_bossHPBar;
 	Vector2 m_enemyHPBarPosition = Vector2::Zero;
+	SpriteRender m_alertMark;
+	SpriteRender m_questionMark;
+
+	bool m_hasDetectedPlayer = false;
+
+	bool m_isShowAlert = false;
+	float m_alertTime = 0.0f;
+	float m_alertScale = 0.0f;
+
+	bool m_isShowQuestion = false;
+	float m_questionTime = 0.0f;
+	float m_questionScale = 0.0f;
 	bool m_isShowHP = false;
 	bool m_isAttack = false;
 	int m_floorBossHP = 80;
