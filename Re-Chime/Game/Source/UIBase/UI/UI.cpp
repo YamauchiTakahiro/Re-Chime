@@ -41,13 +41,13 @@ UI::UI()
 	m_game = FindGO<Game>("game");
 
 	m_UP.Init("Assets/UIData/ATKUP.DDs", 50.0f, 50.0f);
-	m_UP.SetPosition(Vector3(675.0f, 450.0f, 0.0f));
-	m_UP.SetScale(Vector3(3.0f, 3.0f, 0.0f));
+	m_UP.SetPosition(Vector3(-145.0f, -325.0f, 0.0f));
+	m_UP.SetScale(Vector3(1.5f, 1.5f, 0.0f));
 	m_UP.Update();
 
 	m_AttackSpeed.Init("Assets/UIData/ATKSPDUP.DDs", 50.0f, 50.0f);
-	m_AttackSpeed.SetPosition(Vector3(825.0f, 450.0f, 0.0f));
-	m_AttackSpeed.SetScale(Vector3(3.0f, 3.0f, 0.0f));
+	m_AttackSpeed.SetPosition(Vector3(-75.0f, -325.0f, 0.0f));
+	m_AttackSpeed.SetScale(Vector3(1.5f, 1.5f, 0.0f));
 	m_AttackSpeed.Update();
 
 	m_inventory.Init("Assets/UIData/Inventory.DDs", 128.0f, 45.0f);

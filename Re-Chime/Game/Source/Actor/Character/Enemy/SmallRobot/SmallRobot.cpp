@@ -11,7 +11,6 @@
 #include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
-#include "Source/Manager/AudioManager/AudioManager.h"
 
 SmallRobot::SmallRobot()
 {
@@ -36,6 +35,10 @@ bool SmallRobot::Start()
 	m_enemyHPFrame.SetScale(Vector3(0.29f, 0.29f, 0.0f));
 	m_enemyHPFrame.SetPivot(Vector2(0.02f, 0.4f));
 	m_enemyHPFrame.Update();
+
+	m_alertMark.Init("Assets/UIData/AlertMark.DDs", 128.0f, 128.0f);
+	m_alertMark.SetScale(Vector3(0.7f, 0.7f, 1.0f));
+	m_alertMark.Update();
 
 	m_characterController.Init(200.0f, 100.0f, m_position);
 
@@ -141,8 +144,41 @@ void SmallRobot::Update()
 
 	EnemyHP();
 
-	ManageState();
+	if (m_isShowAlert)
+	{
+		m_alertTime -= g_gameTime->GetFrameDeltaTime();
 
+		if (m_alertTime <= 0.0f)
+		{
+			m_isShowAlert = false;
+		}
+	}
+
+	if (m_isShowAlert)
+	{
+		Vector3 alertPos = m_position;
+		alertPos.y += 600.0f;
+
+		Vector2 screenPos;
+		g_camera3D->CalcScreenPositionFromWorldPosition(screenPos,alertPos);
+
+		m_alertMark.SetPosition(Vector3(screenPos.x, screenPos.y, 0.0f));
+
+		float dt = g_gameTime->GetFrameDeltaTime();
+
+		m_alertScale += 5.0f * dt;
+
+		if (m_alertScale > 0.3f)
+		{
+			m_alertScale = 0.3f;
+		}
+
+		m_alertMark.SetScale(Vector3(m_alertScale, m_alertScale, 1.0f));
+
+		m_alertMark.Update();
+	}
+
+	ManageState();
 
 	//PlayAnimation();
 	m_modelRender.Update();
@@ -270,6 +306,9 @@ void SmallRobot::SearchPlayer()
 		if (fabsf(angle) <= Math::PI * 0.15f)
 		{
 			m_searchPlayer = true;
+			m_isShowAlert = true;
+			m_alertTime = 1.0f;
+			m_alertScale = 0.0f;
 			m_hasDetectedPlayer = true;
 		}
 	}
@@ -369,6 +408,11 @@ void SmallRobot::ReceiveAttack(bool isTackle)
 	if (m_smallRobotHp < 0)
 	{
 		m_smallRobotHp = 0;
+	}
+
+	if (!m_hasDetectedPlayer)
+	{
+		ShowAlert();
 	}
 
 	m_hasDetectedPlayer = true;
@@ -659,6 +703,13 @@ void SmallRobot::ManageState()
 //	}
 //}
 
+void SmallRobot::ShowAlert()
+{
+	m_isShowAlert = true;
+	m_alertTime = 1.0f;
+	m_alertScale = 0.3f;
+}
+
 void SmallRobot::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
@@ -667,5 +718,10 @@ void SmallRobot::Render(RenderContext& rc)
 	{
 		m_enemyHPFrame.Draw(rc);
 		m_enemyHP.Draw(rc);
+	}
+
+	if (m_isShowAlert)
+	{
+		m_alertMark.Draw(rc);
 	}
 }

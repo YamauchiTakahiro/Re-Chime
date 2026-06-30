@@ -43,6 +43,14 @@ bool FinalBoss::Start()
 	m_bossHPBar.SetPivot(Vector2(0.0f, 0.5f));
 	m_bossHPBar.Update();
 
+	m_alertMark.Init("Assets/UIData/AlertMark.DDs", 128.0f, 128.0f);
+	m_alertMark.SetScale(Vector3(0.7f, 0.7f, 1.0f));
+	m_alertMark.Update();
+
+	m_questionMark.Init("Assets/UIData/QuestionMark.DDS", 128.0f, 128.0f);
+	m_questionMark.SetScale(Vector3(0.7f, 0.7f, 1.0f));
+	m_questionMark.Update();
+
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	m_audioManager = FindGO<AudioManager>("audioManager");
@@ -61,7 +69,7 @@ bool FinalBoss::Start()
 			m_attackPower = 10;
 			m_shotCoolTimeReset = 3.0f;
 			m_moveSpeedValue = 700.0f;
-			m_searchRange = 2500.0f;
+			m_searchRange = 3000.0f;
 			m_bulletSpeed = 1200.0f;
 			break;
 
@@ -71,7 +79,7 @@ bool FinalBoss::Start()
 			m_attackPower = 20;
 			m_shotCoolTimeReset = 2.0f;
 			m_moveSpeedValue = 850.0f;
-			m_searchRange = 3000.0f;
+			m_searchRange = 3500.0f;
 			m_bulletSpeed = 1400.0f;
 			break;
 
@@ -81,7 +89,7 @@ bool FinalBoss::Start()
 			m_attackPower = 35;
 			m_shotCoolTimeReset = 1.5f;
 			m_moveSpeedValue = 1000.0f;
-			m_searchRange = 3500.0f;
+			m_searchRange = 4000.0f;
 			m_bulletSpeed = 1600.0f;
 			break;
 
@@ -91,13 +99,14 @@ bool FinalBoss::Start()
 			m_attackPower = 50;
 			m_shotCoolTimeReset = 1.0f;
 			m_moveSpeedValue = 1600.0f;
-			m_searchRange = 4000.0f;
+			m_searchRange = 4500.0f;
 			m_bulletSpeed = 2000.0f;
 			break;
 		}
 	}
 
 	m_finalBossState = enFinalBossState_Idle;
+	m_startPosition = m_position;
 	return true;
 }
 
@@ -115,10 +124,23 @@ void FinalBoss::Update()
 	bool IntroFlag = m_game->GetIntro();
 	bool bossIntroFlag = m_game->GetBossIntro();
 
-	if (!isFade &&
-		!IntroFlag &&
-		!bossIntroFlag)
+	if (m_isLostWaiting)
 	{
+		m_lostWaitTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_lostWaitTime <= 0.0f)
+		{
+			m_lostWaitTime = 0.0f;
+			m_isLostWaiting = false;
+		}
+	}
+
+	if (!isFade && !IntroFlag && !bossIntroFlag)
+	{
+		FinalBossState();
+
+		ManageState();
+
 		Move();
 
 		Rotation();
@@ -126,8 +148,6 @@ void FinalBoss::Update()
 		Shot();
 
 		PlayAnimation();
-
-		ManageState();
 	}
 
 	if(m_collisionObject != nullptr)
@@ -171,36 +191,116 @@ void FinalBoss::Update()
 
 	FinalBossHP();
 
+	if (m_isShowAlert)
+	{
+		m_alertTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_alertTime <= 0.0f)
+		{
+			m_isShowAlert = false;
+		}
+	}
+
+	if (m_isShowAlert)
+	{
+		Vector3 alertPos = m_position;
+		alertPos.y += 700.0f;
+
+		Vector2 screenPos;
+		g_camera3D->CalcScreenPositionFromWorldPosition(screenPos, alertPos);
+		m_alertMark.SetPosition(Vector3(screenPos.x, screenPos.y, 0.0f));
+		float dt = g_gameTime->GetFrameDeltaTime();
+		m_alertScale += 5.0f * dt;
+		if (m_alertScale > 0.3f)
+		{
+			m_alertScale = 0.3f;
+		}
+		m_alertMark.SetScale(Vector3(m_alertScale, m_alertScale, 1.0f));
+		m_alertMark.Update();
+	}
+
+	if (m_isShowQuestion)
+	{
+		m_questionTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_questionTime <= 0.0f)
+		{
+			m_isShowQuestion = false;
+		}
+	}
+
+	if (m_isShowQuestion)
+	{
+		Vector3 pos = m_position;
+		pos.y += 700.0f;
+
+		Vector2 screenPos;
+		g_camera3D->CalcScreenPositionFromWorldPosition(screenPos, pos);
+
+		m_questionMark.SetPosition(Vector3(screenPos.x, screenPos.y, 0.0f));
+
+		float dt = g_gameTime->GetFrameDeltaTime();
+
+		m_questionScale += 5.0f * dt;
+
+		if (m_questionScale > 0.3f)
+		{
+			m_questionScale = 0.3f;
+		}
+
+		m_questionMark.SetScale(Vector3(m_questionScale, m_questionScale, 1.0f));
+		m_questionMark.Update();
+	}
+
 	float dist = (m_player->GetPosition() - m_position).Length();
 
-	if (dist <= 1500.0f)
-	{
-		m_isShowBossHP = true;
-	}
-	else
-	{
-		m_isShowBossHP = false;
-	}
+	m_isShowBossHP = !isFade && !IntroFlag && !bossIntroFlag && dist <= 4000.0f;
 
 	m_modelRender.Update();
 }
 
 void FinalBoss::Move()
 {
-	if (m_finalBossState != enFinalBossState_Chase)
+	if (m_isLostWaiting)
 	{
 		m_moveSpeed = Vector3::Zero;
 		return;
 	}
 
-	Vector3 diff = m_player->GetPosition() - m_position;
+	float dist = (m_player->GetPosition() - m_position).Length();
+
+	if (dist <= 2000.0f)
+	{
+		m_moveSpeed = Vector3::Zero;
+		return;
+	}
+
+	Vector3 targetPos;
+
+	// プレイヤーを発見中
+	if (m_hasDetectedPlayer)
+	{
+		targetPos = m_player->GetPosition();
+	}
+	// 見失ったら元の位置へ戻る
+	else
+	{
+		targetPos = m_startPosition;
+	}
+
+	Vector3 diff = targetPos - m_position;
 	diff.y = 0.0f;
 
-	if (diff.LengthSq() > 0.0001f)
+	if (diff.LengthSq() > 50.0f * 50.0f)
 	{
 		diff.Normalize();
+
 		m_moveSpeed.x = diff.x * m_moveSpeedValue;
 		m_moveSpeed.z = diff.z * m_moveSpeedValue;
+	}
+	else
+	{
+		m_moveSpeed = Vector3::Zero;
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
@@ -210,51 +310,79 @@ void FinalBoss::Move()
 
 void FinalBoss::Rotation()
 {
+	// 探索モーション中
+	if (m_isSearching)
+	{
+		m_searchTimer += g_gameTime->GetFrameDeltaTime();
+
+		// 左右を見る
+		m_searchMotionTimer += g_gameTime->GetFrameDeltaTime();
+
+		float angle = sinf(m_searchMotionTimer * 2.0f) * 40.0f;
+
+		Quaternion rot;
+		rot.SetRotationDegY(m_rotationY + angle);
+		m_modelRender.SetRotation(rot);
+
+		if (m_searchTimer > 3.0f)
+		{
+			m_isSearching = false;
+		}
+
+		return;
+	}
+
+	if (m_isSearching)
+	{
+		return;
+	}
+
+	if (!m_hasDetectedPlayer)
+	{
+		return;
+	}
+
+	// プレイヤーを向く
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	toPlayer.y = 0.0f;
-	toPlayer.Normalize();
 
-	m_forward = toPlayer;
+	if (toPlayer.LengthSq() > 0.0f)
+	{
+		toPlayer.Normalize();
 
-	m_rotation.SetRotationYFromDirectionXZ(m_forward);
-	m_modelRender.SetRotation(m_rotation);
+		m_forward = toPlayer;
+
+		m_rotation.SetRotationYFromDirectionXZ(m_forward);
+		m_modelRender.SetRotation(m_rotation);
+
+		m_rotationY = atan2f(m_forward.x, m_forward.z) * 180.0f / Math::PI;
+	}
 }
 
 void FinalBoss::Shot()
 {
+	// プレイヤーを見つけていなければ撃たない
+	if (!m_hasDetectedPlayer)
+	{
+		return;
+	}
+
+	// クールタイム中
 	if (m_shotCoolTime > 0.0f)
 	{
 		return;
 	}
 
-	if (m_finalBossState != enFinalBossState_Shot)
-	{
-		return;
-	}
-
-	// 一回だけ発射
-	if (m_isShot)
-	{
-		return;
-	}
-
-	m_isShot = true;
-
 	PhaseChange();
 
-	// 弾生成
-	int randomNum = rand() % 2 + 1;
-	AudioID id;
-	switch (randomNum)
-	{
-	case 1: id = enSound_BossShotSE_01;
-		break;
-	case 2: id = enSound_BossShotSE_02;
-		break;
-	}
+	int randomNum = rand() % 2;
+	AudioID id = (randomNum == 0)
+		? enSound_BossShotSE_01
+		: enSound_BossShotSE_02;
 
-	m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
+	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
+
 	m_shotCoolTime = m_shotCoolTimeReset;
 }
 
@@ -288,21 +416,28 @@ void FinalBoss::PhaseChange()
 	{
 		if (!m_firstPhaseChange)
 		{
+			// HP100～50%
 			CreateBullet(0.0f);
 		}
 		else if (!m_secondPhaseChange)
 		{
+			// HP50～25%
 			CreateBullet(-15.0f);
+			CreateBullet(0.0f);
 			CreateBullet(15.0f);
 		}
 		else
 		{
+			// HP25%以下
 			CreateBullet(-30.0f);
+			CreateBullet(-15.0f);
 			CreateBullet(0.0f);
+			CreateBullet(15.0f);
 			CreateBullet(30.0f);
 		}
 		break;
 	}
+
 	case NORMAL:
 	{
 		if (!m_firstPhaseChange)
@@ -311,61 +446,84 @@ void FinalBoss::PhaseChange()
 		}
 		else if (!m_secondPhaseChange)
 		{
-			CreateBullet(-15.0f);
-			CreateBullet(15.0f);
-		}
-		else
-		{
 			CreateBullet(-20.0f);
 			CreateBullet(0.0f);
-			CreateBullet(20.0f);
-		}
-		break;
-	}
-	case HARD:
-	{
-		if (!m_firstPhaseChange)
-		{
-			CreateBullet(0.0f);
-		}
-		else if (!m_secondPhaseChange)
-		{
-			CreateBullet(-20.0f);
 			CreateBullet(20.0f);
 		}
 		else
 		{
 			CreateBullet(-40.0f);
 			CreateBullet(-20.0f);
+			CreateBullet(0.0f);
 			CreateBullet(20.0f);
 			CreateBullet(40.0f);
 		}
 		break;
 	}
-	case LUNATIC:
+
+	case HARD:
 	{
 		if (!m_firstPhaseChange)
 		{
+			CreateBullet(-15.0f);
 			CreateBullet(0.0f);
+			CreateBullet(15.0f);
 		}
 		else if (!m_secondPhaseChange)
 		{
-			CreateBullet(-25.0f);
+			CreateBullet(-30.0f);
+			CreateBullet(-15.0f);
 			CreateBullet(0.0f);
-			CreateBullet(25.0f);
+			CreateBullet(15.0f);
+			CreateBullet(30.0f);
 		}
 		else
 		{
 			CreateBullet(-45.0f);
+			CreateBullet(-30.0f);
 			CreateBullet(-15.0f);
 			CreateBullet(0.0f);
 			CreateBullet(15.0f);
+			CreateBullet(30.0f);
 			CreateBullet(45.0f);
 		}
 		break;
 	}
-	default:
+
+	case LUNATIC:
+	{
+		if (!m_firstPhaseChange)
+		{
+			CreateBullet(-30.0f);
+			CreateBullet(-15.0f);
+			CreateBullet(0.0f);
+			CreateBullet(15.0f);
+			CreateBullet(30.0f);
+		}
+		else if (!m_secondPhaseChange)
+		{
+			CreateBullet(-45.0f);
+			CreateBullet(-30.0f);
+			CreateBullet(-15.0f);
+			CreateBullet(0.0f);
+			CreateBullet(15.0f);
+			CreateBullet(30.0f);
+			CreateBullet(45.0f);
+		}
+		else
+		{
+			CreateBullet(-60.0f);
+			CreateBullet(-45.0f);
+			CreateBullet(-30.0f);
+			CreateBullet(-15.0f);
+			CreateBullet(0.0f);
+			CreateBullet(15.0f);
+			CreateBullet(30.0f);
+			CreateBullet(45.0f);
+			CreateBullet(60.0f);
+		}
 		break;
+	}
 	}
 }
 
@@ -543,6 +701,11 @@ void FinalBoss::PlayAnimation()
 
 void FinalBoss::FinalBossState()
 {
+	if (m_finalBossState == enFinalBossState_Shot)
+	{
+		return;
+	}
+
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
 
@@ -554,8 +717,27 @@ void FinalBoss::FinalBossState()
 		return;
 	}
 
-	if (SearchPlayer())
+	bool detected = SearchPlayer();
+
+	if (detected)
 	{
+		m_lastPlayerPos = m_player->GetPosition();
+
+		m_isSearching = false;
+		m_searchTimer = 0.0f;
+		// 初めて気付いた瞬間だけ
+		if (!m_hasDetectedPlayer)
+		{
+			m_hasDetectedPlayer = true;
+
+			m_isShowAlert = true;
+			m_alertTime = 1.0f;
+			m_alertScale = 0.0f;
+
+			m_isShowQuestion = false;
+			m_searchMotionTimer = 0.0f;
+		}
+
 		float dist = (m_player->GetPosition() - m_position).Length();
 
 		if (dist <= 2000.0f)
@@ -576,42 +758,77 @@ void FinalBoss::FinalBossState()
 	}
 	else
 	{
-		m_finalBossState = enFinalBossState_Idle;
+		if (m_hasDetectedPlayer)
+		{
+			m_hasDetectedPlayer = false;
+
+			m_isSearching = true;
+			m_searchTimer = 0.0f;
+			m_isShowQuestion = true;
+			m_questionTime = 1.0f;
+			m_questionScale = 0.0f;
+			m_isLostWaiting = true;
+			m_lostWaitTime = 2.0f;
+
+			m_isShowAlert = false;
+			m_searchMotionTimer = 0.0f;
+
+			m_rotationY = atan2f(m_forward.x, m_forward.z) * 180.0f / Math::PI;
+		}
+
+		if ((m_startPosition - m_position).Length() > 100.0f)
+		{
+			m_finalBossState = enFinalBossState_Chase;
+		}
+		else
+		{
+			m_finalBossState = enFinalBossState_Idle;
+		}
 	}
 }
 
 void FinalBoss::IdleState()
 {
 	m_moveSpeed = Vector3::Zero;
-
-	m_idleTimer += g_gameTime->GetFrameDeltaTime();
-
-	if (m_idleTimer >= 0.9f)
-	{
-		FinalBossState();
-	}
 }
 
 void FinalBoss::WalkState()
 {
-	float dist = (m_player->GetPosition() - m_position).Length();
+	//float dist = (m_player->GetPosition() - m_position).Length();
 
-	if (dist <= 2000.0f)
-	{
-		FinalBossState();
-		return;
-	}
+	//if (dist <= 2000.0f)
+	//{
+	//	m_moveSpeed = Vector3::Zero;
+
+	//	// クールタイムが終わっていれば撃つ
+	//	if (m_shotCoolTime <= 0.0f)
+	//	{
+	//		m_finalBossState = enFinalBossState_Shot;
+	//	}
+	//	return;
+	//}
 }
 
 void FinalBoss::ShotState()
 {
-	// 攻撃アニメ終了
-	if (!m_modelRender.IsPlayingAnimation())
+	// アニメーション中は何もしない
+	if (m_modelRender.IsPlayingAnimation())
 	{
-		m_isShot = false;
+		return;
+	}
 
-		// 一旦Idleへ戻す
+	// アニメ終了
+	m_isShot = false;
+
+	float dist = (m_player->GetPosition() - m_position).Length();
+
+	if (dist <= 2000.0f)
+	{
 		m_finalBossState = enFinalBossState_Idle;
+	}
+	else
+	{
+		m_finalBossState = enFinalBossState_Chase;
 	}
 }
 
@@ -674,5 +891,15 @@ void FinalBoss::Render(RenderContext& rc)
 	{
 		m_bossHPFrame.Draw(rc);
 		m_bossHPBar.Draw(rc);
+	}
+
+	if (m_isShowAlert)
+	{
+		m_alertMark.Draw(rc);
+	}
+
+	if (m_isShowQuestion)
+	{
+		m_questionMark.Draw(rc);
 	}
 }

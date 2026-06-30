@@ -41,6 +41,10 @@ bool MediumRobot::Start()
 	m_enemyHPFrame.SetPivot(Vector2(0.02f, 0.4f));
 	m_enemyHPFrame.Update();
 
+	m_alertMark.Init("Assets/UIData/AlertMark.DDs", 128.0f, 128.0f);
+	m_alertMark.SetScale(Vector3(0.7f, 0.7f, 1.0f));
+	m_alertMark.Update();
+
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
 	m_player = FindGO<Player>("player");
@@ -145,6 +149,25 @@ void MediumRobot::Update()
 	PlayAnimation();
 
 	MediumRobotHP();
+
+	if (m_isShowAlert)
+	{
+		m_alertTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_alertTime <= 0.0f)
+		{
+			m_isShowAlert = false;
+		}
+
+		Vector3 alertPos = m_position;
+		alertPos.y += 600.0f;
+
+		Vector2 screenPos;
+		g_camera3D->CalcScreenPositionFromWorldPosition(screenPos, alertPos);
+
+		m_alertMark.SetPosition(Vector3(screenPos.x, screenPos.y, 0.0f));
+		m_alertMark.Update();
+	}
 
 	m_modelRender.Update();
 }
@@ -259,6 +282,9 @@ void MediumRobot::SearchPlayer()
 		if (fabsf(angle) <= Math::PI * 0.15f)
 		{
 			m_searchPlayer = true;
+			m_isShowAlert = true;
+			m_alertTime = 1.0f;
+			m_alertScale = 0.0f;
 			m_hasDetectedPlayer = true;
 		}
 	}
@@ -358,6 +384,13 @@ void MediumRobot::ReceiveAttack(bool isTackle)
 	if (m_mediumRobotHp < 0)
 	{
 		m_mediumRobotHp = 0;
+	}
+
+	if (!m_hasDetectedPlayer)
+	{
+		m_isShowAlert = true;
+		m_alertTime = 1.0f;
+		m_alertScale = 0.3f;
 	}
 
 	m_hasDetectedPlayer = true;
@@ -665,5 +698,10 @@ void MediumRobot::Render(RenderContext& rc)
 	{
 		m_enemyHPFrame.Draw(rc);
 		m_enemyHP.Draw(rc);
+	}
+
+	if (m_isShowAlert)
+	{
+		m_alertMark.Draw(rc);
 	}
 }

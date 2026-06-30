@@ -96,6 +96,19 @@ private:
     Vector3 m_scale = Vector3::One;
     SpriteRender m_bossHPFrame;
     SpriteRender m_bossHPBar;
+    SpriteRender m_alertMark;
+    SpriteRender m_questionMark;
+    Vector3 m_lastPlayerPos;
+    Vector3 m_startPosition;
+    bool m_isSearching = false;
+    float m_searchTimer = 0.0f;
+    bool m_isShowAlert = false;
+    float m_alertTime = 0.0f;
+    float m_alertScale = 0.3f;
+    bool m_isShowQuestion = false;
+    float m_questionTime = 0.0f;
+    float m_questionScale = 0.0f;
+    bool m_hasDetectedPlayer = false;
     bool m_isShowHP = false;
     int m_finalBossHp = 0;		//!<最終ボスのHP。
 	int m_finalBossMaxHp = 0;	//!<最終ボスの最大HP。
@@ -115,5 +128,10 @@ private:
 	bool m_firstPhaseChange = false;		//最初のフェーズチェンジをしたかどうか。
 	bool m_secondPhaseChange = false;		//2回目のフェーズチェンジをしたかどうか。
     float m_moveSpeedValue = 0.0f;
+    float m_searchMotionTimer = 0.0f;
+    float m_baseRotation = 0.0f;
+    float m_rotationY = 0.0f;
+    float m_lostWaitTime = 0.0f;
+    bool m_isLostWaiting = false;
 };
 
