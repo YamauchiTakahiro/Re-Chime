@@ -5,6 +5,7 @@
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/AudioManager/AudioManager.h"
 #include "CoolRing.h"
+#include "Source/Camera/GameCamera.h"
 
 UI::UI()
 {
@@ -151,11 +152,19 @@ UI::UI()
 	m_description.SetScale(Vector3(15.0f, 3.0f, 0.0f));
 	m_description.Update();
 
+	m_SkipText.SetText(L"Y：スキップ");
+	m_SkipText.SetPosition(Vector3(650.0f, -450.0f, 0.0f)); // 右下
+	m_SkipText.SetScale(1.2f);
+	m_SkipText.SetColor(g_vec4White);
+
 	m_ItemDescriptionText.SetPosition(Vector3(-500.0f, -100.0f, 0.0f));
 	m_ItemDescriptionText.SetScale(2.0f);
 	m_ItemDescriptionText.SetColor(g_vec4White);
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
+	GameCamera* camera = FindGO<GameCamera>("gameCamera");
+
+	bool isHideUI = m_game->IsFade() || m_game->GetIntro() || m_game->GetBossIntro() || camera->IsCameraTransition();
 }
 
 UI::~UI()
@@ -678,97 +687,109 @@ void UI::Render(RenderContext& rc)
 	{
 		return;
 	}
-	m_HPBar.Draw(rc);
-	m_HP.Draw(rc);
-	m_Gear.Draw(rc);
-	m_Attack.Draw(rc);
-	if (m_player->GetCoolTime() > 0.0f)
-	{
-		m_coolRing.Draw(rc);
-	}
-	m_Abutton.Draw(rc);
-	m_Jump.Draw(rc);
-	m_Bbutton.Draw(rc);
-	m_Tackle.Draw(rc);
-	if (m_player->GetTackleCoolTime() > 0.0f)
-	{
-		m_tackleRing.Draw(rc);
-	}
-	m_Xbutton.Draw(rc);
-	m_TackleCoolTimeText.Draw(rc);
-	m_GireText.Draw(rc);
-	m_Guardsmark.Draw(rc);
-	m_GuardCoolTimeText.Draw(rc);
-	m_guardRing.Draw(rc);
-	m_LButton.Draw(rc);
-	m_RunMark.Draw(rc);
-	m_RButton.Draw(rc);
-	bool isIntro = m_game->GetIntro() || m_game->GetBossIntro();
+	GameCamera* camera = FindGO<GameCamera>("gameCamera");
 
-	if (!isIntro &&(m_player->IsDashing() ||m_player->GetStamina() < m_player->GetMaxStamina()))
-	{
-		m_StaminaBar.Draw(rc);
-		m_Stamina.Draw(rc);
-	}
+	bool isHideUI = m_game->IsFade() || camera->IsPlayingEventCamera();
 
-	// 攻撃力バフ
-	if (m_player->GetPowerBuffFlag())
-	{
-		float time = m_player->GetPowerBuffTime();
+	bool isEvent = m_game->GetIntro() || m_game->GetBossIntro() || camera->IsCameraTransition();
 
-		if (time < 5.0f)
+	if (!isHideUI)
+	{
+		m_HPBar.Draw(rc);
+		m_HP.Draw(rc);
+		m_Gear.Draw(rc);
+		m_Attack.Draw(rc);
+		if (m_player->GetCoolTime() > 0.0f)
 		{
-			if (m_isBlinkOn)
+			m_coolRing.Draw(rc);
+		}
+		m_Abutton.Draw(rc);
+		m_Jump.Draw(rc);
+		m_Bbutton.Draw(rc);
+		m_Tackle.Draw(rc);
+		if (m_player->GetTackleCoolTime() > 0.0f)
+		{
+			m_tackleRing.Draw(rc);
+		}
+		m_Xbutton.Draw(rc);
+		m_TackleCoolTimeText.Draw(rc);
+		m_GireText.Draw(rc);
+		m_Guardsmark.Draw(rc);
+		m_GuardCoolTimeText.Draw(rc);
+		m_guardRing.Draw(rc);
+		m_LButton.Draw(rc);
+		m_RunMark.Draw(rc);
+		m_RButton.Draw(rc);
+		if (m_player->IsDashing() || m_player->GetStamina() < m_player->GetMaxStamina())
+		{
+			m_StaminaBar.Draw(rc);
+			m_Stamina.Draw(rc);
+		}
+
+		// 攻撃力バフ
+		if (m_player->GetPowerBuffFlag())
+		{
+			float time = m_player->GetPowerBuffTime();
+
+			if (time < 5.0f)
+			{
+				if (m_isBlinkOn)
+				{
+					m_UP.Draw(rc);
+				}
+			}
+			else
 			{
 				m_UP.Draw(rc);
 			}
 		}
-		else
-		{
-			m_UP.Draw(rc);
-		}
-	}
 
-	// 攻撃速度バフ
-	if (m_player->GetAttackSpeedBuffFlag())
-	{
-		float time = m_player->GetAttackSpeedBuffTime();
-
-		if (time < 5.0f)
+		// 攻撃速度バフ
+		if (m_player->GetAttackSpeedBuffFlag())
 		{
-			if (m_isBlinkOn)
+			float time = m_player->GetAttackSpeedBuffTime();
+
+			if (time < 5.0f)
+			{
+				if (m_isBlinkOn)
+				{
+					m_AttackSpeed.Draw(rc);
+				}
+			}
+			else
 			{
 				m_AttackSpeed.Draw(rc);
 			}
 		}
-		else
+
+		m_CoolTimeText.Draw(rc);
+
+		if (m_player->IsNearItem())
 		{
-			m_AttackSpeed.Draw(rc);
+			m_pickUpText.Draw(rc);
+		}
+
+		if (m_isInventoryOpen)
+		{
+			m_Inventoryback.SetMulColor({ 1.0f, 1.0f, 1.0f, 0.4f });
+			m_Inventoryback.Draw(rc);
+			m_inventory.Draw(rc);
+			m_PS1.Draw(rc);
+			m_PS2.Draw(rc);
+			m_PS3.Draw(rc);
+			m_PS1CountText.Draw(rc);
+			m_PS2CountText.Draw(rc);
+			m_PS3CountText.Draw(rc);
+			m_selectFrame.Draw(rc);
+			m_ItemCoolTimeText.Draw(rc);
+			m_ItemDescriptionText.Draw(rc);
+			m_description.Draw(rc);
 		}
 	}
 
-	m_CoolTimeText.Draw(rc);
-
-	if (m_player->IsNearItem())
+	if (m_isShowPickItem)
 	{
-		m_pickUpText.Draw(rc);
-	}
-
-	if (m_isInventoryOpen)
-	{
-		m_Inventoryback.SetMulColor({ 1.0f, 1.0f, 1.0f, 0.4f });
-		m_Inventoryback.Draw(rc);
-		m_inventory.Draw(rc);
-		m_PS1.Draw(rc);
-		m_PS2.Draw(rc);
-		m_PS3.Draw(rc);
-		m_PS1CountText.Draw(rc);
-		m_PS2CountText.Draw(rc);
-		m_PS3CountText.Draw(rc);
-		m_selectFrame.Draw(rc);
-		m_ItemCoolTimeText.Draw(rc);
-		m_ItemDescriptionText.Draw(rc);
-		m_description.Draw(rc);
+		m_pickItemText.Draw(rc);
 	}
 
 	if (m_isShowGoal)
@@ -776,8 +797,8 @@ void UI::Render(RenderContext& rc)
 		m_goalText.Draw(rc);
 	}
 
-	if (m_isShowPickItem)
+	if (isEvent && m_isBlinkOn)
 	{
-		m_pickItemText.Draw(rc);
+		m_SkipText.Draw(rc);
 	}
 }

@@ -239,6 +239,7 @@ private:
     int m_healPotionCount = 1;
     int m_powerBuffPotionCount = 1;
     int m_attackSpeedPotionCount = 1;
+    int m_gireCount = 0;						//!<ギアの数。
 	float m_attackCoolTime = 0.0f;				//!<攻撃のクールタイム。
     float m_attackCoolTimeMax = 0.0f;
 	float m_damageIntarvalTime = 3.0f;		//!<ダメージを受けてからのクールタイム。
@@ -258,7 +259,7 @@ private:
 	float m_staminaRegenRate = 0.0f;      //!<スタミナの回復率。
 	float m_tackleCoolTime = 0.0f;              //!<タックルのクールタイム。
 	float m_tacklePower = 1200.0f;                 //!<タックルの威力。
-    int m_gireCount = 0;						//!<ギアの数。
+    float m_tackleInvincibleTime = 0.0f;
 	bool m_isGetGire = false;				//!<ギアを取ったかどうか。
     bool m_guardFlag = false;
     bool m_powerBuffFlag = false;
