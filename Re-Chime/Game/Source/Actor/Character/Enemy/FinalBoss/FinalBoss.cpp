@@ -269,7 +269,7 @@ void FinalBoss::Move()
 
 	float dist = (m_player->GetPosition() - m_position).Length();
 
-	if (dist <= 2000.0f)
+	if (dist <= 2000.0f && !m_isReposition)
 	{
 		m_moveSpeed = Vector3::Zero;
 		return;
@@ -277,8 +277,12 @@ void FinalBoss::Move()
 
 	Vector3 targetPos;
 
+	if (m_isReposition)
+	{
+		targetPos = m_moveTarget;
+	}
 	// プレイヤーを発見中
-	if (m_hasDetectedPlayer)
+	else if (m_hasDetectedPlayer)
 	{
 		targetPos = m_player->GetPosition();
 	}
@@ -295,12 +299,24 @@ void FinalBoss::Move()
 	{
 		diff.Normalize();
 
-		m_moveSpeed.x = diff.x * m_moveSpeedValue;
-		m_moveSpeed.z = diff.z * m_moveSpeedValue;
+		float speed = m_moveSpeedValue;
+
+		if (m_isReposition)
+		{
+			speed *= 1.8f;    // 撃った後だけ1.8倍
+		}
+
+		m_moveSpeed.x = diff.x * speed;
+		m_moveSpeed.z = diff.z * speed;
 	}
 	else
 	{
 		m_moveSpeed = Vector3::Zero;
+
+		if (m_isReposition)
+		{
+			m_isReposition = false;
+		}
 	}
 
 	m_position = m_characterController.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
@@ -368,6 +384,11 @@ void FinalBoss::Shot()
 		return;
 	}
 
+	if (m_isReposition)
+	{
+		return;
+	}
+
 	// クールタイム中
 	if (m_shotCoolTime > 0.0f)
 	{
@@ -384,6 +405,16 @@ void FinalBoss::Shot()
 	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 
 	m_shotCoolTime = m_shotCoolTimeReset;
+
+	// 撃ったら移動開始
+	m_isReposition = true;
+
+	// 左右どちらかへ移動
+	Vector3 right = Vector3(m_forward.z, 0.0f, -m_forward.x);
+
+	float dir = (rand() % 2 == 0) ? 1.0f : -1.0f;
+	float back = -400.0f;
+	m_moveTarget = m_position + right * dir * 600.0f + m_forward * back;
 }
 
 void FinalBoss::CreateBullet(float angleOffset)

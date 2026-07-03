@@ -100,6 +100,8 @@ private:
     SpriteRender m_questionMark;
     Vector3 m_lastPlayerPos;
     Vector3 m_startPosition;
+    Vector3 m_moveTarget;
+    bool m_isReposition = false;
     bool m_isSearching = false;
     float m_searchTimer = 0.0f;
     bool m_isShowAlert = false;

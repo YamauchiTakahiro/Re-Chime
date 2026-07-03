@@ -27,7 +27,7 @@ GameCamera::GameCamera()
 
 GameCamera::~GameCamera()
 {
-
+		
 }
 
 bool GameCamera::Start()
@@ -130,6 +130,15 @@ void GameCamera::CameraTransition()
 
 void GameCamera::UpdateIntroCamera()
 {
+
+	if (g_pad[0]->IsTrigger(enButtonY))
+	{
+		m_isIntroCamera = false;
+		m_game->SetIntro(false);
+		m_cameraState = EnCameraState::FadeOut;
+		return;
+	}
+
 	m_introCameraTime += g_gameTime->GetFrameDeltaTime();
 
 	Vector3 center;
@@ -174,6 +183,17 @@ void GameCamera::UpdateIntroCamera()
 
 void GameCamera::UpdateBossCamera()
 {
+	if (g_pad[0]->IsTrigger(enButtonY))
+	{
+		m_isBossCamera = false;
+		m_game->SetBossIntro(false);
+
+		m_fade->StartFadeOut();
+		m_isStartFade = true;
+		m_cameraState = EnCameraState::FadeOut;
+		return;
+	}
+
 	if (m_finalBoss == nullptr)
 	{
 		m_finalBoss = FindGO<FinalBoss>("finalBoss");
@@ -226,6 +246,9 @@ void GameCamera::UpdateBossCamera()
 	if (m_bossCameraTime > m_bossCameraEndTime) {
 		m_isBossCamera = false;
 		m_game->SetBossIntro(false);
+
+		m_fade->StartFadeOut();
+		m_isStartFade = true;
 		m_cameraState = EnCameraState::FadeOut;
 	}
 }
@@ -323,6 +346,7 @@ void GameCamera::UpdateFadeInCamera()
 {
 	if (!m_fade->IsFade())
 	{
+		//m_game->SetBossIntro(false);
 		m_cameraState = EnCameraState::Normal;
 	}
 }
@@ -335,4 +359,9 @@ void GameCamera::StartIntroCamera()
 void GameCamera::StartBossCamera()
 {
 	m_cameraState = EnCameraState::BossStart;
+}
+
+bool GameCamera::IsCameraTransition() const
+{
+	return m_cameraState == EnCameraState::FadeOut || m_cameraState == EnCameraState::FadeIn;
 }

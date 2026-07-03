@@ -231,11 +231,15 @@ void Player::UpdateTimer()
 	moveInput.x = g_pad[0]->GetLStickXF();
 	moveInput.z = g_pad[0]->GetLStickYF();
 
-	if (m_isDash && moveInput.LengthSq() > 0.01f)
+	bool isDashing = g_pad[0]->IsPress(enButtonRB1)
+		&& moveInput.LengthSq() > 0.01f
+		&& m_canDash;
+
+	if (isDashing)
 	{
 		m_stamina -= 30.0f * dt;
 	}
-	else if (m_playerState != enPlayerState_Jump)
+	else
 	{
 		m_stamina += m_staminaRegenRate * dt;
 	}
@@ -262,6 +266,13 @@ void Player::UpdateTimer()
 	if (m_tackleCoolTime < 0.0f)
 	{
 		m_tackleCoolTime = 0.0f;
+	}
+
+	m_tackleInvincibleTime -= dt;
+
+	if (m_tackleInvincibleTime < 0.0f)
+	{
+		m_tackleInvincibleTime = 0.0f;
 	}
 }
 
@@ -598,7 +609,7 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 	{
 		return;
 	}
-	if (m_isTackle)
+	if (m_tackleInvincibleTime > 0.0f)
 	{
 		return;
 	}
@@ -614,7 +625,7 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 			m_audioManager->PlaySE(enSound_PlayerDamageSE, 1.0f, enSEPlay_AllowOverlap);
 
 			// ノックバックの計算
-			Vector3 dir = m_position - enemyPos;
+			Vector3 dir = enemyPos - m_position;
 			dir.y = 0.0f;
 
 			if (dir.LengthSq() < 0.01f)
@@ -792,13 +803,24 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonX) && m_tackleCoolTime <= 0.0f && !m_guardFlag)
+	const float tackleCost = 15.0f;
+
+	if (g_pad[0]->IsTrigger(enButtonX) && m_tackleCoolTime <= 0.0f && !m_guardFlag && m_stamina >= tackleCost)
 	{
+		m_stamina -= tackleCost;      // スタミナ消費
+
+		if (m_stamina < 0.0f)
+		{
+			m_stamina = 0.0f;
+		}
+
 		m_playerState = enPlayerState_Tackle;
 
 		m_isTackle = true;
 
 		m_hasCreatedCollision = false;
+
+		m_tackleInvincibleTime = 1.0f;
 
 		return;
 	}

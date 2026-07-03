@@ -43,6 +43,13 @@ public:
 		m_cameraState = state;
 	}
 
+	bool IsCameraTransition() const;
+
+	bool IsPlayingEventCamera() const
+	{
+		return m_cameraState != EnCameraState::Normal;
+	}
+
 	/////////////////////////////////////
 	//メンバ変数
 	/////////////////////////////////////

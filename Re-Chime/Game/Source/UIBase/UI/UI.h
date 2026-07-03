@@ -5,6 +5,7 @@ class Player;
 class Game;
 class AudioManager;
 class CoolRing;
+class GameCamera;
 class UI :public UIBase
 {
     public:
@@ -30,6 +31,7 @@ private:
     Player* m_player = nullptr;
     Game* m_game = nullptr;
     AudioManager* m_audioManager = nullptr;
+    GameCamera* m_gameCamera = nullptr;
     CoolRing m_coolRing;
     CoolRing m_guardRing;
     CoolRing m_tackleRing;
@@ -61,6 +63,7 @@ private:
     FontRender m_TackleCoolTimeText;
     FontRender m_pickItemText;
     FontRender m_ItemDescriptionText;
+    FontRender m_SkipText;
     Vector3 m_cursorPos;
     float m_blinkTimer = 0.0f;//点滅タイマー
     float m_goalFade = 1.0f;
