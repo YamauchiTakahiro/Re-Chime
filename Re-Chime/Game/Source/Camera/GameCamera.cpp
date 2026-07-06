@@ -20,6 +20,11 @@ float Clamp(float value, float min, float max)
 	return value;
 }
 
+float RandomRange(float min, float max)
+{
+	return min + (max - min) * ((float)rand() / (float)RAND_MAX);
+}
+
 GameCamera::GameCamera()
 {
 
@@ -78,6 +83,18 @@ void GameCamera::Update()
 	if (m_cameraState == EnCameraState::Normal)
 	{
 		m_springCamera.Update();
+
+		if (m_shakeTime > 0.0f)
+		{
+			m_shakeTime -= g_gameTime->GetFrameDeltaTime();
+
+			Vector3 pos = g_camera3D->GetPosition();
+
+			pos.x += RandomRange(-m_shakePower, m_shakePower);
+			pos.y += RandomRange(-m_shakePower, m_shakePower);
+
+			g_camera3D->SetPosition(pos);
+		}
 	}
 }
 
@@ -297,6 +314,14 @@ void GameCamera::UpdateNormalCamera()
 	//バネカメラに注視点と視点を設定する。
 	m_springCamera.SetPosition(pos);
 	m_springCamera.SetTarget(target);
+
+	if (m_shakeTime > 0.0f)
+	{
+		m_shakeTime -= g_gameTime->GetFrameDeltaTime();
+
+		pos.x += RandomRange(-m_shakePower, m_shakePower);
+		pos.y += RandomRange(-m_shakePower, m_shakePower);
+	}
 }
 
 void GameCamera::UpdateFadeOutCamera()
@@ -364,4 +389,10 @@ void GameCamera::StartBossCamera()
 bool GameCamera::IsCameraTransition() const
 {
 	return m_cameraState == EnCameraState::FadeOut || m_cameraState == EnCameraState::FadeIn;
+}
+
+void GameCamera::StartShake(float time, float power)
+{
+	m_shakeTime = time;
+	m_shakePower = power;
 }

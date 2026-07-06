@@ -9,6 +9,7 @@ class Game;
 class DamageText;
 class AudioManager;
 class DifficultyLevel;
+class GameCamera;
 
 class MediumRobot : public Enemy
 {
@@ -37,7 +38,7 @@ class MediumRobot : public Enemy
 	int CalcDamage(int damage);
 	void ApplyKnockBack(bool isTackle);
     void PlayHitSE(bool isCritical);
-	void CreateDamageText(int damage);
+	void CreateDamageText(int damage, bool isCritical);
     void DamageIntarval() override;
     void AttackHit() override;
     void Death() override;
@@ -125,5 +126,6 @@ private:
     float m_knockBackTime = 0.0f;
     float m_knockBackPower = 0.0f;
     bool m_isKnockBack = false;
+    bool m_isCritical = false;
 };
 

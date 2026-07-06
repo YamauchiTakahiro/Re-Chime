@@ -33,6 +33,9 @@ class Enemy :
 		return m_hp;
 	}
 	virtual void Render(RenderContext& rc)override;
+
+protected:
+	bool CanUpdate() const;
 private:
 	Vector3 m_position;
 	int m_hp;

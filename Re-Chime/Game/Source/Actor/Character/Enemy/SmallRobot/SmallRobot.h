@@ -10,6 +10,7 @@ class Heal;
 class DamageText;
 class AudioManager;
 class DifficultyLevel;
+class GameCamera;
 
 class SmallRobot : public Enemy
 {
@@ -39,7 +40,7 @@ public:
 	int CalcDamage(int damage);
 	void ApplyKnockBack(bool isTackle);
 	void PlayHitSE(bool isCritical);
-	void CreateDamageText(int damage);
+	void CreateDamageText(int damage,bool isCritical);
 	void TakeDamage(int damage, float knockBackTime);
 	void DamageIntarval() override;
 	void AttackHit() override;
@@ -129,5 +130,6 @@ private:
 	bool m_isShowAlert = false;
 	float m_alertTime = 0.0f;
 	float m_alertScale = 0.0f;
+	bool m_isCritical = false;
 };
 

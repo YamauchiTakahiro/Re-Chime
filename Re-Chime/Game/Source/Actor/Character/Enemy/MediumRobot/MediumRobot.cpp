@@ -10,6 +10,7 @@
 #include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
+#include "Source/Camera/GameCamera.h"
 
 MediumRobot::MediumRobot()
 {
@@ -99,6 +100,11 @@ bool MediumRobot::Start()
 }
 void MediumRobot::Update()
 {
+	if (!CanUpdate())
+	{
+		return;
+	}
+
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
@@ -381,6 +387,7 @@ void MediumRobot::ReceiveAttack(bool isTackle)
 	}
 
 	m_mediumRobotHp -= damage;
+	m_game->StartHitStop(0.1f);
 	if (m_mediumRobotHp < 0)
 	{
 		m_mediumRobotHp = 0;
@@ -397,7 +404,7 @@ void MediumRobot::ReceiveAttack(bool isTackle)
 
 	ApplyKnockBack(isTackle);
 
-	CreateDamageText(damage);
+	CreateDamageText(damage, m_isCritical);
 
 	m_damageIntarvalTime = 2.0f;
 }
@@ -406,18 +413,18 @@ int MediumRobot::CalcDamage(int damage)
 {
 	int randomNum = rand() % 100 + 1;
 
-	bool isCritical = randomNum <= 5;
+	m_isCritical = randomNum <= 5;
 
 	if (!m_searchPlayer)
 	{
-		damage *= isCritical ? 3 : 1.5f;
+		damage *= m_isCritical ? 3 : 1.5f;
 
-		PlayHitSE(isCritical);
+		PlayHitSE(m_isCritical);
 	}
 	else
 	{
-		damage *= isCritical ? 1.5f : 1.0f;
-		PlayHitSE(isCritical);
+		damage *= m_isCritical ? 1.5f : 1.0f;
+		PlayHitSE(m_isCritical);
 	}
 
 	return damage;
@@ -488,7 +495,7 @@ void MediumRobot::PlayHitSE(bool isCritical)
 	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 }
 
-void MediumRobot::CreateDamageText(int damage)
+void MediumRobot::CreateDamageText(int damage, bool isCritical)
 {
 	DamageText* damageText = NewGO<DamageText>(0);
 
@@ -497,6 +504,7 @@ void MediumRobot::CreateDamageText(int damage)
 
 	damageText->SetPosition(textPos);
 	damageText->SetDamage(damage);
+	damageText->SetCritical(isCritical);
 }
 
 void MediumRobot::AttackHit()
@@ -524,6 +532,11 @@ void MediumRobot::DamageIntarval()
 
 void MediumRobot::Death()
 {
+	GameCamera* camera = FindGO<GameCamera>("gameCamera");
+	if (camera)
+	{
+		camera->StartShake(0.3f, 20.0f);
+	}
 	m_game->EnemyCount();
 	MakeExplosionEffect();
 	m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
@@ -608,6 +621,8 @@ void MediumRobot::MediumRobotState()
 	}
 	if (m_mediumRobotHp <= 0)
 	{
+		m_mediumRobotHp = 0;
+
 		m_mediumRobotState = enMediumRobotState_Death;
 		m_isDeath = true;
 	}

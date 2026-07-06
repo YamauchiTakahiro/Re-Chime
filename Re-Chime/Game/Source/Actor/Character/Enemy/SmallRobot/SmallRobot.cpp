@@ -11,6 +11,7 @@
 #include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
+#include "Source/Camera/GameCamera.h"
 
 SmallRobot::SmallRobot()
 {
@@ -96,6 +97,11 @@ bool SmallRobot::Start()
 }
 void SmallRobot::Update()
 {
+	if (!CanUpdate())
+	{
+		return;
+	}
+
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
@@ -405,6 +411,7 @@ void SmallRobot::ReceiveAttack(bool isTackle)
 	}
 
 	m_smallRobotHp -= damage;
+	m_game->StartHitStop(0.1f);
 	if (m_smallRobotHp < 0)
 	{
 		m_smallRobotHp = 0;
@@ -419,7 +426,7 @@ void SmallRobot::ReceiveAttack(bool isTackle)
 
 	ApplyKnockBack(isTackle);
 
-	CreateDamageText(damage);
+	CreateDamageText(damage, m_isCritical);
 
 	m_damageIntarvalTime = 2.0f;
 }
@@ -428,18 +435,17 @@ int SmallRobot::CalcDamage(int damage)
 {
 	int randomNum = rand() % 100 + 1;
 
-	bool isCritical = randomNum <= 5;
+	m_isCritical = randomNum <= 5;
 
 	if (!m_searchPlayer)
 	{
-		damage *= isCritical ? 3 : 1.5f;
-
-		PlayHitSE(isCritical);
+		damage *= m_isCritical ? 3 : 1.5f;
+		PlayHitSE(m_isCritical);
 	}
 	else
 	{
-		damage *= isCritical ? 1.5f : 1.0f;
-		PlayHitSE(isCritical);
+		damage *= m_isCritical ? 1.5f : 1.0f;
+		PlayHitSE(m_isCritical);
 	}
 
 	return damage;
@@ -510,7 +516,7 @@ void SmallRobot::PlayHitSE(bool isCritical)
 	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 }
 
-void SmallRobot::CreateDamageText(int damage)
+void SmallRobot::CreateDamageText(int damage,bool isCritical)
 {
 	DamageText* damageText = NewGO<DamageText>(0);
 
@@ -519,6 +525,7 @@ void SmallRobot::CreateDamageText(int damage)
 
 	damageText->SetPosition(textPos);
 	damageText->SetDamage(damage);
+	damageText->SetCritical(isCritical);
 }
 
 void SmallRobot::AttackHit()
@@ -546,6 +553,17 @@ void SmallRobot::DamageIntarval()
 
 void SmallRobot::Death()
 {
+	if (m_isDead)
+	{
+		return;
+	}
+	m_isDead = true;
+	GameCamera* camera = FindGO<GameCamera>("gameCamera");
+
+	if (camera)
+	{
+		camera->StartShake(0.3f, 20.0f);
+	}
 	m_game->EnemyCount();
 	m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
 	MakeExplosionEffect();

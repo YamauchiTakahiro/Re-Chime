@@ -8,6 +8,7 @@ class PowerBuff;
 class Heal;
 class AudioManager;
 class DifficultyLevel;
+class GameCamera;
 
 class FloorBoss : public Enemy
 {
@@ -132,4 +133,5 @@ private:
 	float m_attackWarnTimer;
 	float m_attackActiveTimer;
 	float m_moveSpeedValue = 250.0f;
+	bool m_isCritical = false;
 };

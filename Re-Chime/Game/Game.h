@@ -52,6 +52,8 @@ public:
 	void CreateGire();
 	void DeleteBarriers();
 	bool IsFade() const;
+	void StartHitStop(float time);
+	bool IsHitStop() const;
 
 	float GetLoadProgress() const
 	{
@@ -263,5 +265,6 @@ private:
 	float m_navAngle = 0.0f;
 	Vector3 m_navPos = Vector3::Zero;
 	float m_navTimer = 0.0f;
+	float m_hitStopTimer = 0.0f;
 };
 

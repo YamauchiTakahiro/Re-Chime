@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Enemy.h"
+#include "Game.h"
 
 Enemy::Enemy()
 {
@@ -56,4 +57,16 @@ void Enemy::Death()
 
 void Enemy::Render(RenderContext& rc)
 {
+}
+
+bool Enemy::CanUpdate() const
+{
+    Game* game = FindGO<Game>("game");
+
+    if (game && game->IsHitStop())
+    {
+        return false;
+    }
+
+    return !game->IsHitStop();
 }

@@ -98,6 +98,16 @@ Game::~Game()
 
 void Game::Update()
 {	
+	if (m_hitStopTimer > 0.0f)
+	{
+		m_hitStopTimer -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_hitStopTimer < 0.0f)
+		{
+			m_hitStopTimer = 0.0f;
+		}
+	}
+
 	//ロード中なら停止
 	if (m_isLoading)
 	{
@@ -946,4 +956,17 @@ void Game::DrawGearArrow(RenderContext& rc)
 
 	m_gearArrow.Update();
 	m_gearArrow.Draw(rc);
+}
+
+void Game::StartHitStop(float time)
+{
+	if (m_hitStopTimer < time)
+	{
+		m_hitStopTimer = time;
+	}
+}
+
+bool Game::IsHitStop() const
+{
+	return m_hitStopTimer > 0.0f;
 }
