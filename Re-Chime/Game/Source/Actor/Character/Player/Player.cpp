@@ -41,7 +41,6 @@ bool Player::Start()
 	m_characterController.Init(100.0f, 300.0f, m_position);
 	m_game = FindGO<Game>("game");
 	m_gire = FindGO<Gire>("gire");
-	m_game = FindGO<Game>("game");
 
 	m_audioManager = FindGO<AudioManager>("audioManager");
 
@@ -83,6 +82,13 @@ bool Player::Start()
 
 void Player::Update()
 {
+	Game* game = FindGO<Game>("game");
+
+	if (game && game->IsHitStop())
+	{
+		return;
+	}
+
 	bool isFade = m_game->IsFade();
 	bool IntroFlag = m_game->GetIntro();
 	bool bossIntroFlag = m_game->GetBossIntro();

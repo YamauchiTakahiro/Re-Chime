@@ -33,6 +33,7 @@ public:
 	void UpdateFadeInCamera();
 	void StartIntroCamera();
 	void StartBossCamera();
+	void StartShake(float time, float power);
 	void ResetCameraTimer()
 	{
 		m_introCameraTime = 0.0f;
@@ -77,5 +78,7 @@ private:
 	Fade* m_fade = nullptr;
 
 	bool m_isStartFade = false;
+	float m_shakeTime = 0.0f;
+	float m_shakePower = 0.0f;
 };
 

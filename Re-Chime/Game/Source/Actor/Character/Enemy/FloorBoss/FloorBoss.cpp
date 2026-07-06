@@ -10,6 +10,7 @@
 #include "Source/UIBase/DamageText/DamageText.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
+#include "Source/Camera/GameCamera.h"
 
 FloorBoss::FloorBoss()
 {
@@ -312,28 +313,28 @@ void FloorBoss::Hit()
 	{
 		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
 		{
-			int damage = 0;
-			damage = m_player->GetAttackPower();
-			int randomNum = rand() % 100 + 1;
-			if (randomNum <= 5)
+			int damage = m_player->GetAttackPower();
+
+			bool isCritical = (rand() % 100) < 5;
+
+			if (isCritical)
 			{
 				damage *= 2;
+
+				bool isHit = m_player->GetAttackHit();
+				if (!isHit)
+				{
+					m_player->SetAttackHit(true);
+					m_audioManager->PlaySE(enSound_CriticalSE, 1.0f, enSEPlay_AllowOverlap);
+				}
+			}
+			else
+			{
 				bool isHit = m_player->GetAttackHit();
 				if (!isHit)
 				{
 					m_player->SetAttackHit(true);
 
-					m_audioManager->PlaySE(enSound_CriticalSE,1.0f,enSEPlay_AllowOverlap);
-				}
-				m_floorBossHP -= damage;
-			}
-			else
-			{
-				damage *= 1;
-				bool isHit = m_player->GetAttackHit();
-				if (!isHit)
-				{
-					m_player->SetAttackHit(true);
 					int r = rand() % 3;
 
 					AudioID id;
@@ -345,10 +346,12 @@ void FloorBoss::Hit()
 					case 2: id = enSound_PlayerAttackSE_03; break;
 					}
 
-					m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
+					m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 				}
-				m_floorBossHP -= damage;
 			}
+
+			m_floorBossHP -= damage;
+			m_game->StartHitStop(0.1f);
 			m_damageIntarvalTime = 1.5f;
 			m_player->SetAttackHit(true);
 
@@ -362,8 +365,8 @@ void FloorBoss::Hit()
 			textPos.y += 250.0f;
 
 			damageText->SetPosition(textPos);
-
 			damageText->SetDamage(damage);
+			damageText->SetCritical(isCritical);
 		}
 	}
 }
@@ -395,6 +398,11 @@ void FloorBoss::Death()
 {
 	if (m_floorBossHP <= 0)
 	{
+		GameCamera* camera = FindGO<GameCamera>("gameCamera");
+		if (camera)
+		{
+			camera->StartShake(0.3f, 20.0f);
+		}
 		m_game->EnemyCount();
 		m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
 		MakeExplosionEffect();

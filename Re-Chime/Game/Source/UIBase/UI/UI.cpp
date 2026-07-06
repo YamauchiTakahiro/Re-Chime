@@ -642,7 +642,7 @@ void UI::Inventory()
 	{
 	case 0:
 		description = L"速度薬\n"
-			L"一定時間攻撃感覚短縮";
+			L"一定時間攻撃短縮";
 		m_ItemDescriptionText.SetColor(g_vec4Blue);
 		break;
 

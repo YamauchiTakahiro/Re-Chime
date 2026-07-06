@@ -9,6 +9,7 @@
 #include "Source/Actor/Bullet/Bullet.h"
 #include "Source/UIBase/DifficultyLevel/DifficultyLevel.h"
 #include "Source/Manager/EffectManager/EffectManager.h"
+#include "Source/Camera/GameCamera.h"
 
 FinalBoss::FinalBoss()
 {
@@ -112,6 +113,7 @@ bool FinalBoss::Start()
 
 void FinalBoss::Update()
 {
+
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
@@ -561,61 +563,85 @@ void FinalBoss::PhaseChange()
 void FinalBoss::Hit()
 {
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("playerAttack");
+
 	for (auto collision : collisions)
 	{
-		if (collision->IsHit(m_characterController) == true && m_damageIntarvalTime == 0.0f)
+		if (!collision->IsHit(m_characterController))
 		{
-			int damage = 0;
-			damage = m_player->GetAttackPower();
-			int randomNum = rand() % 100 + 1;
-			if (randomNum <= 5)
-			{
-				damage *= 2;
-				bool isHit = m_player->GetAttackHit();
-				if (!isHit)
-				{
-					m_player->SetAttackHit(true);
+			continue;
+		}
 
-					m_audioManager->PlaySE(enSound_CriticalSE,1.0f,enSEPlay_AllowOverlap);
-				}
-				m_finalBossHp -= damage;
-			}
-			else
+		if (m_damageIntarvalTime > 0.0f)
+		{
+			continue;
+		}
+
+		int damage = m_player->GetAttackPower();
+
+		int randomNum = rand() % 100 + 1;
+		bool isCritical = (randomNum <= 5);
+
+		if (!m_hasDetectedPlayer)
+		{
+			damage *= isCritical ? 3 : 1.5f;
+			m_audioManager->PlaySE(enSound_BackstabSE, 1.0f, enSEPlay_AllowOverlap);
+		}
+		else
+		{
+			damage *= isCritical ? 1.5f : 1.0f;
+
+			bool isHit = m_player->GetAttackHit();
+			if (!isHit)
 			{
-				damage *= 1;
-				bool isHit = m_player->GetAttackHit();
-				if (!isHit)
+				m_player->SetAttackHit(true);
+
+				if (isCritical)
 				{
-					m_player->SetAttackHit(true);
+					m_audioManager->PlaySE(enSound_CriticalSE, 1.0f, enSEPlay_AllowOverlap);
+				}
+				else
+				{
 					int r = rand() % 3;
 
 					AudioID id;
-
 					switch (r)
 					{
 					case 0: id = enSound_PlayerAttackSE_01; break;
 					case 1: id = enSound_PlayerAttackSE_02; break;
-					case 2: id = enSound_PlayerAttackSE_03; break;
+					default: id = enSound_PlayerAttackSE_03; break;
 					}
 
-					m_audioManager->PlaySE(id,1.0f,enSEPlay_AllowOverlap);
+					m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 				}
-				m_finalBossHp -= damage;
 			}
-			m_damageIntarvalTime = 1.5f;
+		}
 
-//========================
-// ダメージ表示生成
-//========================
-			DamageText* damageText = NewGO<DamageText>(0);
+		m_finalBossHp -= damage;
 
-			Vector3 textPos = m_position;
+		if (m_finalBossHp < 0)
+		{
+			m_finalBossHp = 0;
+		}
 
-			textPos.y += 250.0f;
+		m_game->StartHitStop(0.1f);
 
-			damageText->SetPosition(textPos);
+		m_damageIntarvalTime = 1.5f;
 
-			damageText->SetDamage(damage);
+		//========================
+		// ダメージ表示
+		//========================
+		DamageText* damageText = NewGO<DamageText>(0);
+
+		Vector3 textPos = m_position;
+		textPos.y += 250.0f;
+
+		damageText->SetPosition(textPos);
+		damageText->SetDamage(damage);
+
+		// ★クリティカル演出
+		if (isCritical)
+		{
+			damageText->SetCritical(true);   // 「CRITICAL!!」表示
 		}
 	}
 }
@@ -656,7 +682,11 @@ void FinalBoss::Death()
 		}
 
 		m_isDead = true;
-
+		GameCamera* camera = FindGO<GameCamera>("gameCamera");
+		if (camera)
+		{
+			camera->StartShake(0.3f, 20.0f);
+		}
 		m_game->EnemyCount();
 
 		MakeExplosionEffect();

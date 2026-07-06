@@ -19,6 +19,11 @@ public:
 		m_damage = damage;
 	}
 
+	void SetCritical(bool critical)
+	{
+		m_isCritical = critical;
+	}
+
 private:
 	FontRender m_font;
 
@@ -27,5 +32,6 @@ private:
 	int m_damage = 0;
 
 	float m_timer = 1.0f;
+	bool m_isCritical = false;
 };
 

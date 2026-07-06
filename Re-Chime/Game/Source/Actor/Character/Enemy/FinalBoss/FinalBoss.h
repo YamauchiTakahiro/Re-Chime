@@ -8,6 +8,7 @@ class DamageText;
 class Bullet;
 class AudioManager;
 class DifficultyLevel;
+class GameCamera;
 
 class FinalBoss : public Enemy
 {
