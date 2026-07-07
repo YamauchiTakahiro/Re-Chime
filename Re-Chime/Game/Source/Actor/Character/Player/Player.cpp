@@ -237,9 +237,7 @@ void Player::UpdateTimer()
 	moveInput.x = g_pad[0]->GetLStickXF();
 	moveInput.z = g_pad[0]->GetLStickYF();
 
-	bool isDashing = g_pad[0]->IsPress(enButtonRB1)
-		&& moveInput.LengthSq() > 0.01f
-		&& m_canDash;
+	bool isDashing = g_pad[0]->IsPress(enButtonRB1) && moveInput.LengthSq() > 0.01f && m_canDash;
 
 	if (isDashing)
 	{
@@ -636,7 +634,7 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 
 			if (dir.LengthSq() < 0.01f)
 			{
-				dir = m_forward * -1.0f;
+				dir = m_forward;
 			}
 			else
 			{

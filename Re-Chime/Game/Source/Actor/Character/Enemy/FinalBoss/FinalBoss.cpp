@@ -108,11 +108,20 @@ bool FinalBoss::Start()
 
 	m_finalBossState = enFinalBossState_Idle;
 	m_startPosition = m_position;
+	m_viewHp = (float)m_finalBossHp;
 	return true;
 }
 
 void FinalBoss::Update()
 {
+	UpdateHitStop();
+
+	if (IsHitStop())
+	{
+		m_modelRender.Update();
+		FinalBossHP();
+		return;
+	}
 
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
@@ -346,7 +355,6 @@ void FinalBoss::Rotation()
 		{
 			m_isSearching = false;
 		}
-
 		return;
 	}
 
@@ -400,9 +408,7 @@ void FinalBoss::Shot()
 	PhaseChange();
 
 	int randomNum = rand() % 2;
-	AudioID id = (randomNum == 0)
-		? enSound_BossShotSE_01
-		: enSound_BossShotSE_02;
+	AudioID id = (randomNum == 0) ? enSound_BossShotSE_01 : enSound_BossShotSE_02;
 
 	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 
@@ -623,8 +629,6 @@ void FinalBoss::Hit()
 			m_finalBossHp = 0;
 		}
 
-		m_game->StartHitStop(0.1f);
-
 		m_damageIntarvalTime = 1.5f;
 
 		//========================
@@ -642,6 +646,22 @@ void FinalBoss::Hit()
 		if (isCritical)
 		{
 			damageText->SetCritical(true);   // 「CRITICAL!!」表示
+		}
+		if (isCritical)
+		{
+			StartHitStop(0.26f);
+		}
+		else
+		{
+			StartHitStop(0.2f);
+		}
+		if (isCritical)
+		{
+			GameCamera* camera = FindGO<GameCamera>("gameCamera");
+			if (camera)
+			{
+				camera->StartShake(0.15f, 8.0f);
+			}
 		}
 	}
 }
@@ -913,19 +933,17 @@ const bool FinalBoss::IsCanAttack() const
 
 void FinalBoss::FinalBossHP()
 {
-	float rate = (float)m_finalBossHp / (float)m_finalBossMaxHp;
-
-	// 下限
-	if (rate < 0.0f)
+	if (m_viewHp > m_finalBossHp)
 	{
-		rate = 0.0f;
+		m_viewHp -= 200.0f * g_gameTime->GetFrameDeltaTime();
+
+		if (m_viewHp < m_finalBossHp)
+		{
+			m_viewHp = (float)m_finalBossHp;
+		}
 	}
 
-	// 上限
-	if (rate > 1.0f)
-	{
-		rate = 1.0f;
-	}
+	float rate = m_viewHp / (float)m_finalBossMaxHp;
 
 	Vector3 scale = { 1.5f, 0.3f, 1.0f };
 	scale.x *= rate;

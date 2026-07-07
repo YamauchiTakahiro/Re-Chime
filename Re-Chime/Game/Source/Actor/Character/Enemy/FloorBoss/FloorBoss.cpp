@@ -96,12 +96,22 @@ bool FloorBoss::Start()
 			break;
 		}
 	}
+	m_viewHp = (float)m_floorBossHP;
 
 	return true;
 }
 
 void FloorBoss::Update()
 {
+	UpdateHitStop();
+
+	if (IsHitStop())
+	{
+		m_modelRender.Update();
+		FloorBossHP();
+		return;
+	}
+
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 
@@ -351,7 +361,6 @@ void FloorBoss::Hit()
 			}
 
 			m_floorBossHP -= damage;
-			m_game->StartHitStop(0.1f);
 			m_damageIntarvalTime = 1.5f;
 			m_player->SetAttackHit(true);
 
@@ -367,6 +376,22 @@ void FloorBoss::Hit()
 			damageText->SetPosition(textPos);
 			damageText->SetDamage(damage);
 			damageText->SetCritical(isCritical);
+			if (m_isCritical)
+			{
+				StartHitStop(0.21f);
+			}
+			else
+			{
+				StartHitStop(0.15f);
+			}
+			if (m_isCritical)
+			{
+				GameCamera* camera = FindGO<GameCamera>("gameCamera");
+				if (camera)
+				{
+					camera->StartShake(0.15f, 8.0f);
+				}
+			}
 		}
 	}
 }
@@ -401,7 +426,7 @@ void FloorBoss::Death()
 		GameCamera* camera = FindGO<GameCamera>("gameCamera");
 		if (camera)
 		{
-			camera->StartShake(0.3f, 20.0f);
+			camera->StartShake(0.6f, 20.0f);
 		}
 		m_game->EnemyCount();
 		m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
@@ -475,12 +500,17 @@ void FloorBoss::ManageState()
 
 void FloorBoss::FloorBossHP()
 {
-	float rate = (float)m_floorBossHP / (float)m_floorBossMaxHP;
-
-	if (rate < 0.0f)
+	if (m_viewHp > m_floorBossHP)
 	{
-		rate = 0.0f;
+		m_viewHp -= 200.0f * g_gameTime->GetFrameDeltaTime();
+
+		if (m_viewHp < m_floorBossHP)
+		{
+			m_viewHp = (float)m_floorBossHP;
+		}
 	}
+
+	float rate = m_viewHp / (float)m_floorBossMaxHP;
 
 	Vector3 scale = { 1.5f, 0.3f, 1.0f };
 	scale.x *= rate;

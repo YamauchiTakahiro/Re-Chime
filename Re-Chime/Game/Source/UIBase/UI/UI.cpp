@@ -165,6 +165,7 @@ UI::UI()
 	GameCamera* camera = FindGO<GameCamera>("gameCamera");
 
 	bool isHideUI = m_game->IsFade() || m_game->GetIntro() || m_game->GetBossIntro() || camera->IsCameraTransition();
+	m_hpBarRate = 1.0f;
 }
 
 UI::~UI()
@@ -253,9 +254,27 @@ void UI::Update()
 
 	nowHP = m_player->GetHP();
 	MaxHP = m_player->GetMaxHP();
-	float Wari = (float)nowHP / (float)MaxHP;
+	float targetRate = (float)nowHP / (float)MaxHP;
+
+	// 徐々に近付ける
+	float speed = 2.5f * g_gameTime->GetFrameDeltaTime();
+
+	if (m_hpBarRate > targetRate)
+	{
+		m_hpBarRate -= speed;
+
+		if (m_hpBarRate < targetRate)
+		{
+			m_hpBarRate = targetRate;
+		}
+	}
+	else
+	{
+		m_hpBarRate = targetRate;
+	}
+
 	Vector3 scale = { 0.28f, 0.28f, 0.5f };
-	scale.x *= Wari;
+	scale.x *= m_hpBarRate;
 	m_HP.SetScale(scale);
 	if (nowHP <= MaxHP / 4)
 	{
@@ -405,8 +424,7 @@ void UI::Update()
 	{
 		wchar_t itemText[256];
 
-		swprintf_s(itemText,L"%.1f",itemCool
-		);
+		swprintf_s(itemText, L"%.1f", itemCool);
 
 		m_ItemCoolTimeText.SetPosition(Vector3(-960.0f,270.0f,0.0f));
 		m_ItemCoolTimeText.SetScale(1.2f);

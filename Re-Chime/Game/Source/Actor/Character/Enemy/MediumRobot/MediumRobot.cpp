@@ -95,6 +95,7 @@ bool MediumRobot::Start()
 			break;
 		}
 	}
+	m_viewHp = (float)m_mediumRobotHp;
 
 	return true;
 }
@@ -102,6 +103,15 @@ void MediumRobot::Update()
 {
 	if (!CanUpdate())
 	{
+		return;
+	}
+
+	UpdateHitStop();
+
+	if (IsHitStop())
+	{
+		m_modelRender.Update();
+		MediumRobotHP();
 		return;
 	}
 
@@ -387,7 +397,24 @@ void MediumRobot::ReceiveAttack(bool isTackle)
 	}
 
 	m_mediumRobotHp -= damage;
-	m_game->StartHitStop(0.1f);
+
+	if (m_isCritical)
+	{
+		StartHitStop(0.16f);   // クリティカルは少し長め
+	}
+	else
+	{
+		StartHitStop(0.1f);
+	}
+	if (m_isCritical)
+	{
+		GameCamera* camera = FindGO<GameCamera>("gameCamera");
+		if (camera)
+		{
+			camera->StartShake(0.15f, 8.0f);
+		}
+	}
+
 	if (m_mediumRobotHp < 0)
 	{
 		m_mediumRobotHp = 0;
@@ -404,7 +431,9 @@ void MediumRobot::ReceiveAttack(bool isTackle)
 
 	ApplyKnockBack(isTackle);
 
-	CreateDamageText(damage, m_isCritical);
+	bool isBackAttack = !m_searchPlayer;
+
+	CreateDamageText(damage, m_isCritical, isBackAttack);
 
 	m_damageIntarvalTime = 2.0f;
 }
@@ -495,7 +524,7 @@ void MediumRobot::PlayHitSE(bool isCritical)
 	m_audioManager->PlaySE(id, 1.0f, enSEPlay_AllowOverlap);
 }
 
-void MediumRobot::CreateDamageText(int damage, bool isCritical)
+void MediumRobot::CreateDamageText(int damage, bool isCritical, bool isBackAttack)
 {
 	DamageText* damageText = NewGO<DamageText>(0);
 
@@ -505,6 +534,7 @@ void MediumRobot::CreateDamageText(int damage, bool isCritical)
 	damageText->SetPosition(textPos);
 	damageText->SetDamage(damage);
 	damageText->SetCritical(isCritical);
+	damageText->SetBackAttack(isBackAttack);
 }
 
 void MediumRobot::AttackHit()
@@ -675,16 +705,22 @@ void MediumRobot::MediumRobotHP()
 
 	m_isShowHP = true;
 
-	int nowHP = 0;
-	int MaxHP = 0;
+	float dt = g_gameTime->GetFrameDeltaTime();
 
-	nowHP = GetHP();
-	MaxHP = m_mediumRobotMaxHp;
-	float Wari = max(0.0f, (float)nowHP / (float)MaxHP);
+	if (m_viewHp > m_mediumRobotHp)
+	{
+		m_viewHp -= 120.0f * dt;
+
+		if (m_viewHp < m_mediumRobotHp)
+		{
+			m_viewHp = (float)m_mediumRobotHp;
+		}
+	}
+	float Wari = max(0.0f, m_viewHp / (float)m_mediumRobotMaxHp);
 	Vector3 scale = { 0.28f,0.28f,0.5f };
 	scale.x *= Wari;
 	m_enemyHP.SetScale(scale);
-	if (nowHP <= MaxHP / 4)
+	if (m_viewHp <= m_mediumRobotMaxHp * 0.25f)
 	{
 		m_enemyHP.SetMulColor(g_vec4Red);
 	}

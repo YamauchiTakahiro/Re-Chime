@@ -36,7 +36,15 @@ void DamageText::Render(RenderContext& rc)
 
     wchar_t text[256];
 
-    if (m_isCritical)
+    if (m_isBackAttack && m_isCritical)
+    {
+        swprintf_s(text, L"BACK ATTACK!!\nCRITICAL!!\n%d", m_damage);
+    }
+    else if (m_isBackAttack)
+    {
+        swprintf_s(text, L"BACK ATTACK!!\n%d", m_damage);
+    }
+    else if (m_isCritical)
     {
         swprintf_s(text, L"CRITICAL!!\n%d", m_damage);
     }
@@ -47,9 +55,19 @@ void DamageText::Render(RenderContext& rc)
 
     m_font.SetText(text);
 
-    if (m_isCritical)
+    if (m_isBackAttack && m_isCritical)
     {
-        m_font.SetScale(2.0f);   // 好きな大きさ
+        m_font.SetScale(2.0f);
+        m_font.SetColor(g_vec4Orange);
+    }
+    else if (m_isBackAttack)
+    {
+        m_font.SetScale(1.8f);
+        m_font.SetColor(g_vec4Cyan);      // 水色
+    }
+    else if (m_isCritical)
+    {
+        m_font.SetScale(2.0f);
         m_font.SetColor(g_vec4Red);
     }
     else

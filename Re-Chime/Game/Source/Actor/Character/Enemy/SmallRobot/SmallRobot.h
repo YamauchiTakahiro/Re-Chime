@@ -40,7 +40,7 @@ public:
 	int CalcDamage(int damage);
 	void ApplyKnockBack(bool isTackle);
 	void PlayHitSE(bool isCritical);
-	void CreateDamageText(int damage,bool isCritical);
+	void CreateDamageText(int damage, bool isCritical, bool isBackAttack);
 	void TakeDamage(int damage, float knockBackTime);
 	void DamageIntarval() override;
 	void AttackHit() override;
@@ -131,5 +131,7 @@ private:
 	float m_alertTime = 0.0f;
 	float m_alertScale = 0.0f;
 	bool m_isCritical = false;
+	float m_hitStopTime = 0.0f;
+	float m_viewHp = 0.0f;
 };
 

@@ -134,4 +134,5 @@ private:
 	float m_attackActiveTimer;
 	float m_moveSpeedValue = 250.0f;
 	bool m_isCritical = false;
+	float m_viewHp = 0.0f;
 };

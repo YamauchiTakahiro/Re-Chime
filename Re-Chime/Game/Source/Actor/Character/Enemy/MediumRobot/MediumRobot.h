@@ -38,7 +38,7 @@ class MediumRobot : public Enemy
 	int CalcDamage(int damage);
 	void ApplyKnockBack(bool isTackle);
     void PlayHitSE(bool isCritical);
-	void CreateDamageText(int damage, bool isCritical);
+    void CreateDamageText(int damage, bool isCritical, bool isBackAttack);
     void DamageIntarval() override;
     void AttackHit() override;
     void Death() override;
@@ -127,5 +127,6 @@ private:
     float m_knockBackPower = 0.0f;
     bool m_isKnockBack = false;
     bool m_isCritical = false;
+    float m_viewHp = 0.0f;
 };
 

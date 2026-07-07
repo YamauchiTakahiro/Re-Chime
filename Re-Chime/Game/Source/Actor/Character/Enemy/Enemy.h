@@ -36,8 +36,32 @@ class Enemy :
 
 protected:
 	bool CanUpdate() const;
+	float m_hitStopTime = 0.0f;
 private:
 	Vector3 m_position;
 	int m_hp;
+public:
+	void StartHitStop(float time)
+	{
+		m_hitStopTime = time;
+	}
+
+	bool IsHitStop() const
+	{
+		return m_hitStopTime > 0.0f;
+	}
+
+	void UpdateHitStop()
+	{
+		if (m_hitStopTime > 0.0f)
+		{
+			m_hitStopTime -= g_gameTime->GetFrameDeltaTime();
+
+			if (m_hitStopTime < 0.0f)
+			{
+				m_hitStopTime = 0.0f;
+			}
+		}
+	}
 };
 
