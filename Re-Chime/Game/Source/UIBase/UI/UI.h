@@ -81,5 +81,6 @@ private:
     int m_selectItem = 0;
     std::wstring m_goalMessage;
     std::wstring m_pickItemMessage;
+    float m_hpBarRate = 1.0f;
 };
 

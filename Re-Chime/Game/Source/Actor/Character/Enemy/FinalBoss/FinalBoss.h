@@ -136,5 +136,6 @@ private:
     float m_rotationY = 0.0f;
     float m_lostWaitTime = 0.0f;
     bool m_isLostWaiting = false;
+    float m_viewHp = 0.0f;
 };
 

@@ -24,6 +24,11 @@ public:
 		m_isCritical = critical;
 	}
 
+	void SetBackAttack(bool flag)
+	{
+		m_isBackAttack = flag;
+	}
+
 private:
 	FontRender m_font;
 
@@ -33,5 +38,6 @@ private:
 
 	float m_timer = 1.0f;
 	bool m_isCritical = false;
+	bool m_isBackAttack = false;
 };
 
