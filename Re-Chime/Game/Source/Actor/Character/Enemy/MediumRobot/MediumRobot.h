@@ -51,6 +51,9 @@ class MediumRobot : public Enemy
 	void AttackState();
 	void DeathState();
     void MediumRobotHP();
+    void PushFromEnemy();
+    void DeathMove();
+    Vector3 CalcPushVector();
     Vector3 GetPosition()const override;
     int GetHP()const override
     {
@@ -101,6 +104,7 @@ private:
     Vector2 m_enemyHPBarPosition = Vector2::Zero;
     Vector2 m_enemyHPFramePosition = Vector2::Zero;
     SpriteRender m_alertMark;
+    Vector3 m_attackPos;
     bool m_isShowAlert = false;
     float m_alertTime = 0.0f;
     float m_alertScale = 0.3f;
@@ -117,6 +121,17 @@ private:
 	bool m_searchPlayer = false;	//!<プレイヤーを索敵しているかどうか。
     bool m_hasDetectedPlayer = false;
     float m_moveSpeedValue = 0.0f;
+    float m_pushRadius = 180.0f;     // プレイヤーとの最低距離
+    float m_pushPower = 300.0f;      // 押し出す強さ
+    bool m_isDeathMove = false;
+    float m_deathMoveTime = 0.0f;
+    float m_deathRotateSpeed = 720.0f;
+    float m_flashTime = 0.0f;
+    bool m_landEffect = false;
+    float m_landWait = 0.15f;
+    bool m_wasFalling = false;
+    bool m_prevOnGround = false;
+    Vector3 m_deathVelocity = Vector3::Zero;
     DifficultyLevel* m_difficultyLevel = nullptr;
 
     //========================

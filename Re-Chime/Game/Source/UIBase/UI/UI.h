@@ -25,6 +25,11 @@ class UI :public UIBase
         return m_isInventoryOpen;
     }
 
+    bool IsVisible() const
+    {
+        return m_isVisible;
+    }
+
     void ShowGoal(const wchar_t* text);
     void ShowPickItem(const wchar_t* text);
 private:

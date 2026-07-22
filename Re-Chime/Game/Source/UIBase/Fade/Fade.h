@@ -8,18 +8,22 @@ public:
 	void Update() override;
 	void Render(RenderContext& rc)override;
 
-	//フェードイン　（明るくなる）
-	void StartFadeIn()
+	//フェードアウト（暗くなる）
+	void StartFadeOut(float speed = 0.5f)
 	{
-		m_state = enState_FadeIn;
+		m_currentAlpha = 0.0f;
+		m_fadeSpeed = speed;
+		m_isFadeOutFinished = false;
+		m_state = enState_FadeOut;
 	}
 
-	//フェードアウト（暗くなる）
-	void StartFadeOut()
+	//フェードイン　（明るくなる）
+	void StartFadeIn(float speed = 0.5f)
 	{
+		m_currentAlpha = 1.0f;
+		m_fadeSpeed = speed;
 		m_isFadeOutFinished = false;
-
-		m_state = enState_FadeOut;
+		m_state = enState_FadeIn;
 	}
 
 	//フェード中か判定する
@@ -47,6 +51,11 @@ public:
 	void ResetFadeOut()
 	{
 		m_isFadeOutFinished = false;
+	}
+
+	void SetAlpha(float alpha)
+	{
+		m_currentAlpha = alpha;
 	}
 
 private:

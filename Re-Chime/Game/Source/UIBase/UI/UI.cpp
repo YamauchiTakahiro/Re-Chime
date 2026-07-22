@@ -180,6 +180,11 @@ bool UI::Start()
 
 void UI::Update()
 {
+	if (!m_isVisible)
+	{
+		return;
+	}
+
 	bool isPause = false;
 	isPause = m_game->GetIsPause(isPause);
 	if (isPause)
