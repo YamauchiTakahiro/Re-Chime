@@ -361,6 +361,10 @@ void FloorBoss::Hit()
 			}
 
 			m_floorBossHP -= damage;
+			if (m_floorBossHP < 0)
+			{
+				m_floorBossHP = 0;
+			}
 			m_damageIntarvalTime = 1.5f;
 			m_player->SetAttackHit(true);
 
@@ -376,21 +380,19 @@ void FloorBoss::Hit()
 			damageText->SetPosition(textPos);
 			damageText->SetDamage(damage);
 			damageText->SetCritical(isCritical);
-			if (m_isCritical)
+			if (isCritical)
 			{
 				StartHitStop(0.21f);
-			}
-			else
-			{
-				StartHitStop(0.15f);
-			}
-			if (m_isCritical)
-			{
+
 				GameCamera* camera = FindGO<GameCamera>("gameCamera");
 				if (camera)
 				{
 					camera->StartShake(0.15f, 8.0f);
 				}
+			}
+			else
+			{
+				StartHitStop(0.15f);
 			}
 		}
 	}

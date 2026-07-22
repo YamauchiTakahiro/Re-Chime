@@ -108,6 +108,17 @@ void Game::Update()
 		}
 	}
 
+	if (m_slowTime > 0.0f)
+	{
+		m_slowTime -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_slowTime <= 0.0f)
+		{
+			m_slowTime = 0.0f;
+			m_timeScale = 1.0f;
+		}
+	}
+
 	//ロード中なら停止
 	if (m_isLoading)
 	{
@@ -302,17 +313,61 @@ void Game::Update()
 		}
 	}
 
+	if (m_player->GetHP() <= 0 && m_ui)
+{
+    m_ui->SetVisible(false);
+}
+
 	//プレイヤーのHPが0以下になったらゲームオーバー。
-	int hp = 0;
-	int playerHP = m_player->GetHP();
-	if (playerHP <= 0)
+	if (m_player->GetHP() <= 0 && !m_isGameOver)
 	{
-		NewGO<GameOver>(0, "GameOver");
+		m_isGameOver = true;
+
+		m_deadTimer = 1.2f;
+
+		StartHitStop(0.2f);          // 一瞬止まる
+		StartSlowMotion(0.8f, 0.2f); // 20%速度でスロー
+
 		if (m_audioManager)
 		{
 			m_audioManager->StopBGM(enSound_StageBGM);
 		}
-		DeleteGO(this);
+
+		if (m_ui)
+		{
+			m_ui->SetVisible(false);
+		}
+	}
+
+	// 毎フレーム
+	if (m_isGameOver)
+	{
+		m_deadTimer -= g_gameTime->GetFrameDeltaTime();
+
+		if (m_deadTimer <= 0.0f)
+		{
+			if (!m_fade->IsFade() && !m_fade->IsFadeOutFinished())
+			{
+				m_fade->StartFadeOut(1.0f);
+			}
+		}
+
+		if (m_fade->IsFadeOutFinished() && !m_isBlackWait)
+		{
+			m_isBlackWait = true;
+			m_blackTimer = 0.8f;
+		}
+
+		if (m_isBlackWait)
+		{
+			m_blackTimer -= g_gameTime->GetFrameDeltaTime();
+
+			if (m_blackTimer <= 0.0f)
+			{
+				NewGO<GameOver>(0, "GameOver");
+				DeleteGO(this);
+			}
+		}
 		return;
 	}
 
@@ -339,15 +394,51 @@ void Game::Update()
 		}
 	}
 
-	if (m_gameClearFlag)
+	if (m_gameClearFlag && !m_isGameClearStart)
 	{
+		m_isGameClearStart = true;
+		m_gameClearTimer = 2.0f;
+
 		if (m_gire != nullptr)
 		{
 			DeleteGO(m_gire);
 			m_gire = nullptr;
 		}
 
-		MoveGameClear();
+		if (m_ui)
+		{
+			m_ui->ShowGoal(L"MISSION COMPLETE");
+		}
+	}
+
+	if (m_isGameClearStart)
+	{
+		m_gameClearTimer -= g_gameTime->GetFrameDeltaTime();
+
+		SetGameStop(true);
+
+		if (m_gameClearTimer <= 0.0f && !m_isClearFade)
+		{
+			m_isClearFade = true;
+
+			if (m_ui)
+			{
+				m_ui->SetVisible(false);
+			}
+
+			if (m_audioManager)
+			{
+				m_audioManager->StopBGM(enSound_StageBGM);
+			}
+
+			m_fade->StartFadeOut(1.0f);
+		}
+
+		if (m_isClearFade && m_fade->IsFadeOutFinished())
+		{
+			MoveGameClear();
+		}
+
 		return;
 	}
 
@@ -969,4 +1060,10 @@ void Game::StartHitStop(float time)
 bool Game::IsHitStop() const
 {
 	return m_hitStopTimer > 0.0f;
+}
+
+void Game::StartSlowMotion(float time, float scale)
+{
+	m_slowTime = time;
+	m_timeScale = scale;
 }

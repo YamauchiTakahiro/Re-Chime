@@ -81,10 +81,8 @@ bool Player::Start()
 }
 
 void Player::Update()
-{
-	Game* game = FindGO<Game>("game");
-
-	if (game && game->IsHitStop())
+{	
+	if (m_game && m_game->IsHitStop())
 	{
 		return;
 	}
@@ -177,6 +175,11 @@ void Player::UpdateTimer()
 {
 	// 経過時間を取得
 	float dt = g_gameTime->GetFrameDeltaTime();
+
+	if (m_game)
+	{
+		dt *= m_game->GetTimeScale();
+	}
 
 	if (dt < 0.0f)
 	{
@@ -334,8 +337,6 @@ void Player::Move()
 	{
 		finalMoveSpeed = m_tackleVelocity;
 
-		m_tackleVelocity *= 0.9f;
-
 		if (m_tackleVelocity.LengthSq() < 100.0f)
 		{
 			m_tackleVelocity = Vector3::Zero;
@@ -358,7 +359,10 @@ void Player::TackleMove()
 	Vector3 dir = Vector3::Front;
 	m_rotation.Apply(dir);
 
-	m_tackleVelocity = dir * 800.0f;
+	if (m_tackleVelocity.LengthSq() == 0.0f)
+	{
+		m_tackleVelocity = dir * 800.0f;
+	}
 }
 
 void Player::JumpAndGravity()
@@ -625,7 +629,6 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 	{
 		if (!m_guardFlag && m_damageIntarvalTime <= 0.0f)
 		{
-			m_playerHp -= damage;
 			m_audioManager->PlaySE(enSound_PlayerDamageSE, 1.0f, enSEPlay_AllowOverlap);
 
 			// ノックバックの計算
@@ -641,7 +644,15 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 				dir.Normalize();
 			}
 
-			m_knockBackPower = 500.0f; // ノックバックの強さ
+			if (m_playerHp <= 0)
+			{
+				m_knockBackPower = 1200.0f;
+			}
+			else
+			{
+				m_knockBackPower = 500.0f;
+			}
+
 			m_knockBack = dir * m_knockBackPower;
 			m_knockBack.y = 0.0f;
 
@@ -654,6 +665,18 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 			m_damageIntarvalTime = 2.0f;
 
 			m_audioManager->PlaySE(enSound_PlayerGuardSE, 1.0f, enSEPlay_AllowOverlap);
+		}
+		m_playerHp -= damage;
+
+		if (m_playerHp <= 0)
+		{
+			m_playerHp = 0;
+
+			Game* game = FindGO<Game>("game");
+			if (game)
+			{
+				game->StartSlowMotion(0.7f, 0.2f);
+			}
 		}
 	}
 }

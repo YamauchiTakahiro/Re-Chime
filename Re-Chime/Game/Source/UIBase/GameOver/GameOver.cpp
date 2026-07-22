@@ -2,6 +2,7 @@
 #include "GameOver.h"
 #include "Source/UIBase/Title/Title.h"
 #include "Source/Manager/AudioManager/AudioManager.h"
+#include "Source/UIBase/Fade/Fade.h"
 
 GameOver::GameOver()
 {
@@ -20,11 +21,20 @@ bool GameOver::Start()
 	{
 		m_audioManager->PlayBGM(enSound_GameOverBGM, 0.5f);
 	}
+
+	m_fade = NewGO<Fade>(0, "fade");
+	m_fade->SetAlpha(1.0f);
+	m_fade->StartFadeIn();
 	return true;
 }
 
 void GameOver::Update()
 {
+	if (m_fade && m_fade->IsFade())
+	{
+		return;
+	}
+
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		NewGO<Title>(0, "title");

@@ -136,6 +136,8 @@ void MediumRobot::Update()
 	bool IntroFlag = m_game->GetIntro();
 	bool bossIntroFlag = m_game->GetBossIntro();
 
+	DeathMove();
+
 	if (!m_isDeath && !IntroFlag && !bossIntroFlag)
 	{
 		KnockBack();
@@ -143,6 +145,7 @@ void MediumRobot::Update()
 		if (!m_isKnockBack)
 		{
 			Move();
+			PushFromEnemy();
 		}
 
 		Rotation();
@@ -238,6 +241,7 @@ void MediumRobot::Move()
 		m_moveSpeed = Vector3::Zero;
 	}
 
+	m_moveSpeed += CalcPushVector();
 	m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
 
 	m_modelRender.SetPosition(m_position);
@@ -337,6 +341,7 @@ void MediumRobot::OnCollision()
 	m_collisionObject->SetName("mediumRobotAttack");
 	
 	m_attackCollisionLife = 0.1f; // 攻撃の当たり判定の寿命を設定
+	m_attackPos = collisionPos;
 }
 
 void MediumRobot::Time()
@@ -436,6 +441,11 @@ void MediumRobot::ReceiveAttack(bool isTackle)
 	CreateDamageText(damage, m_isCritical, isBackAttack);
 
 	m_damageIntarvalTime = 2.0f;
+
+	if (m_mediumRobotHp <= 0)
+	{
+		m_game->StartSlowMotion(0.08f, 0.2f);
+	}
 }
 
 int MediumRobot::CalcDamage(int damage)
@@ -546,7 +556,7 @@ void MediumRobot::AttackHit()
 		{
 			int mediumRobotAttackPower = 0;
 			mediumRobotAttackPower = GetAttackPower();
-			m_player->TakeDamage(mediumRobotAttackPower, m_position);
+			m_player->TakeDamage(mediumRobotAttackPower, m_attackPos);
 		}
 	}
 }
@@ -567,29 +577,7 @@ void MediumRobot::Death()
 	{
 		camera->StartShake(0.3f, 20.0f);
 	}
-	m_game->EnemyCount();
-	MakeExplosionEffect();
 	m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
-	int randomNum = rand() % 100 + 1;
-	if (randomNum <= 20)
-	{
-		m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
-		m_attackSpeedBuff->SetPosition(m_position);
-		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
-	}
-	else if (randomNum > 20 && randomNum <= 40)
-	{
-		m_powerBuff = NewGO<PowerBuff>(0);
-		m_powerBuff->SetPosition(m_position);
-		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
-	}
-	else if (randomNum > 40 && randomNum <= 60)
-	{
-		m_heal = NewGO<Heal>(0);
-		m_heal->SetPosition(m_position);
-		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
-	}
-	DeleteGO(this);
 }
 
 void MediumRobot::MakeExplosionEffect()
@@ -653,6 +641,27 @@ void MediumRobot::MediumRobotState()
 	{
 		m_mediumRobotHp = 0;
 
+		if (!m_isDeath)
+		{
+			Death();
+
+			Vector3 dir = m_position - m_player->GetPosition();
+			dir.y = 0.0f;
+
+			if (dir.LengthSq() > 0.01f)
+			{
+				dir.Normalize();
+			}
+
+			m_deathVelocity = dir * 4500.0f;
+			m_deathVelocity.y = 2500.0f;
+			m_deathRotateSpeed = 1200.0f;
+			m_deathMoveTime = 0.5f;
+			m_isDeathMove = true;
+			m_landEffect = false;
+			m_landWait = 0.35f;
+		}
+
 		m_mediumRobotState = enMediumRobotState_Death;
 		m_isDeath = true;
 	}
@@ -685,7 +694,7 @@ void MediumRobot::DeathState()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		Death();
+		//Death();
 	}
 }
 
@@ -754,5 +763,180 @@ void MediumRobot::Render(RenderContext& rc)
 	if (m_isShowAlert)
 	{
 		m_alertMark.Draw(rc);
+	}
+}
+
+Vector3 MediumRobot::CalcPushVector()
+{
+	Vector3 push = Vector3::Zero;
+
+	if (m_player == nullptr)
+	{
+		return push;
+	}
+
+	Vector3 dir = m_position - m_player->GetPosition();
+	dir.y = 0.0f;
+
+	float dist = dir.Length();
+
+	if (dist > 0.001f && dist < m_pushRadius)
+	{
+		dir.Normalize();
+
+		float power = (m_pushRadius - dist) * m_pushPower;
+
+		push = dir * power;
+	}
+
+	return push;
+}
+
+void MediumRobot::PushFromEnemy()
+{
+	auto enemies = FindGOs<MediumRobot>("mediumRobot");
+
+	for (auto enemy : enemies)
+	{
+		if (enemy == this)
+		{
+			continue;
+		}
+
+		Vector3 diff = m_position - enemy->GetPosition();
+		diff.y = 0.0f;
+
+		float dist = diff.Length();
+
+		if (dist <= 0.001f)
+		{
+			continue;
+		}
+
+		const float radius = 250.0f;
+
+		if (dist < radius)
+		{
+			diff.Normalize();
+
+			float power = (radius - dist) * 4.0f;
+
+			Vector3 move = diff * power;
+
+			m_position = m_characterController.Execute(move, 2.0f / 60.0f);
+
+			m_modelRender.SetPosition(m_position);
+		}
+	}
+}
+
+void MediumRobot::DeathMove()
+{
+	if (!m_isDeathMove)
+	{
+		return;
+	}
+
+	if (m_deathVelocity.y < 0.0f)
+	{
+		m_wasFalling = true;
+	}
+
+	float dt = g_gameTime->GetFrameDeltaTime();
+	if (m_game)
+	{
+		dt *= m_game->GetTimeScale();
+	}
+
+	m_deathMoveTime -= dt;
+
+	// 吹っ飛び
+	m_position = m_characterController.Execute(m_deathVelocity, dt);
+
+	m_modelRender.SetPosition(m_position);
+
+	m_deathVelocity.y -= 3000.0f * dt;
+
+	// 少しずつ回転
+	Quaternion rotY;
+	rotY.SetRotationDegY(m_deathRotateSpeed * dt);
+
+	Quaternion rotX;
+	rotX.SetRotationDegX(m_deathRotateSpeed * 0.6f * dt);
+
+	Quaternion rotZ;
+	rotZ.SetRotationDegZ(m_deathRotateSpeed * 0.4f * dt);
+
+	m_rotation *= rotY;
+	m_rotation *= rotX;
+	m_rotation *= rotZ;
+
+	m_modelRender.SetRotation(m_rotation);
+
+	float scale = 1.0f + (0.5f - m_deathMoveTime) * 0.3f;
+
+	m_modelRender.SetScale(Vector3(scale, scale, scale));
+
+	if (m_position.y <= 0.0f)
+	{
+		m_position.y = 0.0f;
+
+		// 横方向だけ少し滑る
+		m_deathVelocity.x *= 0.75f;
+		m_deathVelocity.z *= 0.75f;
+
+		// 縦速度は止める
+		m_deathVelocity.y = 0.0f;
+	}
+
+	// 減速
+	m_deathVelocity *= 0.90f;
+
+	if (m_landEffect)
+	{
+		m_isDeathMove = false;
+	}
+
+	m_landWait -= dt;
+
+	if (!m_landEffect && m_wasFalling && m_position.y <= 0.0f)
+	{
+		m_landEffect = true;
+
+		Vector3 pos = m_position;
+		pos.y += 30.0f;
+
+		// 着地爆発
+		EffectManager::GetInstance().PlayEffect(
+			EffectManager::enEffect_Explosion,
+			pos,
+			25.0f);
+
+		int randomNum = rand() % 100 + 1;
+
+		if (randomNum <= 20)
+		{
+			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
+			m_attackSpeedBuff->SetPosition(m_position);
+
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		else if (randomNum <= 40)
+		{
+			m_powerBuff = NewGO<PowerBuff>(0);
+			m_powerBuff->SetPosition(m_position);
+
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		else if (randomNum <= 60)
+		{
+			m_heal = NewGO<Heal>(0);
+			m_heal->SetPosition(m_position);
+
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		Death();
+		m_game->EnemyCount();
+		DeleteGO(this);
 	}
 }

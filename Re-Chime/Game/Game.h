@@ -166,6 +166,13 @@ public:
 
 	float GetInventoryCoolTime() const;
 
+	void StartSlowMotion(float time, float scale);
+
+	float GetTimeScale() const
+	{
+		return m_timeScale;
+	}
+
 	void Render(RenderContext& rc);
 private:
 	LevelRender m_levelRender;
@@ -266,5 +273,15 @@ private:
 	Vector3 m_navPos = Vector3::Zero;
 	float m_navTimer = 0.0f;
 	float m_hitStopTimer = 0.0f;
+	bool m_isGameOver = false;
+	bool m_isGameClearStart = false;
+	bool m_isClearFade = false;
+	float m_gameClearTimer = 0.0f;
+	float m_slowTime = 0.0f;
+	float m_timeScale = 1.0f;
+	float m_deadTimer = 1.0f;
+	bool m_isDead = false;
+	float m_blackTimer = 0.8f;
+	bool  m_isBlackWait = false;
 };
 

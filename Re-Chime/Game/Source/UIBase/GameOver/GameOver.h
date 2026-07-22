@@ -2,6 +2,7 @@
 #include "Source/UIBase/UIBase.h"
 
 class AudioManager;
+class Fade;
 
 class GameOver :
     public UIBase
@@ -15,5 +16,6 @@ public:
 
 private:
 	AudioManager* m_audioManager;
+    Fade* m_fade = nullptr;
 };
 

@@ -55,6 +55,9 @@ public:
 	void AttackState();
 	void DeathState();
 	void ShowAlert();
+	void PushFromEnemy();
+	void DeathMove();
+	Vector3 CalcPushVector();
 	Vector3 GetPosition()const override
 	{
 		return m_position;
@@ -80,7 +83,6 @@ public:
 		m_modelRender.SetScale(scale);
 	}
 	virtual void Render(RenderContext& rc)override;
-
 private:
 	//enum EnAnimationClip {		//アニメーション。
 	//	enAnimationClip_Idle,
@@ -133,5 +135,15 @@ private:
 	bool m_isCritical = false;
 	float m_hitStopTime = 0.0f;
 	float m_viewHp = 0.0f;
+	float m_pushRadius = 180.0f;     // プレイヤーとの最低距離
+	float m_pushPower = 300.0f;      // 押し出す強さ
+	Vector3 m_deathVelocity = Vector3::Zero;
+	float m_deathMoveTime = 0.0f;
+	bool m_isDeathMove = false;
+	bool m_landEffect = false;
+	bool m_wasFalling = false;
+
+	float m_deathRotateSpeed = 1200.0f;
+	float m_landWait = 0.3f;
 };
 
