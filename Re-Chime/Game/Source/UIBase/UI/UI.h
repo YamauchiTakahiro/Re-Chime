@@ -30,6 +30,11 @@ class UI :public UIBase
         return m_isVisible;
     }
 
+    void SetHideGameUI(bool hide)
+    {
+        m_hideGameUI = hide;
+    }
+
     void ShowGoal(const wchar_t* text);
     void ShowPickItem(const wchar_t* text);
 private:
@@ -87,5 +92,6 @@ private:
     std::wstring m_goalMessage;
     std::wstring m_pickItemMessage;
     float m_hpBarRate = 1.0f;
+    bool m_hideGameUI = false;
 };
 

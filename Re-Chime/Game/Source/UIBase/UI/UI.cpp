@@ -716,7 +716,7 @@ void UI::Render(RenderContext& rc)
 
 	bool isEvent = m_game->GetIntro() || m_game->GetBossIntro() || camera->IsCameraTransition();
 
-	if (!isHideUI)
+	if (!isHideUI && !m_hideGameUI)
 	{
 		m_HPBar.Draw(rc);
 		m_HP.Draw(rc);

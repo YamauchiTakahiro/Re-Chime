@@ -361,6 +361,11 @@ void Player::TackleMove()
 
 	if (m_tackleVelocity.LengthSq() == 0.0f)
 	{
+		dir.Normalize();
+
+		m_rotation.SetRotationYFromDirectionXZ(dir);
+		m_modelRender.SetRotation(m_rotation);
+
 		m_tackleVelocity = dir * 800.0f;
 	}
 }
@@ -834,28 +839,20 @@ void Player::PlayerState()
 
 	if (g_pad[0]->IsTrigger(enButtonX) && m_tackleCoolTime <= 0.0f && !m_guardFlag && m_stamina >= tackleCost)
 	{
-		m_stamina -= tackleCost;      // スタミナ消費
-
-		if (m_stamina < 0.0f)
+		if (m_moveSpeed.LengthSq() > 0.01f)
 		{
-			m_stamina = 0.0f;
+			m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
+			m_modelRender.SetRotation(m_rotation);
 		}
 
-		m_playerState = enPlayerState_Tackle;
+		m_stamina -= tackleCost;
 
+		m_playerState = enPlayerState_Tackle;
 		m_isTackle = true;
 
 		m_hasCreatedCollision = false;
-
 		m_tackleInvincibleTime = 1.0f;
 
-		return;
-	}
-
-	if (g_pad[0]->IsPress(enButtonLB1) && m_guardTimeLimit >= 3.0f && m_guardCoolTime <= 0.0f)
-	{
-		m_playerState = enPlayerState_Guard;
-		m_guardFlag = true;
 		return;
 	}
 
@@ -919,6 +916,8 @@ void Player::TackleState()
 		m_enemyHitFlag = false;
 		m_isTackle = false;
 		m_tackleCoolTime = 3.0f;
+
+		m_tackleVelocity = Vector3::Zero;
 
 		PlayerState();
 	}
