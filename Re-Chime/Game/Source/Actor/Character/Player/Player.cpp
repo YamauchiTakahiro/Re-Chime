@@ -285,7 +285,13 @@ void Player::UpdateTimer()
 
 void Player::Move()
 {
-	if (!m_isKnockBack && !m_isTackle)
+	if (m_isJumpStart && !m_hasJumped)
+	{
+		m_moveSpeed.x = 0.0f;
+		m_moveSpeed.z = 0.0f;
+	}
+
+	else if (!m_isKnockBack && !m_isTackle)
 	{
 		m_moveSpeed.x = 0.0f;
 		m_moveSpeed.z = 0.0f;
