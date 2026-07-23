@@ -240,7 +240,7 @@ void Player::UpdateTimer()
 	moveInput.x = g_pad[0]->GetLStickXF();
 	moveInput.z = g_pad[0]->GetLStickYF();
 
-	bool isDashing = g_pad[0]->IsPress(enButtonRB1) && moveInput.LengthSq() > 0.01f && m_canDash;
+	bool isDashing = g_pad[0]->IsPress(enButtonRB1) && moveInput.LengthSq() > 0.01f && m_canDash && !m_isJumpStart;
 
 	if (isDashing)
 	{
@@ -397,6 +397,7 @@ void Player::JumpAndGravity()
 			m_moveSpeed.y = 500.0f;
 
 			m_hasJumped = true;
+			m_isJumpStart = false;
 		}
 	}
 
@@ -948,8 +949,6 @@ void Player::JumpState()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		m_isJumpStart = false;
-
 		PlayerState();
 	}
 }
