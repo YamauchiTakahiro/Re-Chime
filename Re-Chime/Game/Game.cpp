@@ -178,33 +178,33 @@ void Game::Update()
 
 						m_stage->SetPosition(objData.position);
 					}
-					//else if (objData.EqualObjectName(L"smallRobot") == true)
-					//{
-					//	SpawnData spawnData;
-					//	spawnData.spawnType = enSpawnType::enSpawnType_SmallRobot;
-					//	spawnData.pos = objData.position;
-					//	spawnData.scale = objData.scale;
-					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
-					//	m_spawnList.push_back(spawnData);
-					//}
-					//else if (objData.EqualObjectName(L"mediumRobot"))
-					//{
-					//	SpawnData spawnData;
-					//	spawnData.spawnType = enSpawnType::enSpawnType_MediumRobot;
-					//	spawnData.pos = objData.position;
-					//	spawnData.scale = objData.scale;
-					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
-					//	m_spawnList.push_back(spawnData);
-					//}
-					//else if (objData.EqualObjectName(L"FloorBoss") == true)
-					//{
-					//	SpawnData spawnData;
-					//	spawnData.spawnType = enSpawnType::enSpawnType_FloorBoss;
-					//	spawnData.pos = objData.position;
-					//	spawnData.scale = objData.scale;
-					//	spawnData.floorNum = GetFloorFromY(objData.position.y);
-					//	m_spawnList.push_back(spawnData);
-					//}
+					else if (objData.EqualObjectName(L"smallRobot") == true)
+					{
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_SmallRobot;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
+					}
+					else if (objData.EqualObjectName(L"mediumRobot"))
+					{
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_MediumRobot;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
+					}
+					else if (objData.EqualObjectName(L"FloorBoss") == true)
+					{
+						SpawnData spawnData;
+						spawnData.spawnType = enSpawnType::enSpawnType_FloorBoss;
+						spawnData.pos = objData.position;
+						spawnData.scale = objData.scale;
+						spawnData.floorNum = GetFloorFromY(objData.position.y);
+						m_spawnList.push_back(spawnData);
+					}
 					else if (objData.EqualObjectName(L"finalBoss") == true)
 					{
 						SpawnData spawnData;
