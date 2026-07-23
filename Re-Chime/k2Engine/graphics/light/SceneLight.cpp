@@ -27,9 +27,9 @@ namespace nsK2Engine {
     void SceneLight::Init()
     {
         // 太陽光
-        m_light.directionalLight[0].color.x = 0.1f;
-        m_light.directionalLight[0].color.y = 0.1f;
-        m_light.directionalLight[0].color.z = 0.1f;
+        m_light.directionalLight[0].color.x = 0.27f;
+        m_light.directionalLight[0].color.y = 0.27f;
+        m_light.directionalLight[0].color.z = 0.27f;
 
         m_light.directionalLight[0].direction.x = 1.0f;
         m_light.directionalLight[0].direction.y = -1.0f;
