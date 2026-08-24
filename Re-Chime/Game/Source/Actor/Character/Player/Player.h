@@ -208,6 +208,16 @@ public:
         return m_playerState == enPlayerState_Run;
     }
 
+    float GetGuardCoolTime() const
+    {
+        return m_guardCoolTime;
+    }
+
+    float GetGuardCoolTimeMax() const
+    {
+        return 3.0f;
+    }
+    void KnockBackOnly(const Vector3& enemyPos, float power);
     bool UseItem(int itemNo);
     void SetScale();
     void Render(RenderContext& rc)override;
@@ -281,5 +291,6 @@ private:
 	bool m_isTackle = false;
     bool m_isDash = false;
 	bool m_tackleMove = false;
+    bool m_guardInputReleased = true;
 };
 

@@ -19,12 +19,15 @@ public:
 		enFloorBossState_Walk,		//移動状態。
 		enFloorBossState_Attack,		//攻撃状態。
 		enFloorBossState_Death,		//死亡状態。
+		enFloorBossState_Hit,
 		enFloorBossState_Num,
 	};
 
 	enum EnAttackPhase
 	{
 		enAttackPhase_Warn,   // 構え
+		enAttackPhase_BackStep,  //バックステップ
+		enAttackPhase_Dash,	// 攻撃直前の踏み込み
 		enAttackPhase_Active, // 当たり判定
 		enAttackPhase_End     // 終了
 	};
@@ -52,6 +55,8 @@ public:
 	void WalkState();
 	void AttackState();
 	void DeathState();
+	void BodyPush();
+	void HitState();
 	Vector3 GetPosition()const override
 	{
 		return m_position;
@@ -135,4 +140,19 @@ private:
 	float m_moveSpeedValue = 250.0f;
 	bool m_isCritical = false;
 	float m_viewHp = 0.0f;
+	float m_bodyPushCoolTime = 0.0f;
+	float m_attackAfterDelay = 0.0f;
+	float m_hitStunTime = 0.0f;
+	float m_hitStunTimer = 0.0f;
+	float m_hitStateTimer = 0.0f;
+	float m_dashAttackTimer = 0.0f;
+	float m_dashAttackSpeed = 1200.0f;
+	Vector3 m_dashDirection = Vector3::Zero;
+	float m_backStepTimer = 0.0f;
+	float m_backStepSpeed = 500.0f;
+	Vector3 m_backStepDirection = Vector3::Zero;
+	bool m_dashHitFlag = false;
+	bool m_isDeathEffectStarted = false;
+	float m_deathEffectTimer = 0.0f;
+	float m_tackleEndStunTime = 0.0f;
 };

@@ -154,6 +154,8 @@ void FloorBoss::Update()
 
 	Hit();
 
+	BodyPush();
+
 	DamageIntarval();
 
 	AttackHit();
@@ -233,11 +235,28 @@ void FloorBoss::Update()
 
 void FloorBoss::Move()
 {
-	if (m_floorBossState == enFloorBossState_Attack)
+	if (m_tackleEndStunTime > 0.0f)
+	{
+		m_moveSpeed = Vector3::Zero;
+		return;
+	}
+
+	if (m_floorBossHP <= 0 || m_floorBossState == enFloorBossState_Death)
+	{
+		m_moveSpeed = Vector3::Zero;
+		return;
+	}
+
+	if (m_floorBossHP == enFloorBossState_Attack)
+	{
+		return;
+	}
+
+	if (m_floorBossState == enFloorBossState_Hit)
 	{
 		m_moveSpeed = Vector3::Zero;
 
-		m_position = m_characterController.Execute(m_moveSpeed,2.0f / 60.0f);
+		m_position = m_characterController.Execute(m_moveSpeed, 2.0f / 60.0f);
 
 		m_modelRender.SetPosition(m_position);
 		return;
@@ -246,15 +265,18 @@ void FloorBoss::Move()
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
-	if (distToPlayer <= 1500)
+
+	const float attackDistance = 500.0f;
+
+	if (distToPlayer > attackDistance && distToPlayer <= 1500.0f)
 	{
 		toPlayer.Normalize();
 		m_moveSpeed = toPlayer * m_moveSpeedValue;
 		m_moveSpeed.y = 0.0f;
 	}
-	else if (distToPlayer > 2000)
+	else
 	{
-		m_moveSpeed = toPlayer * 0.0f;
+		m_moveSpeed = Vector3::Zero;
 	}
 
 	if (m_characterController.IsOnGround() == false)
@@ -269,6 +291,11 @@ void FloorBoss::Move()
 
 void FloorBoss::Rotation()
 {
+	if (m_floorBossHP <= 0 || m_floorBossState == enFloorBossState_Death)
+	{
+		return;
+	}
+
 	Vector3 playerPos = m_player->GetPosition();
 	Vector3 toPlayer = playerPos - m_position;
 	float distToPlayer = toPlayer.Length();
@@ -295,16 +322,30 @@ void FloorBoss::Attack()
 
 void FloorBoss::OnCollision()
 {
+	if (m_collisionObject != nullptr)
+	{
+		DeleteGO(m_collisionObject);
+		m_collisionObject = nullptr;
+	}
+
 	m_collisionObject = NewGO<CollisionObject>(0);
 
 	Vector3 collisionPos = m_position;
+
 	m_forward = Vector3::Front;
 	m_rotation.Apply(m_forward);
+
 	collisionPos += m_forward * 450.0f;
-	m_collisionObject->CreateSphere(collisionPos, Quaternion::Identity, 200.0f);
+
+	m_collisionObject->CreateSphere(
+		collisionPos,
+		Quaternion::Identity,
+		350.0f
+	);
+
 	m_collisionObject->SetName("floorBossAttack");
 
-	m_attackCollisionLife = 0.1f; // 攻撃の当たり判定の寿命を設定
+	m_attackCollisionLife = 0.1f;
 }
 
 void FloorBoss::Time()
@@ -313,6 +354,20 @@ void FloorBoss::Time()
 	if (m_timeCount < 0.0f)
 	{
 		m_timeCount = 0.0f;
+	}
+
+	m_bodyPushCoolTime -= g_gameTime->GetFrameDeltaTime();
+
+	if (m_bodyPushCoolTime < 0.0f)
+	{
+		m_bodyPushCoolTime = 0.0f;
+	}
+
+	m_tackleEndStunTime -= g_gameTime->GetFrameDeltaTime();
+
+	if (m_tackleEndStunTime < 0.0f)
+	{
+		m_tackleEndStunTime = 0.0f;
 	}
 }
 
@@ -366,6 +421,12 @@ void FloorBoss::Hit()
 				m_floorBossHP = 0;
 			}
 			m_damageIntarvalTime = 1.5f;
+
+			if (m_floorBossHP > 0)
+			{
+				m_floorBossState = enFloorBossState_Hit;
+				m_hitStateTimer = 0.5f;
+			}
 			m_player->SetAttackHit(true);
 
 			//========================
@@ -401,12 +462,13 @@ void FloorBoss::Hit()
 void FloorBoss::AttackHit()
 {
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("floorBossAttack");
+
 	for (auto collision : collisions)
 	{
 		if (collision->IsHit(m_player->GetCharacterController()) == true)
 		{
-			int floorBossAttackPower = 0;
-			floorBossAttackPower = GetAttackPower();
+			int floorBossAttackPower = GetAttackPower();
+
 			m_player->TakeDamage(floorBossAttackPower, m_position);
 		}
 	}
@@ -425,33 +487,64 @@ void FloorBoss::Death()
 {
 	if (m_floorBossHP <= 0)
 	{
+		//========================================
+		// 死亡演出
+		//========================================
+
+		// 強めのカメラシェイク
 		GameCamera* camera = FindGO<GameCamera>("gameCamera");
 		if (camera)
 		{
-			camera->StartShake(0.6f, 20.0f);
+			camera->StartShake(0.8f, 30.0f);
 		}
-		m_game->EnemyCount();
-		m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.5f, enSEPlay_AllowOverlap);
+
+		// 死亡SE
+		m_audioManager->PlaySE(
+			enSound_EnemyDeathSE,
+			0.7f,
+			enSEPlay_AllowOverlap
+		);
+
+		// 爆発エフェクト
 		MakeExplosionEffect();
+
+		// 敵撃破数
+		m_game->EnemyCount();
+
+		// アイテムドロップ
 		int randomNum = rand() % 100 + 1;
+
 		if (randomNum <= 20)
 		{
 			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
 			m_attackSpeedBuff->SetPosition(m_position);
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(
+				enSound_ItemDropSE,
+				0.5f,
+				enSEPlay_AllowOverlap
+			);
 		}
-		else if (randomNum > 20 && randomNum <= 40)
+		else if (randomNum <= 40)
 		{
 			m_powerBuff = NewGO<PowerBuff>(0);
 			m_powerBuff->SetPosition(m_position);
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(
+				enSound_ItemDropSE,
+				0.5f,
+				enSEPlay_AllowOverlap
+			);
 		}
-		else if (randomNum > 40 && randomNum <= 60)
+		else if (randomNum <= 60)
 		{
 			m_heal = NewGO<Heal>(0);
 			m_heal->SetPosition(m_position);
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(
+				enSound_ItemDropSE,
+				0.5f,
+				enSEPlay_AllowOverlap
+			);
 		}
+
 		DeleteGO(this);
 	}
 }
@@ -489,6 +582,10 @@ void FloorBoss::ManageState()
 
 	case enFloorBossState_Attack:
 		AttackState();
+		break;
+
+	case enFloorBossState_Hit:
+		HitState();
 		break;
 
 	case enFloorBossState_Death:
@@ -542,12 +639,29 @@ void FloorBoss::PlayAnimation()
 	case enFloorBossState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle);
 		break;
+
 	case enFloorBossState_Walk:
 		m_modelRender.PlayAnimation(enAnimationClip_Walk);
 		break;
+
+	case enFloorBossState_Attack:
+
+		// 後退中・突進中は歩きアニメーション
+		if (m_attackPhase == enAttackPhase_BackStep ||
+			m_attackPhase == enAttackPhase_Dash)
+		{
+			m_modelRender.PlayAnimation(enAnimationClip_Walk);
+		}
+
+		break;
+
+	case enFloorBossState_Hit:
+		break;
+
 	case enFloorBossState_Death:
 		m_modelRender.PlayAnimation(enAnimationClip_Death);
 		break;
+
 	default:
 		break;
 	}
@@ -555,26 +669,38 @@ void FloorBoss::PlayAnimation()
 
 void FloorBoss::FloorBossState()
 {
+	// タックル終了後の硬直中
+	if (m_tackleEndStunTime > 0.0f)
+	{
+		m_floorBossState = enFloorBossState_Idle;
+		return;
+	}
+
+	const float attackDistance = 500.0f;
+
 	Vector3 playerPos = m_player->GetPosition();
 	float dist = (playerPos - m_position).Length();
 
 	if (m_floorBossHP <= 0)
 	{
+		m_floorBossHP = 0;
 		m_floorBossState = enFloorBossState_Death;
+		m_moveSpeed = Vector3::Zero;
 	}
-	else if (dist <= 500.0f &&
-         m_timeCount <= 0.0f &&
-         m_floorBossState != enFloorBossState_Attack)
-    {
-    m_floorBossState = enFloorBossState_Attack;
+	else if (dist <= attackDistance &&
+		m_timeCount <= 0.0f &&
+		m_floorBossState != enFloorBossState_Attack)
+	{
+		m_floorBossState = enFloorBossState_Attack;
 
-    m_attackStateTimer = 0.8f;
-    m_attackPhase = enAttackPhase_Warn;
+		m_attackStateTimer = 0.8f;
+		m_attackPhase = enAttackPhase_Warn;
 
-    m_timeCount = m_attackIntervalTime;
-	MakeNoticeCircleEffect();
-    }
-	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+		m_timeCount = m_attackIntervalTime;
+		MakeNoticeCircleEffect();
+	}
+	else if (fabsf(m_moveSpeed.x) > 0.01f ||
+		fabsf(m_moveSpeed.z) > 0.01f)
 	{
 		m_floorBossState = enFloorBossState_Walk;
 	}
@@ -595,46 +721,312 @@ void FloorBoss::WalkState()
 
 void FloorBoss::AttackState()
 {
+	float dt = g_gameTime->GetFrameDeltaTime();
+
 	m_moveSpeed = Vector3::Zero;
 
-	m_attackStateTimer -= g_gameTime->GetFrameDeltaTime();
-
-	// ①予備動作（絶対にここで見せる）
+	//========================================
+	// ① 予備動作
+	//========================================	
 	if (m_attackPhase == enAttackPhase_Warn)
 	{
-		// 視覚的合図をここで作る
+		m_attackStateTimer -= dt;
 
 		if (m_attackStateTimer <= 0.0f)
 		{
-			m_attackPhase = enAttackPhase_Active;
-			OnCollision(); // ←ここで初めて攻撃発生
+			GameCamera* camera = FindGO<GameCamera>("gameCamera");
+			if (camera)
+			{
+				camera->StartShake(0.15f, 10.0f);
+			}
+			//プレイヤーの方向を記録
+			m_dashDirection = m_player->GetPosition() - m_position;
+			m_dashDirection.y = 0.0f;
+
+			if (m_dashDirection.Length() > 0.01f)
+			{
+				m_dashDirection.Normalize();
+			}
+
+			m_backStepDirection.x = -m_dashDirection.x;
+			m_backStepDirection.y = 0.0f;
+			m_backStepDirection.z = -m_dashDirection.z;
+
+			m_backStepTimer = 0.5f;
+
+			m_backStepSpeed = 1100.0f;
+
+			m_attackPhase = enAttackPhase_BackStep;
 		}
 		return;
 	}
 
-	// ②ヒットフェーズ
+	//========================================
+    // ② 後ろに下がってタックルの溜め
+    //========================================
+	if (m_attackPhase == enAttackPhase_BackStep)
+	{
+		m_backStepTimer -= dt;
+
+		m_moveSpeed.x = m_backStepDirection.x * m_backStepSpeed;
+		m_moveSpeed.y = 0.0f;
+		m_moveSpeed.z = m_backStepDirection.z * m_backStepSpeed;
+
+		m_position = m_characterController.Execute(
+			m_moveSpeed,
+			dt
+		);
+
+		m_modelRender.SetPosition(m_position);
+
+		// プレイヤーの方向を向き続ける
+		if (m_dashDirection.Length() > 0.01f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_dashDirection);
+			m_modelRender.SetRotation(m_rotation);
+		}
+
+		if (m_backStepTimer <= 0.0f)
+		{
+			m_backStepTimer = 0.0f;
+
+			m_moveSpeed = Vector3::Zero;
+
+			m_dashAttackTimer = 0.45f;
+
+			// タックル開始前の強い振動
+			GameCamera* camera = FindGO<GameCamera>("gameCamera");
+			if (camera)
+			{
+				camera->StartShake(0.15f, 10.0f);
+			}
+
+			m_attackPhase = enAttackPhase_Dash;
+			m_dashHitFlag = false;
+		}
+
+		return;
+	}
+
+	//========================================
+    // ③ 突進
+    //========================================
+	if (m_attackPhase == enAttackPhase_Dash)
+	{
+		m_dashAttackTimer -= dt;
+
+		m_moveSpeed = m_dashDirection * 2200.0f;
+		m_moveSpeed.y = 0.0f;
+
+		// 突進移動
+		m_position = m_characterController.Execute(m_moveSpeed, dt);
+
+		m_modelRender.SetPosition(m_position);
+
+		if (m_dashDirection.Length() > 0.01f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_dashDirection);
+			m_modelRender.SetRotation(m_rotation);
+		}
+
+		// 突進中の攻撃判定
+		OnCollision();
+
+		GameCamera* camera = FindGO<GameCamera>("gameCamera");
+		if (camera)
+		{
+			camera->StartShake(0.02f, 2.0f);
+		}
+
+		if (m_dashAttackTimer <= 0.0f)
+		{
+			m_dashAttackTimer = 0.0f;
+
+			m_moveSpeed = Vector3::Zero;
+
+			GameCamera* camera = FindGO<GameCamera>("gameCamera");
+			if (camera)
+			{
+				camera->StartShake(0.3f, 24.0f);
+			}
+
+			m_attackStateTimer = 0.15f;
+
+			m_attackPhase = enAttackPhase_Active;
+		}
+
+		return;
+	}
+
+	//========================================
+    // ④ 攻撃中
+    //========================================
 	if (m_attackPhase == enAttackPhase_Active)
 	{
+		m_attackStateTimer -= dt;
+
+		m_moveSpeed = Vector3::Zero;
+
 		if (m_attackStateTimer <= 0.0f)
 		{
+			m_attackStateTimer = 0.0f;
+
+			// タックル終了後の硬直時間
+			m_attackAfterDelay = 1.5f;
+
 			m_attackPhase = enAttackPhase_End;
 		}
+
 		return;
 	}
 
-	// ③終了
+	//========================================
+    // ⑤ 攻撃終了
+    //========================================
 	if (m_attackPhase == enAttackPhase_End)
 	{
-		m_floorBossState = enFloorBossState_Idle;
+		m_attackAfterDelay -= dt;
+
+		// 硬直中は完全停止
+		m_moveSpeed = Vector3::Zero;
+
+		if (m_attackAfterDelay <= 0.0f)
+		{
+			m_attackAfterDelay = 0.0f;
+
+			m_attackPhase = enAttackPhase_Warn;
+			m_floorBossState = enFloorBossState_Idle;
+		}
+
+		return;
 	}
 }
 
 void FloorBoss::DeathState()
 {
-	if(m_modelRender.IsPlayingAnimation() == false)
+	// 死亡アニメーションがまだ終わっていない
+	if (m_modelRender.IsPlayingAnimation())
 	{
-		Death();
+		return;
 	}
+
+	// 死亡演出をまだ開始していない
+	if (!m_isDeathEffectStarted)
+	{
+		m_isDeathEffectStarted = true;
+
+		GameCamera* camera = FindGO<GameCamera>("gameCamera");
+		if (camera)
+		{
+			// 爆発直前の強い揺れ
+			camera->StartShake(0.8f, 30.0f);
+		}
+
+		// 爆発SE
+		m_audioManager->PlaySE(enSound_EnemyDeathSE, 0.7f, enSEPlay_AllowOverlap);
+
+		// 爆発エフェクト
+		MakeExplosionEffect();
+
+		// 撃破数
+		m_game->EnemyCount();
+
+		// アイテムドロップ
+		int randomNum = rand() % 100 + 1;
+
+		if (randomNum <= 20)
+		{
+			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
+			m_attackSpeedBuff->SetPosition(m_position);
+
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		else if (randomNum <= 40)
+		{
+			m_powerBuff = NewGO<PowerBuff>(0);
+			m_powerBuff->SetPosition(m_position);
+
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+		else if (randomNum <= 60)
+		{
+			m_heal = NewGO<Heal>(0);
+			m_heal->SetPosition(m_position);
+
+			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+		}
+
+		// 演出開始
+		m_deathEffectTimer = 0.5f;
+
+		return;
+	}
+
+	// 爆発後、少し待ってから消す
+	m_deathEffectTimer -= g_gameTime->GetFrameDeltaTime();
+
+	if (m_deathEffectTimer <= 0.0f)
+	{
+		DeleteGO(this);
+	}
+}
+
+void FloorBoss::BodyPush()
+{
+	if (m_floorBossHP <= 0 || m_floorBossState == enFloorBossState_Death)
+	{
+		return;
+	}
+
+	if (m_floorBossState == enFloorBossState_Attack)
+	{
+		return;
+	}
+
+	if (m_bodyPushCoolTime > 0.0f)
+	{
+		return;
+	}
+
+	Vector3 dir = m_player->GetPosition() - m_position;
+	dir.y = 0.0f;
+
+	float distance = dir.Length();
+
+	if (distance >= 500.0f)
+	{
+		return;
+	}
+
+	if (distance < 0.01f)
+	{
+		return;
+	}
+
+	dir.Normalize();
+
+	// FloorBossの正面
+	Vector3 forward = Vector3::Front;
+	m_rotation.Apply(forward);
+	forward.y = 0.0f;
+
+	if (forward.LengthSq() > 0.01f)
+	{
+		forward.Normalize();
+	}
+
+	// 正面にいる場合はノックバックさせない
+	float dot = forward.x * dir.x + forward.z * dir.z;
+
+	if (dot > 0.3f)
+	{
+		return;
+	}
+
+	// 敵から離れる
+	m_player->KnockBackOnly(m_position, 1500.0f);
+
+	m_bodyPushCoolTime = 0.3f;
 }
 
 void FloorBoss::Render(RenderContext& rc)
@@ -654,5 +1046,30 @@ void FloorBoss::Render(RenderContext& rc)
 	if (m_isShowQuestion)
 	{
 		m_questionMark.Draw(rc);
+	}
+}
+
+void FloorBoss::HitState()
+{
+	m_moveSpeed = Vector3::Zero;
+
+	m_hitStateTimer -= g_gameTime->GetFrameDeltaTime();
+
+	if (m_hitStateTimer <= 0.0f)
+	{
+		m_hitStateTimer = 0.0f;
+
+		Vector3 toPlayer = m_player->GetPosition() - m_position;
+		float distToPlayer = toPlayer.Length();
+
+		// 攻撃範囲より遠いなら再びプレイヤーへ向かう
+		if (distToPlayer > 500.0f && distToPlayer <= 1500.0f)
+		{
+			m_floorBossState = enFloorBossState_Walk;
+		}
+		else
+		{
+			m_floorBossState = enFloorBossState_Idle;
+		}
 	}
 }

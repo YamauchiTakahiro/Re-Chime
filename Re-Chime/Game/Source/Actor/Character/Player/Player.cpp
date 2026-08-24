@@ -31,7 +31,7 @@ bool Player::Start()
 	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Player/playerPunchRight.tka");
 	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Guard].Load("Assets/animData/Player/playerGuard.tka");
-	m_animationClips[enAnimationClip_Guard].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Guard].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_KnockBack].Load("Assets/animData/Player/playerKnockBack.tka");
 	m_animationClips[enAnimationClip_KnockBack].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Tackle].Load("Assets/animData/Player/playerTackle.tka");
@@ -204,6 +204,22 @@ void Player::UpdateTimer()
 	m_fadeTime -= dt;
 	m_powerBuffTime -= dt;
 	m_attackSpeedBuffTime -= dt;
+	// =========================
+	// ガードクールタイム
+	// =========================
+	if (m_guardCoolTime > 0.0f)
+	{
+		m_guardCoolTime -= dt;
+
+		if (m_guardCoolTime < 0.0f)
+		{
+			m_guardCoolTime = 0.0f;
+		}
+	}
+
+	// =========================
+	// ガード中の残り時間
+	// =========================
 	if (m_guardFlag)
 	{
 		m_guardTimeLimit -= dt;
@@ -212,27 +228,14 @@ void Player::UpdateTimer()
 		{
 			m_guardTimeLimit = 0.0f;
 
-			if (m_guardFlag)
-			{
-				m_guardFlag = false;
-				m_guardCoolTime = 3.0f;
-			}
-		}
-	}
-	else
-	{
-		m_guardCoolTime -= dt;
+			// ガード終了
+			m_guardFlag = false;
 
-		if (m_guardCoolTime <= 0.0f)
-		{
-			m_guardCoolTime = 0.0f;
+			// ガードモーション終了
+			m_playerState = enPlayerState_Idle;
 
-			m_guardTimeLimit += dt;
-
-			if (m_guardTimeLimit > 3.0f)
-			{
-				m_guardTimeLimit = 3.0f;
-			}
+			// クールタイム開始
+			m_guardCoolTime = 3.0f;
 		}
 	}
 
@@ -629,56 +632,34 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 	{
 		return;
 	}
+
 	if (m_tackleInvincibleTime > 0.0f)
 	{
 		return;
 	}
+
 	if (m_damageIntarvalTime > 0.0f)
 	{
 		return;
 	}
-	else
+
+	// =========================
+	// ガード中
+	// =========================
+	if (m_guardFlag)
 	{
-		if (!m_guardFlag && m_damageIntarvalTime <= 0.0f)
-		{
-			m_audioManager->PlaySE(enSound_PlayerDamageSE, 1.0f, enSEPlay_AllowOverlap);
+		// ダメージ半減
+		int guardDamage = damage / 2;
 
-			// ノックバックの計算
-			Vector3 dir = enemyPos - m_position;
-			dir.y = 0.0f;
+		m_playerHp -= guardDamage;
 
-			if (dir.LengthSq() < 0.01f)
-			{
-				dir = m_forward;
-			}
-			else
-			{
-				dir.Normalize();
-			}
+		m_damageIntarvalTime = 0.2f;
 
-			if (m_playerHp <= 0)
-			{
-				m_knockBackPower = 1200.0f;
-			}
-			else
-			{
-				m_knockBackPower = 500.0f;
-			}
-
-			m_knockBack = dir * m_knockBackPower;
-			m_knockBack.y = 0.0f;
-
-			m_isKnockBack = true;
-			m_damageIntarvalTime = 2.0f; // ダメージのインターバルを設定
-		}
-		else if (m_guardFlag && m_damageIntarvalTime <= 0.0f)
-		{
-			m_playerHp -= damage / 2;
-			m_damageIntarvalTime = 2.0f;
-
-			m_audioManager->PlaySE(enSound_PlayerGuardSE, 1.0f, enSEPlay_AllowOverlap);
-		}
-		m_playerHp -= damage;
+		m_audioManager->PlaySE(
+			enSound_PlayerGuardSE,
+			1.0f,
+			enSEPlay_AllowOverlap
+		);
 
 		if (m_playerHp <= 0)
 		{
@@ -689,6 +670,63 @@ void Player::TakeDamage(int damage, const Vector3& enemyPos)
 			{
 				game->StartSlowMotion(0.7f, 0.2f);
 			}
+		}
+
+		// ガードしたのでノックバックしない
+		return;
+	}
+
+	// =========================
+	// 通常ダメージ
+	// =========================
+
+	m_audioManager->PlaySE(
+		enSound_PlayerDamageSE,
+		1.0f,
+		enSEPlay_AllowOverlap
+	);
+
+	// ノックバックの計算
+	Vector3 dir = m_position - enemyPos;
+	dir.y = 0.0f;
+
+	if (dir.LengthSq() < 0.01f)
+	{
+		dir.x = -m_forward.x;
+		dir.y = 0.0f;
+		dir.z = -m_forward.z;
+	}
+	else
+	{
+		dir.Normalize();
+	}
+
+	if (m_playerHp <= 0)
+	{
+		m_knockBackPower = 1200.0f;
+	}
+	else
+	{
+		m_knockBackPower = 500.0f;
+	}
+
+	m_knockBack = dir * m_knockBackPower;
+	m_knockBack.y = 0.0f;
+
+	m_isKnockBack = true;
+
+	m_damageIntarvalTime = 2.0f;
+
+	m_playerHp -= damage;
+
+	if (m_playerHp <= 0)
+	{
+		m_playerHp = 0;
+
+		Game* game = FindGO<Game>("game");
+		if (game)
+		{
+			game->StartSlowMotion(0.7f, 0.2f);
 		}
 	}
 }
@@ -823,19 +861,45 @@ void Player::GetGires()
 void Player::PlayerState()
 {
 	m_isDash = false;
+
 	if (m_isKnockBack)
 	{
 		m_playerState = enPlayerState_KnockBack;
 		return;
 	}
 
-	if (!isNearItem && g_pad[0]->IsTrigger(enButtonA) && m_attackCoolTime <= 0.0f && !m_guardFlag)
+	// ガード開始
+	if (!g_pad[0]->IsPress(enButtonLB1))
+	{
+		m_guardInputReleased = true;
+	}
+
+	if (g_pad[0]->IsTrigger(enButtonLB1) &&
+		!m_isAttack &&
+		!m_isTackle &&
+		!m_isKnockBack &&
+		!m_guardFlag &&
+		m_guardCoolTime <= 0.0f &&
+		m_guardInputReleased &&
+		m_characterController.IsOnGround())
+	{
+		m_guardFlag = true;
+		m_guardInputReleased = false;
+
+		m_playerState = enPlayerState_Guard;
+
+		m_guardTimeLimit = 3.0f;
+
+		return;
+	}
+
+	if (!isNearItem && g_pad[0]->IsTrigger(enButtonA) &&
+		m_attackCoolTime <= 0.0f && !m_guardFlag)
 	{
 		m_playerState = enPlayerState_Attack;
 
 		m_isAttack = true;
 
-		// 追加
 		m_attackStartTime = 0.0f;
 		m_hasCreatedCollision = false;
 
@@ -844,7 +908,10 @@ void Player::PlayerState()
 
 	const float tackleCost = 15.0f;
 
-	if (g_pad[0]->IsTrigger(enButtonX) && m_tackleCoolTime <= 0.0f && !m_guardFlag && m_stamina >= tackleCost)
+	if (g_pad[0]->IsTrigger(enButtonX) &&
+		m_tackleCoolTime <= 0.0f &&
+		!m_guardFlag &&
+		m_stamina >= tackleCost)
 	{
 		if (m_moveSpeed.LengthSq() > 0.01f)
 		{
@@ -863,13 +930,9 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (m_playerState == enPlayerState_Guard)
-	{
-		m_guardFlag = false;
-	}
-
 	if (!m_isKnockBack &&
-		g_pad[0]->IsTrigger(enButtonB) &&m_characterController.IsOnGround())
+		g_pad[0]->IsTrigger(enButtonB) &&
+		m_characterController.IsOnGround())
 	{
 		m_playerState = enPlayerState_Jump;
 
@@ -881,7 +944,8 @@ void Player::PlayerState()
 		return;
 	}
 
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	if (fabsf(m_moveSpeed.x) >= 0.001f ||
+		fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		if (g_pad[0]->IsPress(enButtonRB1) && m_canDash)
 		{
@@ -894,7 +958,6 @@ void Player::PlayerState()
 			return;
 		}
 	}
-
 	else
 	{
 		m_playerState = enPlayerState_Idle;
@@ -955,15 +1018,26 @@ void Player::JumpState()
 
 void Player::GuardState()
 {
+	// LB1を離した
 	if (!g_pad[0]->IsPress(enButtonLB1))
 	{
 		m_guardFlag = false;
+
+		// ガードを終了した瞬間からクールタイム開始
+		m_guardCoolTime = 3.0f;
+
+		// ガード残り時間をリセット
+		m_guardTimeLimit = 0.0f;
+
+		// ガードモーション終了
+		m_playerState = enPlayerState_Idle;
+
+		return;
 	}
 
-	if (!m_guardFlag)
-	{
-		PlayerState();
-	}
+	// ガード中は移動しない
+	m_moveSpeed.x = 0.0f;
+	m_moveSpeed.z = 0.0f;
 }
 
 void Player::KnockBackState()
@@ -1159,4 +1233,39 @@ CharacterController& Player::GetCharacterController()
 void Player::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+}
+
+void Player::KnockBackOnly(const Vector3& enemyPos, float power)
+{
+	if (m_isKnockBack)
+	{
+		return;
+	}
+
+	// 敵からプレイヤーへ向かう方向
+	Vector3 dir;
+
+	dir.x = m_position.x - enemyPos.x;
+	dir.y = 0.0f;
+	dir.z = m_position.z - enemyPos.z;
+
+	// 敵とプレイヤーがほぼ同じ位置の場合
+	if (dir.LengthSq() < 0.01f)
+	{
+		// プレイヤーの向いている方向の逆へ飛ばす
+		dir.x = -m_forward.x;
+		dir.y = 0.0f;
+		dir.z = -m_forward.z;
+	}
+	else
+	{
+		dir.Normalize();
+	}
+
+	// 敵から離れる方向にノックバック
+	m_knockBack.x = dir.x * power;
+	m_knockBack.y = 0.0f;
+	m_knockBack.z = dir.z * power;
+
+	m_isKnockBack = true;
 }
