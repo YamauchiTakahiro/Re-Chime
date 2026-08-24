@@ -441,15 +441,17 @@ void UI::Update()
 		m_ItemCoolTimeText.SetText(L"");
 	}
 
-	float guardCoolTime =m_player->GetGuardTimeLimit();
+	// =========================
+	// ガードクールタイム表示
+	// =========================
+	float guardCoolTime = m_player->GetGuardCoolTime();
+	float guardCoolTimeMax = m_player->GetGuardCoolTimeMax();
 
-	//bool isShowGuardCoolTime =(guardCoolTime > 0.0f);
-
-	if (guardCoolTime < m_player->GetGuardTimeLimitMax())
+	if (guardCoolTime > 0.0f)
 	{
 		wchar_t guardText[64];
 
-		swprintf_s(guardText,L"%.1f",guardCoolTime);
+		swprintf_s(guardText, L"%.1f", guardCoolTime);
 
 		m_GuardCoolTimeText.SetText(guardText);
 		m_GuardCoolTimeText.SetPosition(Vector3(770.0f, -190.0f, 0.0f));
@@ -461,7 +463,13 @@ void UI::Update()
 		m_GuardCoolTimeText.SetText(L"");
 	}
 
-	float guardRate = 1.0f - (guardCoolTime / m_player->GetGuardTimeLimitMax());
+	// クールタイムの残量
+	float guardRate = 0.0f;
+
+	if (guardCoolTimeMax > 0.0f)
+	{
+		guardRate = guardCoolTime / guardCoolTimeMax;
+	}
 
 	m_guardRing.SetProgress(guardRate);
 
@@ -512,16 +520,19 @@ void UI::Update()
 		m_pickItemText.SetColor(1.0f, 0.9f, 0.3f, m_pickItemFade);
 	}
 
-	if (m_player->GetGuardTimeLimit() < 3.0f)
+	if (m_player->GetGuardCoolTime() > 0.0f)
 	{
+		// クールタイム中
 		m_Guardsmark.SetMulColor(Vector4(0.3f, 0.3f, 0.3f, 1.0f));
 	}
 	else if (g_pad[0]->IsPress(enButtonLB1))
 	{
+		// ガード中
 		m_Guardsmark.SetMulColor(g_vec4Gray);
 	}
 	else
 	{
+		// 使用可能
 		m_Guardsmark.SetMulColor(g_vec4White);
 	}
 
@@ -739,7 +750,12 @@ void UI::Render(RenderContext& rc)
 		m_GireText.Draw(rc);
 		m_Guardsmark.Draw(rc);
 		m_GuardCoolTimeText.Draw(rc);
-		m_guardRing.Draw(rc);
+
+		if (m_player->GetGuardCoolTime() > 0.0f)
+		{
+			m_guardRing.Draw(rc);
+		}
+
 		m_LButton.Draw(rc);
 		m_RunMark.Draw(rc);
 		m_RButton.Draw(rc);

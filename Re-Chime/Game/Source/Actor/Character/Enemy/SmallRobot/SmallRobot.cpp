@@ -673,6 +673,7 @@ void SmallRobot::EnemyState()
 		m_smallRobotState = enSmallRobotState_Attack;
 		m_isAttack = true;
 	}
+
 	if (m_smallRobotHp <= 0)
 	{
 		if (!m_isDeath)
@@ -685,32 +686,25 @@ void SmallRobot::EnemyState()
 				dir.Normalize();
 			}
 
-			if (!m_isDeath)
-			{
-				Vector3 dir = m_position - m_player->GetPosition();
-				dir.y = 0.0f;
+			m_deathVelocity = dir * 4500.0f;
+			m_deathVelocity.y = 2500.0f;
 
-				if (dir.LengthSq() > 0.01f)
-				{
-					dir.Normalize();
-				}
+			m_deathRotateSpeed = 1200.0f;
 
-				m_deathVelocity = dir * 4500.0f;
-				m_deathVelocity.y = 2500.0f;
-				m_deathRotateSpeed = 1200.0f;
-				m_deathMoveTime = 0.5f;
+			// 死亡演出時間
+			m_deathMoveTime = 0.5f;
 
-				m_isDeathMove = true;
-				m_landEffect = false;
-				m_landWait = 0.35f;
-				m_wasFalling = false;
-			}
+			m_isDeathMove = true;
+			m_wasFalling = false;
+			m_landEffect = false;
+			m_landWait = 0.35f;
 		}
 
 		m_smallRobotState = enSmallRobotState_Death;
 		m_isDeath = true;
 	}
-	else if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	else if (fabsf(m_moveSpeed.x) >= 0.001f ||
+		fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		m_smallRobotState = enSmallRobotState_Walk;
 	}
@@ -876,62 +870,68 @@ void SmallRobot::DeathMove()
 	}
 
 	float dt = g_gameTime->GetFrameDeltaTime();
+
 	if (m_game)
 	{
 		dt *= m_game->GetTimeScale();
 	}
 
+	// 死亡演出時間を減らす
 	m_deathMoveTime -= dt;
 
+	// =========================
 	// 吹っ飛び
-	m_position = m_characterController.Execute(m_deathVelocity, dt);
+	// =========================
+	m_position = m_characterController.Execute(
+		m_deathVelocity,
+		dt
+	);
 
 	m_modelRender.SetPosition(m_position);
 
-	// 少しずつ回転
+	// =========================
+	// 回転
+	// =========================
 	Quaternion addRot;
 	addRot.SetRotationDegY(m_deathRotateSpeed * dt);
 
 	m_rotation *= addRot;
+
 	m_modelRender.SetRotation(m_rotation);
 
-	// 減速
-	m_deathVelocity *= 0.90f;
-
-	if (m_deathVelocity.y < 0.0f)
-	{
-		m_wasFalling = true;
-	}
-
+	// =========================
 	// 重力
+	// =========================
 	m_deathVelocity.y -= 3000.0f * dt;
 
-	// 着地
-	if (m_position.y <= 0.0f)
-	{
-		m_position.y = 0.0f;
-
-		m_deathVelocity.x *= 0.75f;
-		m_deathVelocity.z *= 0.75f;
-		m_deathVelocity.y = 0.0f;
-	}
-
+	// =========================
+	// 減速
+	// =========================
 	m_deathVelocity *= 0.90f;
 
-	if (!m_landEffect && m_wasFalling && m_position.y <= 0.0f)
+	// =========================
+	// 死亡演出終了
+	// =========================
+	if (m_deathMoveTime <= 0.0f)
 	{
-		m_landEffect = true;
+		m_isDeathMove = false;
 
+		// 爆発位置
 		Vector3 pos = m_position;
 		pos.y += 30.0f;
 
+		// 爆発エフェクト
 		EffectManager::GetInstance().PlayEffect(
 			EffectManager::enEffect_Explosion,
 			pos,
-			25.0f);
+			25.0f
+		);
 
 		MakeExplosionEffect();
 
+		// =========================
+		// アイテムドロップ
+		// =========================
 		int randomNum = rand() % 100 + 1;
 
 		if (randomNum <= 20)
@@ -950,19 +950,19 @@ void SmallRobot::DeathMove()
 			m_heal->SetPosition(m_position);
 		}
 
-		m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
-	}
+		m_audioManager->PlaySE(
+			enSound_ItemDropSE,
+			0.5f,
+			enSEPlay_AllowOverlap
+		);
 
-	// 着地後の待機
-	if (m_landEffect)
-	{
-		m_landWait -= dt;
+		// =========================
+		// 敵撃破処理
+		// =========================
+		Death();
 
-		if (m_landWait <= 0.0f)
-		{
-			Death();
-			m_isDeathMove = false;
-			DeleteGO(this);
-		}
+		DeleteGO(this);
+
+		return;
 	}
 }

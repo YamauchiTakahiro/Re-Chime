@@ -623,7 +623,7 @@ void MediumRobot::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Walk);
 		break;
 	case enMediumRobotState_Death:
-		m_modelRender.PlayAnimation(enAnimationClip_Death);
+		//m_modelRender.PlayAnimation(enAnimationClip_Death);
 		break;
 	default:
 		break;
@@ -644,6 +644,8 @@ void MediumRobot::MediumRobotState()
 		if (!m_isDeath)
 		{
 			Death();
+
+			m_modelRender.PlayAnimation(enAnimationClip_Death);
 
 			Vector3 dir = m_position - m_player->GetPosition();
 			dir.y = 0.0f;
@@ -837,12 +839,8 @@ void MediumRobot::DeathMove()
 		return;
 	}
 
-	if (m_deathVelocity.y < 0.0f)
-	{
-		m_wasFalling = true;
-	}
-
 	float dt = g_gameTime->GetFrameDeltaTime();
+
 	if (m_game)
 	{
 		dt *= m_game->GetTimeScale();
@@ -855,9 +853,10 @@ void MediumRobot::DeathMove()
 
 	m_modelRender.SetPosition(m_position);
 
+	// 重力
 	m_deathVelocity.y -= 3000.0f * dt;
 
-	// 少しずつ回転
+	// 回転
 	Quaternion rotY;
 	rotY.SetRotationDegY(m_deathRotateSpeed * dt);
 
@@ -873,45 +872,26 @@ void MediumRobot::DeathMove()
 
 	m_modelRender.SetRotation(m_rotation);
 
-	float scale = 1.0f + (0.5f - m_deathMoveTime) * 0.3f;
-
-	m_modelRender.SetScale(Vector3(scale, scale, scale));
-
-	if (m_position.y <= 0.0f)
-	{
-		m_position.y = 0.0f;
-
-		// 横方向だけ少し滑る
-		m_deathVelocity.x *= 0.75f;
-		m_deathVelocity.z *= 0.75f;
-
-		// 縦速度は止める
-		m_deathVelocity.y = 0.0f;
-	}
-
-	// 減速
+	// 少しずつ減速
 	m_deathVelocity *= 0.90f;
 
-	if (m_landEffect)
+	// =========================
+	// 死亡演出終了
+	// =========================
+	if (m_deathMoveTime <= 0.0f)
 	{
 		m_isDeathMove = false;
-	}
-
-	m_landWait -= dt;
-
-	if (!m_landEffect && m_wasFalling && m_position.y <= 0.0f)
-	{
-		m_landEffect = true;
 
 		Vector3 pos = m_position;
 		pos.y += 30.0f;
 
-		// 着地爆発
+		// 爆発
 		EffectManager::GetInstance().PlayEffect(
 			EffectManager::enEffect_Explosion,
 			pos,
 			25.0f);
 
+		// アイテムドロップ
 		int randomNum = rand() % 100 + 1;
 
 		if (randomNum <= 20)
@@ -919,24 +899,38 @@ void MediumRobot::DeathMove()
 			m_attackSpeedBuff = NewGO<AttackSpeedBuff>(0);
 			m_attackSpeedBuff->SetPosition(m_position);
 
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(
+				enSound_ItemDropSE,
+				0.5f,
+				enSEPlay_AllowOverlap);
 		}
 		else if (randomNum <= 40)
 		{
 			m_powerBuff = NewGO<PowerBuff>(0);
 			m_powerBuff->SetPosition(m_position);
 
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(
+				enSound_ItemDropSE,
+				0.5f,
+				enSEPlay_AllowOverlap);
 		}
 		else if (randomNum <= 60)
 		{
 			m_heal = NewGO<Heal>(0);
 			m_heal->SetPosition(m_position);
 
-			m_audioManager->PlaySE(enSound_ItemDropSE, 0.5f, enSEPlay_AllowOverlap);
+			m_audioManager->PlaySE(
+				enSound_ItemDropSE,
+				0.5f,
+				enSEPlay_AllowOverlap);
 		}
+
 		Death();
+
 		m_game->EnemyCount();
+
 		DeleteGO(this);
+
+		return;
 	}
 }
